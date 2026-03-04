@@ -1,0 +1,12 @@
+{
+    "name": "typing-fighter-root",
+    "version": "1.0.0",
+    "description": "Root package strictly for Railway environment detection",
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "scripts": {
+        "postinstall": "cd server && npm install",
+        "start": "cd server && npm start"
+    }
+}
