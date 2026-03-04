@@ -30,7 +30,7 @@ io.on('connection', (socket) => {
 
   socket.on('join_match', () => {
     let roomId = null;
-    
+
     // Find an available room with 1 player
     for (const [id, room] of Object.entries(rooms)) {
       if (room.status === 'waiting' && Object.keys(room.players).length === 1) {
@@ -54,10 +54,10 @@ io.on('connection', (socket) => {
     rooms[roomId].players[socket.id] = { id: socket.id, health: MAX_HEALTH, points: 0, ready: true };
 
     console.log(`User ${socket.id} joined room ${roomId}`);
-    
+
     // Notify player they've joined
     socket.emit('match_joined', { roomId, players: Object.keys(rooms[roomId].players) });
-    
+
     // Notify room of new player
     socket.to(roomId).emit('player_joined', { playerId: socket.id });
 
@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
     const playerIds = Object.keys(rooms[roomId].players);
     if (playerIds.length === 2 && rooms[roomId].status === 'waiting') {
       rooms[roomId].status = 'playing';
-      
+
       // Start match
       io.to(roomId).emit('match_started', {
         players: rooms[roomId].players
@@ -73,7 +73,7 @@ io.on('connection', (socket) => {
 
       // Send first phrase after 3 seconds
       io.to(roomId).emit('countdown', { seconds: 3 });
-      
+
       setTimeout(() => {
         sendNewPhrase(roomId);
       }, 3000);
@@ -128,13 +128,13 @@ io.on('connection', (socket) => {
       if (room.players[socket.id]) {
         delete room.players[socket.id];
         socket.to(roomId).emit('opponent_disconnected');
-        
+
         // If room is empty, delete it
         if (Object.keys(room.players).length === 0) {
           delete rooms[roomId];
         } else {
-           // Reset game if someone left
-           room.status = 'waiting';
+          // Reset game if someone left
+          room.status = 'waiting';
         }
       }
     }
