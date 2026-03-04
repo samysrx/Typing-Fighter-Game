@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Fighter</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div id="space-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+    </div>
+    <div id="app">
+        <!-- Start / Lobby Screen -->
+        <div id="lobby-screen" class="screen active">
+            <div class="glass-panel main-menu">
+                <h1 class="glitch" data-text="TYPING FIGHTER">TYPING FIGHTER</h1>
+                <p class="subtitle">El combate de velocidad de mecanografía definitivo</p>
+                <div class="action-container">
+                    <button id="btn-find-match" class="btn-primary">BUSCAR RIVAL</button>
+                    <div id="matchmaking-status" class="status-text hidden">
+                        <div class="spinner"></div>
+                        <span>Esperando oponente...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Arena Screen -->
+        <div id="game-screen" class="screen hidden">
+            <div class="arena-header">
+                <h2 class="room-id" id="display-room-id">SALA: ----</h2>
+            </div>
+
+            <div class="arena-container">
+                <!-- Player Side -->
+                <div class="fighter-card player-card">
+                    <div class="fighter-info">
+                        <h3>TÚ</h3>
+                        <div class="health-bar-container">
+                            <div class="health-bar" id="player-health-fill"></div>
+                        </div>
+                        <span class="health-text" id="player-health-text">100 / 100</span>
+                    </div>
+                    <div class="avatar player-avatar">
+                        <div class="pulse-ring"></div>
+                    </div>
+                </div>
+
+                <!-- Center Combat Area -->
+                <div class="combat-center">
+                    <div id="countdown-display" class="countdown hidden">3</div>
+                    <div id="phrase-container" class="phrase-box">
+                        <span id="target-phrase">PREPÁRATE</span>
+                    </div>
+                    <div class="input-container">
+                        <input type="text" id="type-input" autocomplete="off" spellcheck="false"
+                            placeholder="Escribe aquí cuando empiece...">
+                        <div class="input-highlight" id="input-feedback"></div>
+                    </div>
+
+                    <div id="game-over-panel" class="glass-panel result-panel hidden">
+                        <h2 id="result-title">¡VICTORIA!</h2>
+                        <button id="btn-rematch" class="btn-primary">VOLVER AL MENÚ</button>
+                    </div>
+                </div>
+
+                <!-- Opponent Side -->
+                <div class="fighter-card opponent-card">
+                    <div class="avatar opponent-avatar">
+                        <div class="pulse-ring"></div>
+                    </div>
+                    <div class="fighter-info">
+                        <h3>RIVAL</h3>
+                        <div class="health-bar-container">
+                            <div class="health-bar opponent-fill" id="opponent-health-fill"></div>
+                        </div>
+                        <span class="health-text" id="opponent-health-text">100 / 100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="damage-overlay"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
