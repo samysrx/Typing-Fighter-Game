@@ -1,4 +1,4 @@
-const socket = io('https://ready-crabs-pick.loca.lt');
+const socket = io('https://six-mammals-enter.loca.lt');
 
 // DOM Elements
 const screens = {
