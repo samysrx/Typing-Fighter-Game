@@ -678,11 +678,11 @@ h3,
 
 .player-avatar::after {
     content: '';
-    width: 120px;
-    height: 120px;
-    /* Spaceship pointing right, Cyan */
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2300f0ff"><path d="M22.5 12l-5.5-2.5V3h-2v4.5L5 6v3l-3 1v4l3 1v3l10-1.5V21h2v-6.5L22.5 12zM15 13H5v-2h10v2z"/></svg>') center/contain no-repeat;
-    filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.6));
+    width: 140px;
+    height: 140px;
+    /* Detailed Fighter Spaceship pointing right, Cyan */
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%2301cbf5" d="M10 40 L35 15 L55 15 L70 30 L95 50 L70 70 L55 85 L35 85 L10 60 L15 60 L28 65 L40 75 L60 50 L40 25 L28 35 L15 40 Z" /> <path fill="%2300f0ff" d="M35 15 L55 15 L70 30 L95 50 L70 70 L55 85 L35 85 L50 70 L60 50 L50 30 Z" /> <path fill="%23ffffff" opacity="0.8" d="M60 45 L70 45 L75 50 L70 55 L60 55 L65 50 Z" /> <path fill="%23ccffff" d="M5 33 L25 38 L25 43 L5 38 Z" /> <path fill="%23ccffff" d="M5 67 L25 62 L25 57 L5 62 Z" /></svg>') center/contain no-repeat;
+    filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.8));
 }
 
 .opponent-avatar {
@@ -693,11 +693,11 @@ h3,
 
 .opponent-avatar::after {
     content: '';
-    width: 120px;
-    height: 120px;
-    /* Spaceship pointing left, Magenta/Pink */
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff0055"><path d="M1.5 12l5.5 2.5V21h2v-6.5L19 18v-3l3-1v-4l-3-1V6l-10 1.5V3h-2v6.5L1.5 12zM9 11h10v2H9v-2z"/></svg>') center/contain no-repeat;
-    filter: drop-shadow(0 0 15px rgba(255, 0, 85, 0.6));
+    width: 140px;
+    height: 140px;
+    /* Detailed Fighter Spaceship pointing left, Magenta/Pink */
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23d40047" d="M90 40 L65 15 L45 15 L30 30 L5 50 L30 70 L45 85 L65 85 L90 60 L85 60 L72 65 L60 75 L40 50 L60 25 L72 35 L85 40 Z" /> <path fill="%23ff0055" d="M65 15 L45 15 L30 30 L5 50 L30 70 L45 85 L65 85 L50 70 L40 50 L50 30 Z" /> <path fill="%23ffffff" opacity="0.8" d="M40 45 L30 45 L25 50 L30 55 L40 55 L35 50 Z" /> <path fill="%23ffccdd" d="M95 33 L75 38 L75 43 L95 38 Z" /> <path fill="%23ffccdd" d="M95 67 L75 62 L75 57 L95 62 Z" /></svg>') center/contain no-repeat;
+    filter: drop-shadow(0 0 15px rgba(255, 0, 85, 0.8));
 }
 
 @keyframes float {
