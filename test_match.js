@@ -1,7 +1,7 @@
 const io = require("socket.io-client");
 
-const socket1 = io("http://localhost:3000", { transports: ['websocket'] });
-const socket2 = io("http://localhost:3000", { transports: ['websocket'] });
+const socket1 = io("https://typing-fighter-server-production.up.railway.app", { transports: ['websocket'] });
+const socket2 = io("https://typing-fighter-server-production.up.railway.app", { transports: ['websocket'] });
 
 socket1.on('connect', () => {
     console.log('S1 Connected');

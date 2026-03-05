@@ -8,5 +8,8 @@
     "scripts": {
         "postinstall": "cd server && npm install",
         "start": "cd server && npm start"
+    },
+    "dependencies": {
+        "socket.io-client": "^4.8.3"
     }
 }
