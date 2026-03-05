@@ -1,4 +1,6 @@
-const socket = io('https://typing-fighter-server-production.up.railway.app');
+const socket = io('https://typing-fighter-server-production.up.railway.app', {
+    transports: ['websocket']
+});
 
 // DOM Elements
 const screens = {
