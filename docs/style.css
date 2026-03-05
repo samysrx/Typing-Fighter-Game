@@ -234,12 +234,14 @@ h3,
 }
 
 /* Profile & Settings Panels */
-.profile-panel, .settings-panel {
+.profile-panel,
+.settings-panel {
     width: 90%;
     max-width: 500px;
 }
 
-.profile-panel h2, .settings-panel h2 {
+.profile-panel h2,
+.settings-panel h2 {
     color: var(--primary-cyan);
     margin-bottom: 2rem;
     text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
@@ -305,8 +307,15 @@ h3,
     margin-top: 0.5rem;
 }
 
-#stat-wins { color: var(--primary-cyan); text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
-#stat-losses { color: var(--primary-pink); text-shadow: 0 0 10px rgba(255, 0, 85, 0.5); }
+#stat-wins {
+    color: var(--primary-cyan);
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+#stat-losses {
+    color: var(--primary-pink);
+    text-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+}
 
 /* Settings */
 .setting-item {
@@ -330,6 +339,24 @@ h3,
     color: #8b9bb4;
     text-align: left;
     margin-bottom: 1.5rem;
+}
+
+/* Custom Selects */
+.theme-select {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--primary-cyan);
+    color: white;
+    padding: 0.5rem;
+    font-family: 'Rajdhani', sans-serif;
+    outline: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.theme-select option {
+    background: var(--bg-dark);
+    color: white;
 }
 
 .status-text {

@@ -25,7 +25,10 @@ const profileElements = {
 };
 
 const settingsElements = {
-    toggleAnimations: document.getElementById('toggle-animations')
+    toggleAnimations: document.getElementById('toggle-animations'),
+    toggleAudio: document.getElementById('toggle-audio'),
+    toggleAutofire: document.getElementById('toggle-autofire'),
+    selectTheme: document.getElementById('select-theme')
 };
 
 const menuElements = {
@@ -60,7 +63,7 @@ let currentRoom = null;
 let currentPhraseStr = "";
 let isPlaying = false;
 let userProfile = { username: "Piloto Espacial", wins: 0, losses: 0 };
-let userSettings = { animations: true };
+let userSettings = { animations: true, audio: true, autoFire: true, theme: '#00f0ff' };
 const MAX_HEALTH = 100;
 
 // Initialize Storage
@@ -78,7 +81,14 @@ function initStorage() {
     profileElements.nameInput.value = userProfile.username;
     profileElements.wins.textContent = userProfile.wins;
     profileElements.losses.textContent = userProfile.losses;
+
     settingsElements.toggleAnimations.checked = userSettings.animations;
+    settingsElements.toggleAudio.checked = userSettings.audio;
+    settingsElements.toggleAutofire.checked = userSettings.autoFire;
+    settingsElements.selectTheme.value = userSettings.theme;
+
+    // Apply theme
+    document.documentElement.style.setProperty('--primary-cyan', userSettings.theme);
 }
 
 function saveProfile() {
@@ -88,7 +98,13 @@ function saveProfile() {
 
 function saveSettings() {
     userSettings.animations = settingsElements.toggleAnimations.checked;
+    userSettings.audio = settingsElements.toggleAudio.checked;
+    userSettings.autoFire = settingsElements.toggleAutofire.checked;
+    userSettings.theme = settingsElements.selectTheme.value;
     localStorage.setItem('tf_settings', JSON.stringify(userSettings));
+
+    // Apply theme on change
+    document.documentElement.style.setProperty('--primary-cyan', userSettings.theme);
 }
 
 // Ensure init occurs at startup
@@ -227,6 +243,9 @@ navElements.btnBackSettings.addEventListener('click', () => {
 
 profileElements.nameInput.addEventListener('blur', saveProfile);
 settingsElements.toggleAnimations.addEventListener('change', saveSettings);
+settingsElements.toggleAudio.addEventListener('change', saveSettings);
+settingsElements.toggleAutofire.addEventListener('change', saveSettings);
+settingsElements.selectTheme.addEventListener('change', saveSettings);
 
 gameElements.btnRematch.addEventListener('click', () => {
     switchScreen('mainMenu');
@@ -257,9 +276,9 @@ gameElements.typeInput.addEventListener('input', (e) => {
 
         // Full match
         if (typed === currentPhraseStr) {
-            isPlaying = false;
-            gameElements.typeInput.disabled = true;
-            socket.emit('type_word', { roomId: currentRoom, input: typed });
+            if (userSettings.autoFire) {
+                submitCurrentPhrase();
+            }
         }
     } else {
         gameElements.typeInput.classList.add('error');
@@ -275,9 +294,20 @@ gameElements.typeInput.addEventListener('input', (e) => {
     }
 });
 
-// Default enter prevent form submit or odd behaviors
+function submitCurrentPhrase() {
+    isPlaying = false;
+    gameElements.typeInput.disabled = true;
+    socket.emit('type_word', { roomId: currentRoom, input: gameElements.typeInput.value });
+}
+
+// Default enter prevent form submit or odd behaviors, trigger submit if Autofire is off
 gameElements.typeInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') e.preventDefault();
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        if (!userSettings.autoFire && isPlaying && gameElements.typeInput.value === currentPhraseStr) {
+            submitCurrentPhrase();
+        }
+    }
 });
 
 
