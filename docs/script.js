@@ -411,8 +411,8 @@ socket.on('match_started', (data) => {
     const oppId = Object.keys(data.players).find(id => id !== socket.id);
     const oppData = data.players[oppId];
 
-    if (myData) gameElements.playerNameText.textContent = myData.username.toUpperCase();
-    if (oppData) gameElements.opponentNameText.textContent = oppData.username.toUpperCase();
+    if (myData) gameElements.playerNameLabel.textContent = myData.username.toUpperCase();
+    if (oppData) gameElements.opponentNameLabel.textContent = oppData.username.toUpperCase();
 
     gameElements.targetPhrase.innerHTML = "PREPÁRATE";
 });
