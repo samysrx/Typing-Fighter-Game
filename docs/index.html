@@ -21,13 +21,77 @@
         <!-- Main Menu Screen -->
         <div id="main-menu-screen" class="screen active">
             <div class="glass-panel main-menu">
-                <h1 class="glitch" data-text="TYPING FIGHTER">TYPING FIGHTER</h1>
-                <p class="subtitle">El combate de velocidad de mecanografía definitivo</p>
-                <div class="menu-buttons">
-                    <button id="nav-btn-play" class="btn-primary">JUGAR</button>
-                    <button id="nav-btn-profile" class="btn-secondary">PERFIL</button>
-                    <button id="nav-btn-settings" class="btn-secondary">AJUSTES</button>
+                <div class="title-container">
+                    <h1 class="glitch" data-text="TYPING">TYPING</h1>
+                    <h1 class="glitch" data-text="FIGHTER">FIGHTER</h1>
                 </div>
+                <p class="subtitle">El combate de velocidad de mecanografía definitivo</p>
+                <div class="motd-container">
+                    <span class="motd-text" id="motd-text">Bienvenido de nuevo, Piloto.</span>
+                </div>
+                <div class="menu-buttons">
+                    <button id="nav-btn-play" class="btn-primary">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        JUGAR
+                    </button>
+                    <button id="nav-btn-profile" class="btn-secondary">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        PERFIL
+                    </button>
+                    <button id="nav-btn-settings" class="btn-secondary">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                            </path>
+                        </svg>
+                        AJUSTES
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mission Selection (Difficulty) Screen -->
+        <div id="mission-screen" class="screen hidden">
+            <div class="glass-panel profile-panel">
+                <h2>SELECCIÓN DE MISIÓN</h2>
+                <p class="setting-desc" style="text-align: center; margin-bottom: 2rem;">Elige la dificultad del
+                    combate. Las frases serán más largas o más complejas.</p>
+                <div class="menu-buttons">
+                    <button id="btn-diff-easy" class="btn-primary" data-diff="easy">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        CADETE (FÁCIL)
+                    </button>
+                    <button id="btn-diff-normal" class="btn-primary"
+                        style="border-color: #ffbf00; color: #ffbf00; text-shadow: 0 0 5px rgba(255,191,0,0.5); box-shadow: 0 0 15px rgba(255,191,0,0.2), inset 0 0 10px rgba(255,191,0,0.1);"
+                        data-diff="normal">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        VETERANO (NORMAL)
+                    </button>
+                    <button id="btn-diff-hard" class="btn-primary"
+                        style="border-color: var(--primary-pink); color: var(--primary-pink); text-shadow: 0 0 5px rgba(255,0,85,0.5); box-shadow: 0 0 15px rgba(255,0,85,0.2), inset 0 0 10px rgba(255,0,85,0.1);"
+                        data-diff="hard">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                        ÉLITE (DIFÍCIL)
+                    </button>
+                </div>
+                <button id="btn-back-mission" class="btn-secondary btn-back">VOLVER</button>
             </div>
         </div>
 
@@ -81,6 +145,17 @@
                             <option value="#ffbf00">Ámbar</option>
                             <option value="#b000ff">Púrpura</option>
                         </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="volume-slider">Volumen Maestro</label>
+                        <div class="slider-container">
+                            <input type="range" id="volume-slider" class="range-slider" min="0" max="1" step="0.1"
+                                value="0.5">
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <button id="btn-fullscreen" class="btn-secondary" style="width: 100%; margin: 1rem 0;">PANTALLA
+                            COMPLETA</button>
                     </div>
                     <p class="setting-desc">Si desactivas el Auto-Disparo, deberás presionar la tecla Enter para
                         confirmar el ataque.</p>

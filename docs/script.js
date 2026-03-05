@@ -3,6 +3,7 @@ const socket = io('https://typing-fighter-server-production.up.railway.app');
 // DOM Elements
 const screens = {
     mainMenu: document.getElementById('main-menu-screen'),
+    mission: document.getElementById('mission-screen'),
     profile: document.getElementById('profile-screen'),
     settings: document.getElementById('settings-screen'),
     lobby: document.getElementById('lobby-screen'),
@@ -11,8 +12,12 @@ const screens = {
 
 const navElements = {
     btnPlay: document.getElementById('nav-btn-play'),
+    btnDiffEasy: document.getElementById('btn-diff-easy'),
+    btnDiffNormal: document.getElementById('btn-diff-normal'),
+    btnDiffHard: document.getElementById('btn-diff-hard'),
     btnProfile: document.getElementById('nav-btn-profile'),
     btnSettings: document.getElementById('nav-btn-settings'),
+    btnBackMission: document.getElementById('btn-back-mission'),
     btnBackProfile: document.getElementById('btn-back-profile'),
     btnBackSettings: document.getElementById('btn-back-settings'),
     btnCancelSearch: document.getElementById('btn-cancel-search')
@@ -28,7 +33,9 @@ const settingsElements = {
     toggleAnimations: document.getElementById('toggle-animations'),
     toggleAudio: document.getElementById('toggle-audio'),
     toggleAutofire: document.getElementById('toggle-autofire'),
-    selectTheme: document.getElementById('select-theme')
+    selectTheme: document.getElementById('select-theme'),
+    volumeSlider: document.getElementById('volume-slider'),
+    btnFullscreen: document.getElementById('btn-fullscreen')
 };
 
 const menuElements = {
@@ -62,8 +69,9 @@ const gameElements = {
 let currentRoom = null;
 let currentPhraseStr = "";
 let isPlaying = false;
+let currentDifficulty = "normal";
 let userProfile = { username: "Piloto Espacial", wins: 0, losses: 0 };
-let userSettings = { animations: true, audio: true, autoFire: true, theme: '#00f0ff' };
+let userSettings = { animations: true, audio: true, autoFire: true, theme: '#00f0ff', volume: 0.5 };
 const MAX_HEALTH = 100;
 
 // Initialize Storage
@@ -86,6 +94,7 @@ function initStorage() {
     settingsElements.toggleAudio.checked = userSettings.audio;
     settingsElements.toggleAutofire.checked = userSettings.autoFire;
     settingsElements.selectTheme.value = userSettings.theme;
+    settingsElements.volumeSlider.value = userSettings.volume;
 
     // Apply theme
     document.documentElement.style.setProperty('--primary-cyan', userSettings.theme);
@@ -101,6 +110,7 @@ function saveSettings() {
     userSettings.audio = settingsElements.toggleAudio.checked;
     userSettings.autoFire = settingsElements.toggleAutofire.checked;
     userSettings.theme = settingsElements.selectTheme.value;
+    userSettings.volume = parseFloat(settingsElements.volumeSlider.value);
     localStorage.setItem('tf_settings', JSON.stringify(userSettings));
 
     // Apply theme on change
@@ -216,12 +226,29 @@ function createImpact(x, y, color) {
     anim.onfinish = () => impact.remove();
 }
 
-// Event Listeners - Navigation
-navElements.btnPlay.addEventListener('click', () => {
-    switchScreen('lobby');
-    // Start match search
-    socket.emit('join_match', { username: userProfile.username });
+// Fullscreen Toggle
+settingsElements.btnFullscreen.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            console.log(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+    } else {
+        document.exitFullscreen();
+    }
 });
+
+// Event Listeners - Navigation
+navElements.btnPlay.addEventListener('click', () => switchScreen('mission'));
+
+function startMatchmaking(diff) {
+    currentDifficulty = diff;
+    switchScreen('lobby');
+    socket.emit('join_match', { username: userProfile.username, difficulty: currentDifficulty });
+}
+
+navElements.btnDiffEasy.addEventListener('click', () => startMatchmaking('easy'));
+navElements.btnDiffNormal.addEventListener('click', () => startMatchmaking('normal'));
+navElements.btnDiffHard.addEventListener('click', () => startMatchmaking('hard'));
 
 navElements.btnCancelSearch.addEventListener('click', () => {
     socket.emit('cancel_match');
@@ -230,6 +257,8 @@ navElements.btnCancelSearch.addEventListener('click', () => {
 
 navElements.btnProfile.addEventListener('click', () => switchScreen('profile'));
 navElements.btnSettings.addEventListener('click', () => switchScreen('settings'));
+
+navElements.btnBackMission.addEventListener('click', () => switchScreen('mainMenu'));
 
 navElements.btnBackProfile.addEventListener('click', () => {
     saveProfile();
@@ -246,6 +275,7 @@ settingsElements.toggleAnimations.addEventListener('change', saveSettings);
 settingsElements.toggleAudio.addEventListener('change', saveSettings);
 settingsElements.toggleAutofire.addEventListener('change', saveSettings);
 settingsElements.selectTheme.addEventListener('change', saveSettings);
+settingsElements.volumeSlider.addEventListener('input', saveSettings);
 
 gameElements.btnRematch.addEventListener('click', () => {
     switchScreen('mainMenu');

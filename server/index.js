@@ -29,12 +29,13 @@ io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
   socket.on('join_match', (data) => {
-    const username = data?.username || 'Anónimo';
+    const username = data?.username || 'Piloto Espacial';
+    const difficulty = data?.difficulty || 'normal';
     let roomId = null;
 
-    // Find an available room with 1 player
+    // Find an available room with 1 player AND matching difficulty
     for (const [id, room] of Object.entries(rooms)) {
-      if (room.status === 'waiting' && Object.keys(room.players).length === 1) {
+      if (room.status === 'waiting' && Object.keys(room.players).length === 1 && room.difficulty === difficulty) {
         roomId = id;
         break;
       }
@@ -46,7 +47,8 @@ io.on('connection', (socket) => {
       rooms[roomId] = {
         players: {},
         status: 'waiting',
-        currentPhrase: ''
+        currentPhrase: '',
+        difficulty: difficulty
       };
     }
 
@@ -143,7 +145,7 @@ io.on('connection', (socket) => {
 
   function sendNewPhrase(roomId) {
     if (rooms[roomId]) {
-      const phrase = getRandomPhrase();
+      const phrase = getRandomPhrase(rooms[roomId].difficulty);
       rooms[roomId].currentPhrase = phrase;
       io.to(roomId).emit('new_phrase', { phrase });
     }
