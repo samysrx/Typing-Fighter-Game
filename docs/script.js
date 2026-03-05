@@ -48,7 +48,8 @@ const rankingElements = {
 
 const menuElements = {
     btnFindMatch: document.getElementById('btn-find-match'),
-    status: document.getElementById('matchmaking-status')
+    status: document.getElementById('matchmaking-status'),
+    searchDifficultyText: document.getElementById('search-difficulty-text')
 };
 
 const gameElements = {
@@ -255,6 +256,15 @@ navElements.btnPlay.addEventListener('click', () => switchScreen('mission'));
 
 function startMatchmaking(diff) {
     currentDifficulty = diff;
+
+    // Update lobby UI to show difficulty
+    const diffNames = {
+        'easy': 'CADETE (Fácil)',
+        'normal': 'VETERANO (Normal)',
+        'hard': 'ÉLITE (Difícil)'
+    };
+    menuElements.searchDifficultyText.textContent = `Buscando rival en dificultad: ${diffNames[diff]}...`;
+
     switchScreen('lobby');
     socket.emit('join_match', { username: userProfile.username, difficulty: currentDifficulty });
 }

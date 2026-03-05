@@ -162,6 +162,21 @@ io.on('connection', (socket) => {
     }
   });
 
+  // Cancel Matchmaking
+  socket.on('cancel_match', () => {
+    for (const [roomId, room] of Object.entries(rooms)) {
+      if (room.players[socket.id] && room.status === 'waiting') {
+        delete room.players[socket.id];
+        socket.leave(roomId);
+
+        if (Object.keys(room.players).length === 0) {
+          delete rooms[roomId];
+        }
+        break;
+      }
+    }
+  });
+
   // Surrender
   socket.on('surrender_match', (data) => {
     const { roomId } = data;
