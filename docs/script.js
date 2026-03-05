@@ -271,7 +271,6 @@ navElements.btnRanking.addEventListener('click', () => {
     socket.emit('get_leaderboard');
 });
 
-navElements.btnBackMission.addEventListener('click', () => switchScreen('mainMenu'));
 navElements.btnBackRanking.addEventListener('click', () => switchScreen('mainMenu'));
 
 navElements.btnBackProfile.addEventListener('click', () => {
