@@ -50,7 +50,9 @@ io.on('connection', (socket) => {
         players: {},
         status: 'waiting',
         currentPhrase: '',
-        difficulty: difficulty
+        difficulty: difficulty,
+        timeLeft: 180, // 3 minutes
+        timerInterval: null
       };
     }
 
@@ -81,6 +83,19 @@ io.on('connection', (socket) => {
 
       setTimeout(() => {
         sendNewPhrase(roomId);
+
+        // Start Timer
+        rooms[roomId].timerInterval = setInterval(() => {
+          rooms[roomId].timeLeft -= 1;
+          io.to(roomId).emit('timer_tick', { timeLeft: rooms[roomId].timeLeft });
+
+          if (rooms[roomId].timeLeft <= 0) {
+            clearInterval(rooms[roomId].timerInterval);
+            rooms[roomId].status = 'finished';
+            io.to(roomId).emit('game_over', { reason: 'timeout' });
+          }
+        }, 1000);
+
       }, 3000);
     }
   });
@@ -111,6 +126,7 @@ io.on('connection', (socket) => {
 
         // Check for Game Over
         if (opponent.health <= 0) {
+          clearInterval(room.timerInterval);
           room.status = 'finished';
 
           // Update Leaderboard
@@ -138,6 +154,33 @@ io.on('connection', (socket) => {
     }
   });
 
+  // Chat
+  socket.on('send_chat_msg', (data) => {
+    const { roomId, text, sender } = data;
+    if (rooms[roomId]) {
+      io.to(roomId).emit('chat_msg_received', { sender, text, senderId: socket.id });
+    }
+  });
+
+  // Surrender
+  socket.on('surrender_match', (data) => {
+    const { roomId } = data;
+    const room = rooms[roomId];
+    if (room && room.status === 'playing') {
+      clearInterval(room.timerInterval);
+      room.status = 'finished';
+
+      const playerIds = Object.keys(room.players);
+      const opponentId = playerIds.find(id => id !== socket.id);
+
+      io.to(roomId).emit('game_over', {
+        winnerId: opponentId,
+        loserId: socket.id,
+        reason: 'surrender'
+      });
+    }
+  });
+
   // Fetch Leaderboard
   socket.on('get_leaderboard', () => {
     // Convert object to array, sort by wins descending, and get Top 10
@@ -153,8 +196,13 @@ io.on('connection', (socket) => {
     // Clean up rooms
     for (const [roomId, room] of Object.entries(rooms)) {
       if (room.players[socket.id]) {
+        clearInterval(room.timerInterval);
         delete room.players[socket.id];
-        socket.to(roomId).emit('opponent_disconnected');
+
+        if (room.status === 'playing') {
+          room.status = 'finished';
+          socket.to(roomId).emit('opponent_disconnected');
+        }
 
         // If room is empty, delete it
         if (Object.keys(room.players).length === 0) {

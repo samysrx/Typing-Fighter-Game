@@ -53,6 +53,11 @@ const menuElements = {
 
 const gameElements = {
     roomId: document.getElementById('display-room-id'),
+    matchTimer: document.getElementById('match-timer'),
+    btnArenaSettings: document.getElementById('btn-arena-settings'),
+    btnArenaSurrender: document.getElementById('btn-arena-surrender'),
+    chatMessages: document.getElementById('chat-messages'),
+    chatInput: document.getElementById('chat-input'),
     playerNameText: document.getElementById('player-name-lbl'), // New dynamically generated in JS later if needed, right now we'll target the H3
     opponentNameText: document.getElementById('opponent-name-lbl'),
     playerHealthFill: document.getElementById('player-health-fill'),
@@ -295,12 +300,49 @@ settingsElements.volumeSlider.addEventListener('input', saveSettings);
 gameElements.btnRematch.addEventListener('click', () => {
     switchScreen('mainMenu');
     gameElements.gameOverPanel.classList.add('hidden');
+    gameElements.matchTimer.classList.add('hidden');
+    gameElements.chatMessages.innerHTML = '<div class="chat-msg system">Conectado. Preparando chat...</div>';
 
     // Reset Health UI
     gameElements.playerHealthFill.style.width = '100%';
     gameElements.playerHealthText.textContent = '100 / 100';
     gameElements.opponentHealthFill.style.width = '100%';
     gameElements.opponentHealthText.textContent = '100 / 100';
+});
+
+// Arena utility buttons
+gameElements.btnArenaSettings.addEventListener('click', () => {
+    // Save current active screen logic if we want to return, or simply toggle settings
+    switchScreen('settings');
+    // We override the back button in settings to go back to game ONLY if we are playing
+    const goBack = () => {
+        if (currentRoom && screens.settings.classList.contains('active')) {
+            switchScreen('game');
+        } else {
+            switchScreen('mainMenu');
+        }
+        navElements.btnBackSettings.removeEventListener('click', goBack);
+    };
+    navElements.btnBackSettings.addEventListener('click', goBack);
+});
+
+gameElements.btnArenaSurrender.addEventListener('click', () => {
+    if (confirm('¿Estás seguro de que quieres retirarte de la partida?')) {
+        socket.emit('surrender_match', { roomId: currentRoom });
+    }
+});
+
+// Chat logic
+gameElements.chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const text = e.target.value.trim();
+        e.preventDefault();
+
+        if (text && currentRoom) {
+            socket.emit('send_chat_msg', { roomId: currentRoom, sender: userProfile.username, text: text });
+            e.target.value = '';
+        }
+    }
 });
 
 gameElements.typeInput.addEventListener('input', (e) => {
@@ -382,22 +424,50 @@ socket.on('match_started', (data) => {
 });
 
 socket.on('countdown', (data) => {
-    let count = data.seconds;
     gameElements.countdown.classList.remove('hidden');
-    gameElements.countdown.textContent = count;
-
-    const ioCode = setInterval(() => {
-        count--;
-        if (count > 0) {
-            gameElements.countdown.textContent = count;
+    let ioCode = setInterval(() => {
+        data.seconds--;
+        if (data.seconds > 0) {
+            gameElements.countdown.textContent = data.seconds;
             gameElements.countdown.style.animation = 'none';
-            void gameElements.countdown.offsetWidth;
+            void gameElements.countdown.offsetWidth; // trigger reflow
             gameElements.countdown.style.animation = 'popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
         } else {
             clearInterval(ioCode);
             gameElements.countdown.classList.add('hidden');
+            gameElements.matchTimer.classList.remove('hidden');
         }
     }, 1000);
+});
+
+socket.on('timer_tick', (data) => {
+    const mins = Math.floor(data.timeLeft / 60);
+    const secs = data.timeLeft % 60;
+    gameElements.matchTimer.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+    // Critical time visual feedback
+    if (data.timeLeft <= 10) {
+        gameElements.matchTimer.style.color = 'var(--primary-pink)';
+        gameElements.matchTimer.style.textShadow = '0 0 15px var(--primary-pink)';
+    } else {
+        gameElements.matchTimer.style.color = 'var(--primary-cyan)';
+        gameElements.matchTimer.style.textShadow = '0 0 15px rgba(0, 240, 255, 0.5)';
+    }
+});
+
+socket.on('chat_msg_received', (data) => {
+    const isMe = data.senderId === socket.id;
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `chat-msg ${isMe ? 'me' : 'opponent'}`;
+
+    // Safety encode html
+    const safeText = document.createTextNode(data.text);
+
+    msgDiv.innerHTML = `<span class="name">${data.sender}:</span> `;
+    msgDiv.appendChild(safeText);
+
+    gameElements.chatMessages.appendChild(msgDiv);
+    gameElements.chatMessages.scrollTop = gameElements.chatMessages.scrollHeight;
 });
 
 socket.on('leaderboard_data', (topPlayers) => {
