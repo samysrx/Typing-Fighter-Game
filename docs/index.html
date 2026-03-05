@@ -18,17 +18,70 @@
         <div class="stars3"></div>
     </div>
     <div id="app">
-        <!-- Start / Lobby Screen -->
-        <div id="lobby-screen" class="screen active">
+        <!-- Main Menu Screen -->
+        <div id="main-menu-screen" class="screen active">
             <div class="glass-panel main-menu">
                 <h1 class="glitch" data-text="TYPING FIGHTER">TYPING FIGHTER</h1>
                 <p class="subtitle">El combate de velocidad de mecanografía definitivo</p>
-                <div class="action-container">
-                    <button id="btn-find-match" class="btn-primary">BUSCAR RIVAL</button>
-                    <div id="matchmaking-status" class="status-text hidden">
-                        <div class="spinner"></div>
-                        <span>Esperando oponente...</span>
+                <div class="menu-buttons">
+                    <button id="nav-btn-play" class="btn-primary">JUGAR</button>
+                    <button id="nav-btn-profile" class="btn-secondary">PERFIL</button>
+                    <button id="nav-btn-settings" class="btn-secondary">AJUSTES</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div id="profile-screen" class="screen hidden">
+            <div class="glass-panel profile-panel">
+                <h2>PERFIL DEL PILOTO</h2>
+                <div class="profile-content">
+                    <div class="input-group">
+                        <label for="player-name-input">Alias:</label>
+                        <input type="text" id="player-name-input" maxlength="15" placeholder="Piloto Espacial">
                     </div>
+
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <span class="stat-label">VICTORIAS</span>
+                            <span class="stat-value" id="stat-wins">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">DERROTAS</span>
+                            <span class="stat-value" id="stat-losses">0</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="btn-back-profile" class="btn-secondary btn-back">VOLVER</button>
+            </div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div id="settings-screen" class="screen hidden">
+            <div class="glass-panel settings-panel">
+                <h2>AJUSTES DE NAVE</h2>
+                <div class="settings-content">
+                    <div class="setting-item">
+                        <label for="toggle-animations">Animaciones de Daño</label>
+                        <input type="checkbox" id="toggle-animations" checked>
+                    </div>
+                    <p class="setting-desc">Desactiva los destellos rojos si te resultan molestos.</p>
+                </div>
+                <button id="btn-back-settings" class="btn-secondary btn-back">VOLVER</button>
+            </div>
+        </div>
+
+        <!-- Matchmaking / Lobby Screen -->
+        <div id="lobby-screen" class="screen hidden">
+            <div class="glass-panel main-menu">
+                <h2>CONECTANDO...</h2>
+                <div class="action-container">
+                    <div id="matchmaking-status" class="status-text">
+                        <div class="spinner"></div>
+                        <span>Buscando un sector de combate disponible...</span>
+                    </div>
+                    <button id="btn-cancel-search" class="btn-secondary btn-back" style="margin-top: 2rem;">CANCELAR
+                        BÚSQUEDA</button>
                 </div>
             </div>
         </div>

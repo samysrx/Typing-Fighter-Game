@@ -28,7 +28,8 @@ const DAMAGE_PER_PHRASE = 15;
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
-  socket.on('join_match', () => {
+  socket.on('join_match', (data) => {
+    const username = data?.username || 'Anónimo';
     let roomId = null;
 
     // Find an available room with 1 player
@@ -51,7 +52,7 @@ io.on('connection', (socket) => {
 
     // Add player to room
     socket.join(roomId);
-    rooms[roomId].players[socket.id] = { id: socket.id, health: MAX_HEALTH, points: 0, ready: true };
+    rooms[roomId].players[socket.id] = { id: socket.id, username: username, health: MAX_HEALTH, points: 0, ready: true };
 
     console.log(`User ${socket.id} joined room ${roomId}`);
 

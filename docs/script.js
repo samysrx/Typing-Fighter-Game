@@ -2,8 +2,30 @@ const socket = io('https://typing-fighter-server-production.up.railway.app');
 
 // DOM Elements
 const screens = {
+    mainMenu: document.getElementById('main-menu-screen'),
+    profile: document.getElementById('profile-screen'),
+    settings: document.getElementById('settings-screen'),
     lobby: document.getElementById('lobby-screen'),
     game: document.getElementById('game-screen')
+};
+
+const navElements = {
+    btnPlay: document.getElementById('nav-btn-play'),
+    btnProfile: document.getElementById('nav-btn-profile'),
+    btnSettings: document.getElementById('nav-btn-settings'),
+    btnBackProfile: document.getElementById('btn-back-profile'),
+    btnBackSettings: document.getElementById('btn-back-settings'),
+    btnCancelSearch: document.getElementById('btn-cancel-search')
+};
+
+const profileElements = {
+    nameInput: document.getElementById('player-name-input'),
+    wins: document.getElementById('stat-wins'),
+    losses: document.getElementById('stat-losses')
+};
+
+const settingsElements = {
+    toggleAnimations: document.getElementById('toggle-animations')
 };
 
 const menuElements = {
@@ -13,10 +35,14 @@ const menuElements = {
 
 const gameElements = {
     roomId: document.getElementById('display-room-id'),
+    playerNameText: document.getElementById('player-name-lbl'), // New dynamically generated in JS later if needed, right now we'll target the H3
+    opponentNameText: document.getElementById('opponent-name-lbl'),
     playerHealthFill: document.getElementById('player-health-fill'),
     playerHealthText: document.getElementById('player-health-text'),
+    playerNameLabel: document.querySelector('.player-card h3'),
     opponentHealthFill: document.getElementById('opponent-health-fill'),
     opponentHealthText: document.getElementById('opponent-health-text'),
+    opponentNameLabel: document.querySelector('.opponent-card h3'),
     countdown: document.getElementById('countdown-display'),
     phraseContainer: document.getElementById('phrase-container'),
     targetPhrase: document.getElementById('target-phrase'),
@@ -33,7 +59,40 @@ const gameElements = {
 let currentRoom = null;
 let currentPhraseStr = "";
 let isPlaying = false;
+let userProfile = { username: "Piloto Espacial", wins: 0, losses: 0 };
+let userSettings = { animations: true };
 const MAX_HEALTH = 100;
+
+// Initialize Storage
+function initStorage() {
+    const savedProfile = localStorage.getItem('tf_profile');
+    if (savedProfile) {
+        userProfile = { ...userProfile, ...JSON.parse(savedProfile) };
+    }
+    const savedSettings = localStorage.getItem('tf_settings');
+    if (savedSettings) {
+        userSettings = { ...userSettings, ...JSON.parse(savedSettings) };
+    }
+
+    // Update UI with loaded data
+    profileElements.nameInput.value = userProfile.username;
+    profileElements.wins.textContent = userProfile.wins;
+    profileElements.losses.textContent = userProfile.losses;
+    settingsElements.toggleAnimations.checked = userSettings.animations;
+}
+
+function saveProfile() {
+    userProfile.username = profileElements.nameInput.value.trim() || "Piloto Espacial";
+    localStorage.setItem('tf_profile', JSON.stringify(userProfile));
+}
+
+function saveSettings() {
+    userSettings.animations = settingsElements.toggleAnimations.checked;
+    localStorage.setItem('tf_settings', JSON.stringify(userSettings));
+}
+
+// Ensure init occurs at startup
+initStorage();
 
 // Utility functions
 function switchScreen(screenId) {
@@ -71,12 +130,14 @@ function updateHealth(playerId, health, playersList) {
 }
 
 function triggerDamageFlash() {
+    if (!userSettings.animations) return;
     gameElements.damageOverlay.classList.remove('flash-red');
     void gameElements.damageOverlay.offsetWidth; // trigger reflow
     gameElements.damageOverlay.classList.add('flash-red');
 }
 
 function shakeElement(el) {
+    if (!userSettings.animations) return;
     el.style.animation = 'none';
     void el.offsetWidth; // reflow
     el.style.animation = 'shake 0.4s cubic-bezier(.36,.07,.19,.97) both';
@@ -139,18 +200,37 @@ function createImpact(x, y, color) {
     anim.onfinish = () => impact.remove();
 }
 
-// Event Listeners
-menuElements.btnFindMatch.addEventListener('click', () => {
-    menuElements.btnFindMatch.classList.add('hidden');
-    menuElements.status.classList.remove('hidden');
-    socket.emit('join_match');
+// Event Listeners - Navigation
+navElements.btnPlay.addEventListener('click', () => {
+    switchScreen('lobby');
+    // Start match search
+    socket.emit('join_match', { username: userProfile.username });
 });
 
+navElements.btnCancelSearch.addEventListener('click', () => {
+    socket.emit('cancel_match');
+    switchScreen('mainMenu');
+});
+
+navElements.btnProfile.addEventListener('click', () => switchScreen('profile'));
+navElements.btnSettings.addEventListener('click', () => switchScreen('settings'));
+
+navElements.btnBackProfile.addEventListener('click', () => {
+    saveProfile();
+    switchScreen('mainMenu');
+});
+
+navElements.btnBackSettings.addEventListener('click', () => {
+    saveSettings();
+    switchScreen('mainMenu');
+});
+
+profileElements.nameInput.addEventListener('blur', saveProfile);
+settingsElements.toggleAnimations.addEventListener('change', saveSettings);
+
 gameElements.btnRematch.addEventListener('click', () => {
-    switchScreen('lobby');
+    switchScreen('mainMenu');
     gameElements.gameOverPanel.classList.add('hidden');
-    menuElements.btnFindMatch.classList.remove('hidden');
-    menuElements.status.classList.add('hidden');
 
     // Reset Health UI
     gameElements.playerHealthFill.style.width = '100%';
@@ -214,6 +294,15 @@ socket.on('match_started', (data) => {
     gameElements.typeInput.disabled = true;
     gameElements.playerHealthFill.style.width = '100%';
     gameElements.opponentHealthFill.style.width = '100%';
+
+    // Set Names
+    const myData = data.players[socket.id];
+    const oppId = Object.keys(data.players).find(id => id !== socket.id);
+    const oppData = data.players[oppId];
+
+    if (myData) gameElements.playerNameLabel.textContent = myData.username.toUpperCase();
+    if (oppData) gameElements.opponentNameLabel.textContent = oppData.username.toUpperCase();
+
     gameElements.targetPhrase.innerHTML = "PREPÁRATE";
 });
 
@@ -280,6 +369,15 @@ socket.on('game_over', (data) => {
         gameElements.resultTitle.textContent = isWinnerMe ? "¡VICTORIA!" : "¡DERROTA!";
         gameElements.resultTitle.style.color = isWinnerMe ? "var(--primary-cyan)" : "var(--primary-pink)";
         gameElements.resultTitle.style.textShadow = `0 0 20px ${gameElements.resultTitle.style.color}`;
+
+        // Update stats
+        if (isWinnerMe) userProfile.wins += 1;
+        else userProfile.losses += 1;
+
+        saveProfile();
+        profileElements.wins.textContent = userProfile.wins;
+        profileElements.losses.textContent = userProfile.losses;
+
     }, 1000);
 });
 
