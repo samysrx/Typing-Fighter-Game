@@ -5,7 +5,6 @@ const socket = io('https://typing-fighter-server-production.up.railway.app', {
 // DOM Elements
 const screens = {
     mainMenu: document.getElementById('main-menu-screen'),
-    mission: document.getElementById('mission-screen'),
     ranking: document.getElementById('ranking-screen'),
     profile: document.getElementById('profile-screen'),
     settings: document.getElementById('settings-screen'),
@@ -15,13 +14,9 @@ const screens = {
 
 const navElements = {
     btnPlay: document.getElementById('nav-btn-play'),
-    btnDiffEasy: document.getElementById('btn-diff-easy'),
-    btnDiffNormal: document.getElementById('btn-diff-normal'),
-    btnDiffHard: document.getElementById('btn-diff-hard'),
     btnProfile: document.getElementById('nav-btn-profile'),
     btnSettings: document.getElementById('nav-btn-settings'),
     btnRanking: document.getElementById('nav-btn-ranking'),
-    btnBackMission: document.getElementById('btn-back-mission'),
     btnBackProfile: document.getElementById('btn-back-profile'),
     btnBackSettings: document.getElementById('btn-back-settings'),
     btnBackRanking: document.getElementById('btn-back-ranking'),
@@ -254,26 +249,13 @@ settingsElements.btnFullscreen.addEventListener('click', () => {
 });
 
 // Event Listeners - Navigation
-navElements.btnPlay.addEventListener('click', () => switchScreen('mission'));
+navElements.btnPlay.addEventListener('click', () => startMatchmaking());
 
-function startMatchmaking(diff) {
-    currentDifficulty = diff;
-
-    // Update lobby UI to show difficulty
-    const diffNames = {
-        'easy': 'CADETE (Fácil)',
-        'normal': 'VETERANO (Normal)',
-        'hard': 'ÉLITE (Difícil)'
-    };
-    menuElements.searchDifficultyText.textContent = `Buscando rival en dificultad: ${diffNames[diff]}...`;
-
+function startMatchmaking() {
+    menuElements.searchDifficultyText.textContent = `Buscando un sector de combate disponible...`;
     switchScreen('lobby');
-    socket.emit('join_match', { username: userProfile.username, difficulty: currentDifficulty });
+    socket.emit('join_match', { username: userProfile.username });
 }
-
-navElements.btnDiffEasy.addEventListener('click', () => startMatchmaking('easy'));
-navElements.btnDiffNormal.addEventListener('click', () => startMatchmaking('normal'));
-navElements.btnDiffHard.addEventListener('click', () => startMatchmaking('hard'));
 
 navElements.btnCancelSearch.addEventListener('click', () => {
     socket.emit('cancel_match');

@@ -32,12 +32,11 @@ io.on('connection', (socket) => {
 
   socket.on('join_match', (data) => {
     const username = data?.username || 'Piloto Espacial';
-    const difficulty = data?.difficulty || 'normal';
     let roomId = null;
 
-    // Find an available room with 1 player AND matching difficulty
+    // Find an available room with 1 player (ANY difficulty constraint removed)
     for (const [id, room] of Object.entries(rooms)) {
-      if (room.status === 'waiting' && Object.keys(room.players).length === 1 && room.difficulty === difficulty) {
+      if (room.status === 'waiting' && Object.keys(room.players).length === 1) {
         roomId = id;
         break;
       }
@@ -50,7 +49,7 @@ io.on('connection', (socket) => {
         players: {},
         status: 'waiting',
         currentPhrase: '',
-        difficulty: difficulty,
+        difficulty: 'normal', // Default universal difficulty
         timeLeft: 180, // 3 minutes
         timerInterval: null
       };
