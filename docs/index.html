@@ -55,7 +55,38 @@
                         </svg>
                         AJUSTES
                     </button>
+                    <button id="nav-btn-ranking" class="btn-secondary">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon
+                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                            </polygon>
+                        </svg>
+                        RANKING GLOBAL
+                    </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Ranking Screen -->
+        <div id="ranking-screen" class="screen hidden">
+            <div class="glass-panel profile-panel">
+                <h2>RANKING GLOBAL</h2>
+                <div class="ranking-container">
+                    <table class="ranking-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Piloto</th>
+                                <th>Victorias</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-body">
+                            <!-- Injected dynamically via JS -->
+                        </tbody>
+                    </table>
+                    <div id="ranking-loading">Cargando datos del satélite...</div>
+                </div>
+                <button id="btn-back-ranking" class="btn-secondary btn-back">VOLVER</button>
             </div>
         </div>
 

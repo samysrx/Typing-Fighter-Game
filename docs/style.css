@@ -315,6 +315,57 @@ h3,
     margin-top: 1rem;
 }
 
+/* Ranking Styling */
+.ranking-container {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 2rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-cyan) transparent;
+}
+
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+}
+
+.ranking-table th {
+    color: var(--primary-cyan);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+.ranking-table td {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ranking-row-top1 {
+    color: #ffbf00;
+    text-shadow: 0 0 10px rgba(255, 191, 0, 0.8);
+    font-weight: bold;
+}
+
+.ranking-row-top2 {
+    color: #c0c0c0;
+    text-shadow: 0 0 8px rgba(192, 192, 192, 0.8);
+}
+
+.ranking-row-top3 {
+    color: #cd7f32;
+    text-shadow: 0 0 8px rgba(205, 127, 50, 0.8);
+}
+
+#ranking-loading {
+    color: #8b9bb4;
+    margin-top: 2rem;
+    font-style: italic;
+    animation: pulse 1.5s infinite;
+}
+
 /* Profile & Settings Panels */
 .profile-panel,
 .settings-panel {

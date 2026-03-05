@@ -4,6 +4,7 @@ const socket = io('https://typing-fighter-server-production.up.railway.app');
 const screens = {
     mainMenu: document.getElementById('main-menu-screen'),
     mission: document.getElementById('mission-screen'),
+    ranking: document.getElementById('ranking-screen'),
     profile: document.getElementById('profile-screen'),
     settings: document.getElementById('settings-screen'),
     lobby: document.getElementById('lobby-screen'),
@@ -17,9 +18,11 @@ const navElements = {
     btnDiffHard: document.getElementById('btn-diff-hard'),
     btnProfile: document.getElementById('nav-btn-profile'),
     btnSettings: document.getElementById('nav-btn-settings'),
+    btnRanking: document.getElementById('nav-btn-ranking'),
     btnBackMission: document.getElementById('btn-back-mission'),
     btnBackProfile: document.getElementById('btn-back-profile'),
     btnBackSettings: document.getElementById('btn-back-settings'),
+    btnBackRanking: document.getElementById('btn-back-ranking'),
     btnCancelSearch: document.getElementById('btn-cancel-search')
 };
 
@@ -36,6 +39,11 @@ const settingsElements = {
     selectTheme: document.getElementById('select-theme'),
     volumeSlider: document.getElementById('volume-slider'),
     btnFullscreen: document.getElementById('btn-fullscreen')
+};
+
+const rankingElements = {
+    tableBody: document.getElementById('ranking-body'),
+    loadingText: document.getElementById('ranking-loading')
 };
 
 const menuElements = {
@@ -257,8 +265,15 @@ navElements.btnCancelSearch.addEventListener('click', () => {
 
 navElements.btnProfile.addEventListener('click', () => switchScreen('profile'));
 navElements.btnSettings.addEventListener('click', () => switchScreen('settings'));
+navElements.btnRanking.addEventListener('click', () => {
+    switchScreen('ranking');
+    rankingElements.loadingText.classList.remove('hidden');
+    rankingElements.tableBody.innerHTML = '';
+    socket.emit('get_leaderboard');
+});
 
 navElements.btnBackMission.addEventListener('click', () => switchScreen('mainMenu'));
+navElements.btnBackRanking.addEventListener('click', () => switchScreen('mainMenu'));
 
 navElements.btnBackProfile.addEventListener('click', () => {
     saveProfile();
@@ -383,6 +398,28 @@ socket.on('countdown', (data) => {
             gameElements.countdown.classList.add('hidden');
         }
     }, 1000);
+});
+
+socket.on('leaderboard_data', (topPlayers) => {
+    rankingElements.loadingText.classList.add('hidden');
+    rankingElements.tableBody.innerHTML = '';
+
+    if (topPlayers.length === 0) {
+        rankingElements.tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#8b9bb4;">No hay datos aún. ¡Sé el primero en ganar!</td></tr>';
+        return;
+    }
+
+    topPlayers.forEach((player, index) => {
+        const row = document.createElement('tr');
+        const posClass = index === 0 ? 'ranking-row-top1' : index === 1 ? 'ranking-row-top2' : index === 2 ? 'ranking-row-top3' : '';
+
+        row.innerHTML = `
+            <td class="${posClass}">${index + 1}</td>
+            <td class="${posClass}">${player.username}</td>
+            <td class="${posClass}">${player.wins}</td>
+        `;
+        rankingElements.tableBody.appendChild(row);
+    });
 });
 
 socket.on('new_phrase', (data) => {

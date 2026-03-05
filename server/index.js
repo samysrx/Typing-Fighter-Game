@@ -9,6 +9,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: '*',
+    methods: ["GET", "POST"]
   }
 });
 
@@ -20,10 +21,11 @@ const PORT = process.env.PORT || 3000;
 // Game State
 // rooms: { roomId: { players: { socketId: { id, health, points, ready } }, status: 'waiting' | 'playing', currentPhrase: '' } }
 const rooms = {};
+let globalLeaderboard = {}; // In-Memory Leaderboard: key -> lowercase username, value -> { username, wins }
 
 // Constants
 const MAX_HEALTH = 100;
-const DAMAGE_PER_PHRASE = 15;
+const DAMAGE_PER_WORD = 20;
 
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
@@ -93,11 +95,13 @@ io.on('connection', (socket) => {
       // Player typed phrase correctly!
       const playerIds = Object.keys(room.players);
       const opponentId = playerIds.find(id => id !== socket.id);
+      const player = room.players[socket.id];
+      const opponent = room.players[opponentId];
 
-      if (opponentId && room.players[opponentId]) {
+      if (opponentId && opponent) {
         // Deal damage
-        room.players[opponentId].health -= DAMAGE_PER_PHRASE;
-        room.players[socket.id].points += 1;
+        opponent.health -= DAMAGE_PER_WORD;
+        player.points += 1;
 
         io.to(roomId).emit('phrase_completed', {
           winnerId: socket.id,
@@ -106,22 +110,42 @@ io.on('connection', (socket) => {
         });
 
         // Check for Game Over
-        if (room.players[opponentId].health <= 0) {
+        if (opponent.health <= 0) {
           room.status = 'finished';
+
+          // Update Leaderboard
+          const winnerName = player.username;
+          const winnerKey = winnerName.toLowerCase();
+          if (!globalLeaderboard[winnerKey]) {
+            globalLeaderboard[winnerKey] = { username: winnerName, wins: 0 };
+          }
+          globalLeaderboard[winnerKey].wins += 1;
+
           io.to(roomId).emit('game_over', {
             winnerId: socket.id,
-            players: room.players
+            loserId: opponent.id,
+            reason: 'health_depleted'
           });
-        } else {
-          // Send next phrase
-          setTimeout(() => {
-            if (room && room.status === 'playing') {
-              sendNewPhrase(roomId);
-            }
-          }, 1500); // 1.5s delay before next phrase
+          return;
         }
+        // Send next phrase
+        setTimeout(() => {
+          if (room && room.status === 'playing') {
+            sendNewPhrase(roomId);
+          }
+        }, 1500); // 1.5s delay before next phrase
       }
     }
+  });
+
+  // Fetch Leaderboard
+  socket.on('get_leaderboard', () => {
+    // Convert object to array, sort by wins descending, and get Top 10
+    const topPlayers = Object.values(globalLeaderboard)
+      .sort((a, b) => b.wins - a.wins)
+      .slice(0, 10);
+
+    socket.emit('leaderboard_data', topPlayers);
   });
 
   socket.on('disconnect', () => {
