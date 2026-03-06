@@ -260,6 +260,11 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('request_ai_phrase', (difficulty) => {
+    const phrase = getRandomPhrase(difficulty);
+    socket.emit('ai_phrase_received', { phrase });
+  });
+
   function sendNewPhrase(roomId) {
     if (rooms[roomId]) {
       const phrase = getRandomPhrase(rooms[roomId].difficulty);

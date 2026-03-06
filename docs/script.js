@@ -5,6 +5,8 @@ const socket = io('https://typing-fighter-server-production.up.railway.app', {
 // DOM Elements
 const screens = {
     mainMenu: document.getElementById('main-menu-screen'),
+    modeSelection: document.getElementById('mode-selection-screen'),
+    trainingSetup: document.getElementById('training-setup-screen'),
     ranking: document.getElementById('ranking-screen'),
     profile: document.getElementById('profile-screen'),
     settings: document.getElementById('settings-screen'),
@@ -20,7 +22,14 @@ const navElements = {
     btnBackProfile: document.getElementById('btn-back-profile'),
     btnBackSettings: document.getElementById('btn-back-settings'),
     btnBackRanking: document.getElementById('btn-back-ranking'),
-    btnCancelSearch: document.getElementById('btn-cancel-search')
+    btnCancelSearch: document.getElementById('btn-cancel-search'),
+    btnModeOnline: document.getElementById('btn-mode-online'),
+    btnModeTraining: document.getElementById('btn-mode-training'),
+    btnBackMode: document.getElementById('btn-back-mode'),
+    btnBackTraining: document.getElementById('btn-back-training'),
+    btnStartTraining: document.getElementById('btn-start-training'),
+    trainingTextDiff: document.getElementById('training-text-difficulty'),
+    trainingAiDiff: document.getElementById('training-ai-difficulty')
 };
 
 const profileElements = {
@@ -80,7 +89,9 @@ const gameElements = {
 let currentRoom = null;
 let currentPhraseStr = "";
 let isPlaying = false;
-let currentDifficulty = "normal";
+let gameMode = 'online'; // 'online' or 'ai'
+let aiState = { interval: null, difficulty: 'veteran' };
+let currentDifficulty = "normal"; // Used for online matchmaking/local training words
 let userProfile = { username: "Piloto Espacial", wins: 0, losses: 0 };
 let userSettings = { animations: true, audio: true, autoFire: true, theme: '#00f0ff', volume: 0.5 };
 const MAX_HEALTH = 100;
@@ -133,10 +144,13 @@ initStorage();
 
 // Utility functions
 function switchScreen(screenId) {
-    Object.values(screens).forEach(s => s.classList.remove('active', 'hidden'));
+    Object.values(screens).forEach(s => {
+        if (s) s.classList.remove('active', 'hidden');
+    });
 
     // Quick hack to hide all then show one
     Object.keys(screens).forEach(k => {
+        if (!screens[k]) return;
         if (k === screenId) {
             screens[k].classList.add('active');
         } else {
@@ -249,12 +263,118 @@ settingsElements.btnFullscreen.addEventListener('click', () => {
 });
 
 // Event Listeners - Navigation
-navElements.btnPlay.addEventListener('click', () => startMatchmaking());
+navElements.btnPlay.addEventListener('click', () => {
+    switchScreen('modeSelection');
+});
+
+navElements.btnModeOnline.addEventListener('click', () => {
+    gameMode = 'online';
+    startMatchmaking();
+});
+
+navElements.btnModeTraining.addEventListener('click', () => {
+    gameMode = 'ai';
+    switchScreen('trainingSetup');
+});
+
+navElements.btnBackMode.addEventListener('click', () => switchScreen('mainMenu'));
+navElements.btnBackTraining.addEventListener('click', () => switchScreen('modeSelection'));
+
+navElements.btnStartTraining.addEventListener('click', () => {
+    currentDifficulty = navElements.trainingTextDiff.value;
+    aiState.difficulty = navElements.trainingAiDiff.value;
+    startTrainingMatch();
+});
 
 function startMatchmaking() {
     menuElements.searchDifficultyText.textContent = `Buscando un sector de combate disponible...`;
     switchScreen('lobby');
     socket.emit('join_match', { username: userProfile.username });
+}
+
+function startTrainingMatch() {
+    isPlaying = true;
+    switchScreen('game');
+
+    // Setup Fake Game State
+    currentRoom = 'local_ai_room';
+
+    const diffNames = {
+        rookie: "Cadete",
+        veteran: "Veterano",
+        elite: "Élite"
+    };
+
+    // Update UI Elements
+    gameElements.roomId.textContent = `SIMULACIÓN - IA: ${diffNames[aiState.difficulty]}`;
+    gameElements.playerNameText.textContent = userProfile.username;
+    gameElements.opponentNameText.textContent = `Oponente IA`;
+
+    // Hide chat in training mode
+    document.querySelector('.chat-container').style.display = 'none';
+
+    // Reset Health
+    updateHealth(socket.id, MAX_HEALTH, { [socket.id]: { health: MAX_HEALTH } });
+    updateHealth('ai_bot', MAX_HEALTH, { 'ai_bot': { health: MAX_HEALTH } });
+
+    // Request first phrase
+    socket.emit('request_ai_phrase', currentDifficulty);
+
+    gameElements.typeInput.value = '';
+    gameElements.typeInput.disabled = false;
+    gameElements.typeInput.focus();
+
+    startAILoop();
+}
+
+function startAILoop() {
+    if (aiState.interval) clearInterval(aiState.interval);
+
+    let baseTime = 4000;
+    if (aiState.difficulty === 'veteran') baseTime = 2500;
+    if (aiState.difficulty === 'elite') baseTime = 1200;
+
+    // Adding some random variance
+    const attackTime = baseTime + (Math.random() * 1000 - 500);
+
+    aiState.interval = setInterval(() => {
+        if (!isPlaying || gameMode !== 'ai') {
+            clearInterval(aiState.interval);
+            return;
+        }
+
+        // AI attacks
+        const currentHealthText = gameElements.playerHealthText.textContent.split(' ')[0];
+        let currentHealth = parseInt(currentHealthText);
+        currentHealth -= 20; // AI damage
+
+        updateHealth(socket.id, currentHealth, { [socket.id]: { health: currentHealth } });
+        createAttackAnimation(false); // Animate opponent attacking player
+        triggerDamageFlash();
+        shakeElement(gameElements.playerAvatar);
+
+        if (currentHealth <= 0) {
+            handleAIGameOver(false);
+        } else {
+            // Request new phrase after AI finishes it
+            socket.emit('request_ai_phrase', currentDifficulty);
+            gameElements.typeInput.value = '';
+        }
+
+    }, attackTime);
+}
+
+function handleAIGameOver(isWin) {
+    isPlaying = false;
+    clearInterval(aiState.interval);
+    gameElements.typeInput.disabled = true;
+
+    setTimeout(() => {
+        gameElements.gameOverPanel.classList.remove('hidden');
+        gameElements.resultTitle.textContent = isWin ? "¡SIMULACIÓN SUPERADA!" : "¡SIMULACIÓN FALLIDA!";
+        gameElements.resultTitle.style.color = isWin ? "var(--primary-cyan)" : "var(--primary-pink)";
+        gameElements.resultTitle.style.textShadow = `0 0 20px ${gameElements.resultTitle.style.color}`;
+    }, 1000);
 }
 
 navElements.btnCancelSearch.addEventListener('click', () => {
@@ -377,7 +497,26 @@ gameElements.typeInput.addEventListener('input', (e) => {
 function submitCurrentPhrase() {
     isPlaying = false;
     gameElements.typeInput.disabled = true;
-    socket.emit('type_word', { roomId: currentRoom, input: gameElements.typeInput.value });
+
+    if (gameMode === 'online') {
+        socket.emit('type_word', { roomId: currentRoom, input: gameElements.typeInput.value });
+    } else if (gameMode === 'ai') {
+        const oppHealthText = gameElements.opponentHealthText.textContent.split(' ')[0];
+        let oppHealth = parseInt(oppHealthText);
+        oppHealth -= 20; // Player damage
+
+        updateHealth('ai_bot', oppHealth, { 'ai_bot': { health: oppHealth } });
+        createAttackAnimation(true);
+        shakeElement(gameElements.opponentAvatar);
+
+        if (oppHealth <= 0) {
+            handleAIGameOver(true);
+        } else {
+            // Fetch next word
+            socket.emit('request_ai_phrase', currentDifficulty);
+            gameElements.typeInput.value = '';
+        }
+    }
 }
 
 // Default enter prevent form submit or odd behaviors, trigger submit if Autofire is off
@@ -461,6 +600,24 @@ socket.on('chat_msg_received', (data) => {
 
     gameElements.chatMessages.appendChild(msgDiv);
     gameElements.chatMessages.scrollTop = gameElements.chatMessages.scrollHeight;
+});
+gameElements.btnRematch.addEventListener('click', () => {
+    if (gameMode === 'online') {
+        gameElements.gameOverPanel.classList.add('hidden');
+        startMatchmaking();
+    } else {
+        gameElements.gameOverPanel.classList.add('hidden');
+        startTrainingMatch();
+    }
+});
+
+socket.on('ai_phrase_received', (data) => {
+    currentPhraseStr = data.phrase;
+    gameElements.targetPhrase.innerHTML = currentPhraseStr;
+    isPlaying = true;
+    gameElements.typeInput.disabled = false;
+    gameElements.typeInput.value = "";
+    gameElements.typeInput.focus();
 });
 
 socket.on('leaderboard_data', (topPlayers) => {

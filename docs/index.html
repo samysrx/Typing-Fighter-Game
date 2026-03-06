@@ -67,6 +67,90 @@
             </div>
         </div>
 
+        <!-- Mode Selection Screen -->
+        <div id="mode-selection-screen" class="screen hidden">
+            <div class="glass-panel profile-panel" style="max-width: 600px;">
+                <h2 class="panel-title">SELECCIONA UN MODO DE COMBATE</h2>
+
+                <div class="mode-options-container" style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <div class="mode-card" id="btn-mode-online"
+                        style="flex:1; background:rgba(255,255,255,0.05); padding:1.5rem; border-radius:12px; border:1px solid var(--primary-cyan); cursor:pointer; text-align:center; transition:0.2s;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary-cyan)" stroke-width="2"
+                            style="width:48px;height:48px;margin-bottom:1rem;">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <h3 style="color:var(--primary-cyan); margin-bottom:0.5rem;">ONLINE</h3>
+                        <p style="font-size:0.9rem; color:#aaa;">Lucha contra pilotos de todo el mundo y sube en el
+                            ranking.</p>
+                    </div>
+
+                    <div class="mode-card" id="btn-mode-training"
+                        style="flex:1; background:rgba(255,255,255,0.05); padding:1.5rem; border-radius:12px; border:1px solid var(--primary-pink); cursor:pointer; text-align:center; transition:0.2s;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary-pink)" stroke-width="2"
+                            style="width:48px;height:48px;margin-bottom:1rem;">
+                            <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                            <rect x="9" y="9" width="6" height="6"></rect>
+                            <line x1="9" y1="1" x2="9" y2="4"></line>
+                            <line x1="15" y1="1" x2="15" y2="4"></line>
+                            <line x1="9" y1="20" x2="9" y2="23"></line>
+                            <line x1="15" y1="20" x2="15" y2="23"></line>
+                            <line x1="20" y1="9" x2="23" y2="9"></line>
+                            <line x1="20" y1="14" x2="23" y2="14"></line>
+                            <line x1="1" y1="9" x2="4" y2="9"></line>
+                            <line x1="1" y1="14" x2="4" y2="14"></line>
+                        </svg>
+                        <h3 style="color:var(--primary-pink); margin-bottom:0.5rem;">ENTRENAMIENTO IA</h3>
+                        <p style="font-size:0.9rem; color:#aaa;">Practica sin presión contra drones informáticos.</p>
+                    </div>
+                </div>
+
+                <div class="action-container" style="margin-top: 2.5rem;">
+                    <button class="btn-secondary" id="btn-back-mode" style="width: 100%;">VOLVER AL MENÚ</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Setup Screen -->
+        <div id="training-setup-screen" class="screen hidden">
+            <div class="glass-panel profile-panel" style="max-width: 500px;">
+                <h2 class="panel-title">SIMULADOR DE VUELO</h2>
+
+                <div class="settings-group" style="margin-top: 1.5rem;">
+                    <div class="setting-item"
+                        style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.5rem;">
+                        <label style="color:var(--primary-cyan); font-weight:bold;">Complejidad de Textos</label>
+                        <select class="styled-select" id="training-text-difficulty"
+                            style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.5); color:white; border:1px solid #444; border-radius:6px;">
+                            <option value="easy">Fácil (Palabras cortas)</option>
+                            <option value="normal" selected>Normal (Frases medias)</option>
+                            <option value="hard">Difícil (Frases largas / Símbolos)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="settings-group">
+                    <div class="setting-item"
+                        style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:2rem;">
+                        <label style="color:var(--primary-pink); font-weight:bold;">Nivel del Dron (Oponente IA)</label>
+                        <select class="styled-select" id="training-ai-difficulty"
+                            style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.5); color:white; border:1px solid #444; border-radius:6px;">
+                            <option value="rookie">Cadete (Muy Lento)</option>
+                            <option value="veteran" selected>Veterano (Ritmo Constante)</option>
+                            <option value="elite">Élite (Rápido y Letal)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="action-container">
+                    <button class="btn-primary" id="btn-start-training" style="width:100%;">INICIAR SIMULACIÓN</button>
+                </div>
+                <div class="action-container" style="margin-top: 1rem;">
+                    <button class="btn-secondary" id="btn-back-training" style="width: 100%;">VOLVER A MODOS</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Ranking Screen -->
         <div id="ranking-screen" class="screen hidden">
             <div class="glass-panel profile-panel">
