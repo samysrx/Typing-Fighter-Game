@@ -525,14 +525,21 @@ socket.on('game_over', (data) => {
 
     setTimeout(() => {
         gameElements.gameOverPanel.classList.remove('hidden');
-        const isWinnerMe = data.winnerId === socket.id;
-        gameElements.resultTitle.textContent = isWinnerMe ? "¡VICTORIA!" : "¡DERROTA!";
-        gameElements.resultTitle.style.color = isWinnerMe ? "var(--primary-cyan)" : "var(--primary-pink)";
-        gameElements.resultTitle.style.textShadow = `0 0 20px ${gameElements.resultTitle.style.color}`;
 
-        // Update stats
-        if (isWinnerMe) userProfile.wins += 1;
-        else userProfile.losses += 1;
+        if (data.reason === 'timeout_tie') {
+            gameElements.resultTitle.textContent = "EMPATE";
+            gameElements.resultTitle.style.color = "var(--text-color)";
+            gameElements.resultTitle.style.textShadow = "none";
+        } else {
+            const isWinnerMe = data.winnerId === socket.id;
+            gameElements.resultTitle.textContent = isWinnerMe ? "¡VICTORIA!" : "¡DERROTA!";
+            gameElements.resultTitle.style.color = isWinnerMe ? "var(--primary-cyan)" : "var(--primary-pink)";
+            gameElements.resultTitle.style.textShadow = `0 0 20px ${gameElements.resultTitle.style.color}`;
+
+            // Update stats
+            if (isWinnerMe) userProfile.wins += 1;
+            else userProfile.losses += 1;
+        }
 
         saveProfile();
         profileElements.wins.textContent = userProfile.wins;

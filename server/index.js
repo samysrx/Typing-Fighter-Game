@@ -27,6 +27,15 @@ let globalLeaderboard = {}; // In-Memory Leaderboard: key -> lowercase username,
 const MAX_HEALTH = 100;
 const DAMAGE_PER_WORD = 20;
 
+function recordWin(username) {
+  if (!username) return;
+  const winnerKey = username.toLowerCase();
+  if (!globalLeaderboard[winnerKey]) {
+    globalLeaderboard[winnerKey] = { username: username, wins: 0 };
+  }
+  globalLeaderboard[winnerKey].wins += 1;
+}
+
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
@@ -91,7 +100,23 @@ io.on('connection', (socket) => {
           if (rooms[roomId].timeLeft <= 0) {
             clearInterval(rooms[roomId].timerInterval);
             rooms[roomId].status = 'finished';
-            io.to(roomId).emit('game_over', { reason: 'timeout' });
+
+            // Determine winner by health on timeout
+            const pIds = Object.keys(rooms[roomId].players);
+            if (pIds.length === 2) {
+              const p1 = rooms[roomId].players[pIds[0]];
+              const p2 = rooms[roomId].players[pIds[1]];
+              let winner = null, loser = null;
+              if (p1.health > p2.health) { winner = p1; loser = p2; }
+              else if (p2.health > p1.health) { winner = p2; loser = p1; }
+
+              if (winner) {
+                recordWin(winner.username);
+                io.to(roomId).emit('game_over', { winnerId: winner.id, loserId: loser.id, reason: 'timeout' });
+                return;
+              }
+            }
+            io.to(roomId).emit('game_over', { reason: 'timeout_tie' });
           }
         }, 1000);
 
@@ -129,12 +154,7 @@ io.on('connection', (socket) => {
           room.status = 'finished';
 
           // Update Leaderboard
-          const winnerName = player.username;
-          const winnerKey = winnerName.toLowerCase();
-          if (!globalLeaderboard[winnerKey]) {
-            globalLeaderboard[winnerKey] = { username: winnerName, wins: 0 };
-          }
-          globalLeaderboard[winnerKey].wins += 1;
+          recordWin(player.username);
 
           io.to(roomId).emit('game_over', {
             winnerId: socket.id,
@@ -186,6 +206,11 @@ io.on('connection', (socket) => {
 
       const playerIds = Object.keys(room.players);
       const opponentId = playerIds.find(id => id !== socket.id);
+      const opponent = room.players[opponentId];
+
+      if (opponent) {
+        recordWin(opponent.username);
+      }
 
       io.to(roomId).emit('game_over', {
         winnerId: opponentId,
@@ -215,6 +240,12 @@ io.on('connection', (socket) => {
 
         if (room.status === 'playing') {
           room.status = 'finished';
+
+          const stayerId = Object.keys(room.players).find(id => id !== socket.id);
+          if (stayerId) {
+            recordWin(room.players[stayerId].username);
+          }
+
           socket.to(roomId).emit('opponent_disconnected');
         }
 
