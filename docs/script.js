@@ -441,7 +441,18 @@ gameElements.btnArenaSettings.addEventListener('click', () => {
 
 gameElements.btnArenaSurrender.addEventListener('click', () => {
     if (confirm('¿Estás seguro de que quieres retirarte de la partida?')) {
-        socket.emit('surrender_match', { roomId: currentRoom });
+        if (gameMode === 'online') {
+            socket.emit('surrender_match', { roomId: currentRoom });
+        } else {
+            // Give up in AI mode
+            isPlaying = false;
+            clearInterval(aiState.interval);
+            gameElements.typeInput.disabled = true;
+        }
+        // Force the screen back to main menu
+        switchScreen('mainMenu');
+        gameElements.gameOverPanel.classList.add('hidden');
+        document.querySelector('.chat-container').style.display = 'flex';
     }
 });
 
