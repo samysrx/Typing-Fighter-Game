@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Typing Fighter</title>
-    <link rel="stylesheet" href="style.css?v=4.0">
+    <link rel="stylesheet" href="style.css?v=4.1">
     <link
         href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap"
         rel="stylesheet">
@@ -16,6 +16,84 @@
         <div class="stars"></div>
         <div class="stars2"></div>
         <div class="stars3"></div>
+
+        <!-- Planets -->
+        <svg class="bg-planet planet-1" viewBox="0 0 120 120" fill="none">
+            <circle cx="60" cy="60" r="55" fill="#1a0a2e"/>
+            <circle cx="60" cy="60" r="55" fill="url(#pg1)"/>
+            <ellipse cx="60" cy="62" rx="70" ry="8" stroke="#4a2080" stroke-width="2" fill="none" opacity="0.6"/>
+            <circle cx="45" cy="45" r="8" fill="#2a1050" opacity="0.5"/>
+            <circle cx="70" cy="55" r="5" fill="#2a1050" opacity="0.4"/>
+            <circle cx="55" cy="75" r="6" fill="#3a1870" opacity="0.3"/>
+            <defs><radialGradient id="pg1" cx="40%" cy="35%"><stop offset="0%" stop-color="#3a1870" stop-opacity="0.8"/><stop offset="100%" stop-color="#0a0020" stop-opacity="0.9"/></radialGradient></defs>
+        </svg>
+        <svg class="bg-planet planet-2" viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="36" fill="#0a2010"/>
+            <circle cx="40" cy="40" r="36" fill="url(#pg2)"/>
+            <circle cx="30" cy="30" r="5" fill="#0a3015" opacity="0.6"/>
+            <circle cx="50" cy="45" r="4" fill="#0a3015" opacity="0.5"/>
+            <circle cx="35" cy="52" r="6" fill="#0a3015" opacity="0.4"/>
+            <defs><radialGradient id="pg2" cx="35%" cy="30%"><stop offset="0%" stop-color="#00ff41" stop-opacity="0.15"/><stop offset="100%" stop-color="#001a05" stop-opacity="0.9"/></radialGradient></defs>
+        </svg>
+        <svg class="bg-planet planet-3" viewBox="0 0 60 60" fill="none">
+            <circle cx="30" cy="30" r="26" fill="#2a1500"/>
+            <circle cx="30" cy="30" r="26" fill="url(#pg3)"/>
+            <circle cx="22" cy="22" r="4" fill="#3a2000" opacity="0.6"/>
+            <circle cx="35" cy="35" r="3" fill="#3a2000" opacity="0.5"/>
+            <defs><radialGradient id="pg3" cx="35%" cy="30%"><stop offset="0%" stop-color="#ffaa00" stop-opacity="0.2"/><stop offset="100%" stop-color="#1a0a00" stop-opacity="0.9"/></radialGradient></defs>
+        </svg>
+
+        <!-- Ships fighting -->
+        <div class="bg-ship ship-green">
+            <svg viewBox="0 0 40 20" fill="none"><polygon points="40,10 0,0 5,10 0,20" fill="#00ff41"/><polygon points="40,10 15,4 15,16" fill="#00cc33"/><rect x="36" y="8" width="6" height="4" fill="#80ff80" opacity="0.8"/></svg>
+            <div class="ship-laser laser-green"></div>
+            <div class="ship-laser laser-green laser-2"></div>
+        </div>
+        <div class="bg-ship ship-red">
+            <svg viewBox="0 0 40 20" fill="none"><polygon points="0,10 40,0 35,10 40,20" fill="#ff0040"/><polygon points="0,10 25,4 25,16" fill="#cc0033"/><rect x="-2" y="8" width="6" height="4" fill="#ff8080" opacity="0.8"/></svg>
+            <div class="ship-laser laser-red"></div>
+            <div class="ship-laser laser-red laser-2"></div>
+        </div>
+
+        <div class="bg-ship ship-green-2">
+            <svg viewBox="0 0 40 20" fill="none"><polygon points="40,10 0,0 5,10 0,20" fill="#00ff41" opacity="0.5"/><polygon points="40,10 15,4 15,16" fill="#00cc33" opacity="0.5"/></svg>
+            <div class="ship-laser laser-green"></div>
+        </div>
+        <div class="bg-ship ship-red-2">
+            <svg viewBox="0 0 40 20" fill="none"><polygon points="0,10 40,0 35,10 40,20" fill="#ff0040" opacity="0.5"/><polygon points="0,10 25,4 25,16" fill="#cc0033" opacity="0.5"/></svg>
+            <div class="ship-laser laser-red"></div>
+        </div>
+
+        <!-- Aliens -->
+        <svg class="bg-alien alien-1" viewBox="0 0 40 40" fill="none">
+            <ellipse cx="20" cy="15" rx="14" ry="10" fill="#00ff41" opacity="0.6"/>
+            <ellipse cx="20" cy="15" rx="10" ry="7" fill="#00cc33" opacity="0.4"/>
+            <circle cx="14" cy="13" r="3" fill="#000" opacity="0.8"/><circle cx="14" cy="13" r="1.5" fill="#ff0040"/>
+            <circle cx="26" cy="13" r="3" fill="#000" opacity="0.8"/><circle cx="26" cy="13" r="1.5" fill="#ff0040"/>
+            <path d="M8 22 Q12 28 20 30 Q28 28 32 22" stroke="#00ff41" stroke-width="1.5" fill="none" opacity="0.5"/>
+            <line x1="8" y1="8" x2="5" y2="2" stroke="#00ff41" stroke-width="1" opacity="0.5"/>
+            <line x1="32" y1="8" x2="35" y2="2" stroke="#00ff41" stroke-width="1" opacity="0.5"/>
+            <circle cx="5" cy="2" r="1.5" fill="#ffff00" opacity="0.6"/>
+            <circle cx="35" cy="2" r="1.5" fill="#ffff00" opacity="0.6"/>
+        </svg>
+        <svg class="bg-alien alien-2" viewBox="0 0 36 36" fill="none">
+            <rect x="8" y="8" width="20" height="14" rx="2" fill="#ffaa00" opacity="0.5"/>
+            <rect x="10" y="10" width="16" height="10" fill="#1a0a00" opacity="0.6"/>
+            <circle cx="14" cy="15" r="2" fill="#00ff41"/><circle cx="22" cy="15" r="2" fill="#00ff41"/>
+            <rect x="12" y="22" width="3" height="6" fill="#ffaa00" opacity="0.4"/>
+            <rect x="21" y="22" width="3" height="6" fill="#ffaa00" opacity="0.4"/>
+            <line x1="6" y1="12" x2="2" y2="10" stroke="#ffaa00" stroke-width="1.5" opacity="0.4"/>
+            <line x1="30" y1="12" x2="34" y2="10" stroke="#ffaa00" stroke-width="1.5" opacity="0.4"/>
+        </svg>
+        <svg class="bg-alien alien-3" viewBox="0 0 32 32" fill="none">
+            <ellipse cx="16" cy="12" rx="12" ry="8" fill="#b000ff" opacity="0.4"/>
+            <circle cx="11" cy="11" r="2.5" fill="#000" opacity="0.7"/><circle cx="11" cy="11" r="1" fill="#ffff00"/>
+            <circle cx="21" cy="11" r="2.5" fill="#000" opacity="0.7"/><circle cx="21" cy="11" r="1" fill="#ffff00"/>
+            <path d="M10 17 Q16 22 22 17" stroke="#b000ff" stroke-width="1" fill="none" opacity="0.5"/>
+            <line x1="8" y1="20" x2="4" y2="26" stroke="#b000ff" stroke-width="1" opacity="0.3"/>
+            <line x1="24" y1="20" x2="28" y2="26" stroke="#b000ff" stroke-width="1" opacity="0.3"/>
+            <line x1="16" y1="20" x2="16" y2="28" stroke="#b000ff" stroke-width="1" opacity="0.3"/>
+        </svg>
     </div>
     <div id="app">
         <!-- Main Menu Screen -->
