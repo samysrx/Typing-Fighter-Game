@@ -105,7 +105,7 @@ let aiMatchTimer = null;
 let aiMatchTimeLeft = 0;
 let waitingForStart = false;
 let userProfile = { username: "Piloto Espacial", wins: 0, losses: 0 };
-let userSettings = { animations: true, audio: true, autoFire: true, theme: '#00f0ff', volume: 0.5 };
+let userSettings = { animations: true, audio: true, autoFire: true, theme: '#00ff41', volume: 0.5 };
 const MAX_HEALTH = 100;
 
 // Initialize Storage
@@ -853,7 +853,7 @@ socket.on('leaderboard_data', (topPlayers) => {
     rankingElements.tableBody.innerHTML = '';
 
     if (topPlayers.length === 0) {
-        rankingElements.tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#8b9bb4;">No hay datos aún. ¡Sé el primero en ganar!</td></tr>';
+        rankingElements.tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#5a8a5a;">No hay datos aun. Se el primero en ganar!</td></tr>';
         return;
     }
 

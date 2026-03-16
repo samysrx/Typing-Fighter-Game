@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Typing Fighter</title>
-    <link rel="stylesheet" href="style.css?v=3.0">
+    <link rel="stylesheet" href="style.css?v=4.0">
     <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap"
         rel="stylesheet">
 </head>
 
@@ -66,27 +66,27 @@
         <!-- Mode Selection Screen -->
         <div id="mode-selection-screen" class="screen hidden">
             <div class="glass-panel profile-panel" style="max-width: 600px;">
-                <h2 class="panel-title">SELECCIONA UN MODO DE COMBATE</h2>
+                <h2 class="panel-title" style="font-size:0.8rem; color:var(--primary-cyan); text-shadow:0 0 10px rgba(0,255,65,0.5);">SELECCIONA MODO DE COMBATE</h2>
 
                 <div class="mode-options-container" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem;">
                     <div class="mode-card" id="btn-mode-online"
-                        style="flex:1; background:rgba(255,255,255,0.05); padding:1.5rem; border-radius:12px; border:1px solid var(--primary-cyan); cursor:pointer; text-align:center; transition:0.2s;">
+                        style="flex:1; background:rgba(0,0,0,0.7); padding:1.5rem; border-radius:0; border:2px solid var(--primary-cyan); cursor:pointer; text-align:center; transition:0.15s; box-shadow:3px 3px 0 rgba(0,255,65,0.2);">
                         <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary-cyan)" stroke-width="2"
-                            style="width:48px;height:48px;margin-bottom:1rem;">
+                            style="width:40px;height:40px;margin-bottom:0.8rem;">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                             <circle cx="9" cy="7" r="4"></circle>
                             <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                         </svg>
-                        <h3 style="color:var(--primary-cyan); margin-bottom:0.5rem;">ONLINE</h3>
-                        <p style="font-size:0.9rem; color:#aaa;">Lucha contra pilotos de todo el mundo y sube en el
+                        <h3 style="color:var(--primary-cyan); margin-bottom:0.5rem; font-size:0.7rem;">ONLINE</h3>
+                        <p style="font-size:0.8rem; color:#5a8a5a;">Lucha contra pilotos de todo el mundo y sube en el
                             ranking.</p>
                     </div>
 
                     <div class="mode-card" id="btn-mode-training"
-                        style="flex:1; background:rgba(255,255,255,0.05); padding:1.5rem; border-radius:12px; border:1px solid var(--primary-pink); cursor:pointer; text-align:center; transition:0.2s;">
+                        style="flex:1; background:rgba(0,0,0,0.7); padding:1.5rem; border-radius:0; border:2px solid var(--primary-pink); cursor:pointer; text-align:center; transition:0.15s; box-shadow:3px 3px 0 rgba(255,0,64,0.2);">
                         <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary-pink)" stroke-width="2"
-                            style="width:48px;height:48px;margin-bottom:1rem;">
+                            style="width:40px;height:40px;margin-bottom:0.8rem;">
                             <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
                             <rect x="9" y="9" width="6" height="6"></rect>
                             <line x1="9" y1="1" x2="9" y2="4"></line>
@@ -98,8 +98,8 @@
                             <line x1="1" y1="9" x2="4" y2="9"></line>
                             <line x1="1" y1="14" x2="4" y2="14"></line>
                         </svg>
-                        <h3 style="color:var(--primary-pink); margin-bottom:0.5rem;">ENTRENAMIENTO IA</h3>
-                        <p style="font-size:0.9rem; color:#aaa;">Practica sin presión contra drones informáticos.</p>
+                        <h3 style="color:var(--primary-pink); margin-bottom:0.5rem; font-size:0.7rem;">ENTRENAMIENTO IA</h3>
+                        <p style="font-size:0.8rem; color:#8a5a5a;">Practica sin presion contra drones informaticos.</p>
                     </div>
                 </div>
 
@@ -112,10 +112,10 @@
         <!-- Training Setup Screen -->
         <div id="training-setup-screen" class="screen hidden">
             <div class="glass-panel profile-panel" style="max-width: 500px;">
-                <h2 class="panel-title">SIMULADOR DE VUELO</h2>
+                <h2 class="panel-title" style="font-size:0.85rem;">SIMULADOR DE VUELO</h2>
 
                 <div class="settings-group" style="margin-top: 1.5rem;">
-                    <label style="color:var(--primary-cyan); font-weight:bold; display:block; margin-bottom:0.8rem;">Complejidad de Textos</label>
+                    <label style="color:var(--primary-cyan); font-family:var(--font-pixel); font-size:0.5rem; display:block; margin-bottom:0.8rem; letter-spacing:1px;">COMPLEJIDAD DE TEXTOS</label>
                     <div class="selector-cards cyan-cards" data-target="training-text-difficulty">
                         <div class="selector-card" data-value="easy">
                             <div class="selector-icon">
@@ -142,7 +142,7 @@
                     <input type="hidden" id="training-text-difficulty" value="normal">
                 </div>
                 <div class="settings-group">
-                    <label style="color:var(--primary-pink); font-weight:bold; display:block; margin-bottom:0.8rem;">Nivel del Dron (Oponente IA)</label>
+                    <label style="color:var(--primary-pink); font-family:var(--font-pixel); font-size:0.5rem; display:block; margin-bottom:0.8rem; letter-spacing:1px;">NIVEL DEL DRON</label>
                     <div class="ai-difficulty-cards">
                         <div class="ai-diff-card" data-difficulty="rookie">
                             <div class="ai-diff-icon">
@@ -172,7 +172,7 @@
                     <input type="hidden" id="training-ai-difficulty" value="veteran">
                 </div>
                 <div class="settings-group">
-                    <label style="color:#ffbf00; font-weight:bold; display:block; margin-bottom:0.8rem;">Duración de la Partida</label>
+                    <label style="color:var(--retro-yellow); font-family:var(--font-pixel); font-size:0.5rem; display:block; margin-bottom:0.8rem; letter-spacing:1px;">DURACION DE PARTIDA</label>
                     <div class="selector-cards amber-cards" data-target="training-match-duration">
                         <div class="selector-card" data-value="60">
                             <div class="selector-icon">
@@ -359,23 +359,23 @@
                         Color del HUD
                     </label>
                     <div class="color-picker-row">
-                        <button class="color-swatch selected" data-color="#00f0ff" style="--swatch-color:#00f0ff;" title="Cian"></button>
-                        <button class="color-swatch" data-color="#39ff14" style="--swatch-color:#39ff14;" title="Verde Neón"></button>
-                        <button class="color-swatch" data-color="#ffbf00" style="--swatch-color:#ffbf00;" title="Ámbar"></button>
-                        <button class="color-swatch" data-color="#b000ff" style="--swatch-color:#b000ff;" title="Púrpura"></button>
-                        <button class="color-swatch" data-color="#ff4081" style="--swatch-color:#ff4081;" title="Rosa"></button>
+                        <button class="color-swatch selected" data-color="#00ff41" style="--swatch-color:#00ff41;" title="Verde Terminal"></button>
+                        <button class="color-swatch" data-color="#00f0ff" style="--swatch-color:#00f0ff;" title="Cian"></button>
+                        <button class="color-swatch" data-color="#ffff00" style="--swatch-color:#ffff00;" title="Amarillo Arcade"></button>
+                        <button class="color-swatch" data-color="#ffaa00" style="--swatch-color:#ffaa00;" title="Ambar"></button>
+                        <button class="color-swatch" data-color="#ff0040" style="--swatch-color:#ff0040;" title="Rojo Arcade"></button>
+                        <button class="color-swatch" data-color="#b000ff" style="--swatch-color:#b000ff;" title="Purpura"></button>
                         <button class="color-swatch" data-color="#ff6600" style="--swatch-color:#ff6600;" title="Naranja"></button>
-                        <button class="color-swatch" data-color="#00e5ff" style="--swatch-color:#00e5ff;" title="Azul Eléctrico"></button>
                         <button class="color-swatch" data-color="#e0e0e0" style="--swatch-color:#e0e0e0;" title="Blanco"></button>
                     </div>
                     <select id="select-theme" class="theme-select" style="display:none;">
+                        <option value="#00ff41">Verde Terminal</option>
                         <option value="#00f0ff">Cian</option>
-                        <option value="#39ff14">Verde Neón</option>
-                        <option value="#ffbf00">Ámbar</option>
-                        <option value="#b000ff">Púrpura</option>
-                        <option value="#ff4081">Rosa</option>
+                        <option value="#ffff00">Amarillo Arcade</option>
+                        <option value="#ffaa00">Ambar</option>
+                        <option value="#ff0040">Rojo Arcade</option>
+                        <option value="#b000ff">Purpura</option>
                         <option value="#ff6600">Naranja</option>
-                        <option value="#00e5ff">Azul Eléctrico</option>
                         <option value="#e0e0e0">Blanco</option>
                     </select>
                 </div>
@@ -519,7 +519,7 @@
     <div id="damage-overlay"></div>
 
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-    <script src="script.js?v=3.0"></script>
+    <script src="script.js?v=4.0"></script>
 </body>
 
 </html>
