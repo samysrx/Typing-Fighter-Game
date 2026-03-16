@@ -1,4 +1,8 @@
-const socket = io('https://typing-fighter-server-production.up.railway.app', {
+const PRODUCTION_URL = 'https://typing-fighter-server-production.up.railway.app';
+const serverUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? window.location.origin
+    : PRODUCTION_URL;
+const socket = io(serverUrl, {
     transports: ['websocket']
 });
 
@@ -29,7 +33,8 @@ const navElements = {
     btnBackTraining: document.getElementById('btn-back-training'),
     btnStartTraining: document.getElementById('btn-start-training'),
     trainingTextDiff: document.getElementById('training-text-difficulty'),
-    trainingAiDiff: document.getElementById('training-ai-difficulty')
+    trainingAiDiff: document.getElementById('training-ai-difficulty'),
+    trainingMatchDuration: document.getElementById('training-match-duration')
 };
 
 const profileElements = {
@@ -82,7 +87,9 @@ const gameElements = {
     btnRematch: document.getElementById('btn-rematch'),
     playerAvatar: document.querySelector('.player-avatar'),
     opponentAvatar: document.querySelector('.opponent-avatar'),
-    damageOverlay: document.getElementById('damage-overlay')
+    damageOverlay: document.getElementById('damage-overlay'),
+    phraseTimerContainer: document.getElementById('phrase-timer-container'),
+    phraseTimerFill: document.getElementById('phrase-timer-fill')
 };
 
 // Game State
@@ -91,7 +98,12 @@ let currentPhraseStr = "";
 let isPlaying = false;
 let gameMode = 'online'; // 'online' or 'ai'
 let aiState = { interval: null, difficulty: 'veteran' };
-let currentDifficulty = "normal"; // Used for online matchmaking/local training words
+let currentDifficulty = "normal";
+let phraseTimeLimit = 15;
+let localPhraseTimer = null;
+let aiMatchTimer = null;
+let aiMatchTimeLeft = 0;
+let waitingForStart = false;
 let userProfile = { username: "Piloto Espacial", wins: 0, losses: 0 };
 let userSettings = { animations: true, audio: true, autoFire: true, theme: '#00f0ff', volume: 0.5 };
 const MAX_HEALTH = 100;
@@ -111,6 +123,7 @@ function initStorage() {
     profileElements.nameInput.value = userProfile.username;
     profileElements.wins.textContent = userProfile.wins;
     profileElements.losses.textContent = userProfile.losses;
+    updateRatio();
 
     settingsElements.toggleAnimations.checked = userSettings.animations;
     settingsElements.toggleAudio.checked = userSettings.audio;
@@ -118,13 +131,31 @@ function initStorage() {
     settingsElements.selectTheme.value = userSettings.theme;
     settingsElements.volumeSlider.value = userSettings.volume;
 
-    // Apply theme
     document.documentElement.style.setProperty('--primary-cyan', userSettings.theme);
+
+    document.querySelectorAll('.color-swatch').forEach(s => {
+        s.classList.toggle('selected', s.dataset.color === userSettings.theme);
+    });
 }
 
 function saveProfile() {
     userProfile.username = profileElements.nameInput.value.trim() || "Piloto Espacial";
     localStorage.setItem('tf_profile', JSON.stringify(userProfile));
+    updateRatio();
+}
+
+function updateRatio() {
+    const ratioEl = document.getElementById('stat-ratio');
+    if (!ratioEl) return;
+    const w = userProfile.wins || 0;
+    const l = userProfile.losses || 0;
+    if (w === 0 && l === 0) {
+        ratioEl.textContent = '-';
+    } else if (l === 0) {
+        ratioEl.textContent = w.toFixed(1);
+    } else {
+        ratioEl.textContent = (w / l).toFixed(1);
+    }
 }
 
 function saveSettings() {
@@ -280,6 +311,25 @@ navElements.btnModeTraining.addEventListener('click', () => {
 navElements.btnBackMode.addEventListener('click', () => switchScreen('mainMenu'));
 navElements.btnBackTraining.addEventListener('click', () => switchScreen('modeSelection'));
 
+document.querySelectorAll('.ai-diff-card').forEach(card => {
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.ai-diff-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        document.getElementById('training-ai-difficulty').value = card.dataset.difficulty;
+    });
+});
+
+document.querySelectorAll('.selector-cards').forEach(group => {
+    const targetId = group.dataset.target;
+    group.querySelectorAll('.selector-card').forEach(card => {
+        card.addEventListener('click', () => {
+            group.querySelectorAll('.selector-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            document.getElementById(targetId).value = card.dataset.value;
+        });
+    });
+});
+
 navElements.btnStartTraining.addEventListener('click', () => {
     currentDifficulty = navElements.trainingTextDiff.value;
     aiState.difficulty = navElements.trainingAiDiff.value;
@@ -292,11 +342,77 @@ function startMatchmaking() {
     socket.emit('join_match', { username: userProfile.username });
 }
 
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function clearAIMatchTimer() {
+    if (aiMatchTimer) {
+        clearInterval(aiMatchTimer);
+        aiMatchTimer = null;
+    }
+}
+
+function startAIMatchTimer(duration) {
+    clearAIMatchTimer();
+    aiMatchTimeLeft = duration;
+    gameElements.matchTimer.classList.remove('hidden');
+    gameElements.matchTimer.textContent = formatTime(aiMatchTimeLeft);
+    gameElements.matchTimer.style.color = 'var(--primary-cyan)';
+    gameElements.matchTimer.style.textShadow = '0 0 15px rgba(0, 240, 255, 0.5)';
+
+    aiMatchTimer = setInterval(() => {
+        aiMatchTimeLeft -= 1;
+        gameElements.matchTimer.textContent = formatTime(aiMatchTimeLeft);
+
+        if (aiMatchTimeLeft <= 10) {
+            gameElements.matchTimer.style.color = 'var(--primary-pink)';
+            gameElements.matchTimer.style.textShadow = '0 0 15px var(--primary-pink)';
+        }
+
+        if (aiMatchTimeLeft <= 0) {
+            clearAIMatchTimer();
+            const playerHealthText = gameElements.playerHealthText.textContent.split(' ')[0];
+            const playerHealth = parseInt(playerHealthText);
+            const oppHealthText = gameElements.opponentHealthText.textContent.split(' ')[0];
+            const oppHealth = parseInt(oppHealthText);
+
+            if (playerHealth > oppHealth) {
+                handleAIGameOver(true);
+            } else if (oppHealth > playerHealth) {
+                handleAIGameOver(false);
+            } else {
+                isPlaying = false;
+                clearInterval(aiState.interval);
+                clearLocalPhraseTimer();
+                gameElements.typeInput.disabled = true;
+                setTimeout(() => {
+                    gameElements.gameOverPanel.classList.remove('hidden');
+                    gameElements.resultTitle.textContent = "¡EMPATE!";
+                    gameElements.resultTitle.style.color = "var(--text-main)";
+                    gameElements.resultTitle.style.textShadow = "none";
+                }, 1000);
+            }
+        }
+    }, 1000);
+}
+
+function cleanupTrainingState() {
+    isPlaying = false;
+    waitingForStart = false;
+    currentPhraseStr = "";
+    if (aiState.interval) clearInterval(aiState.interval);
+    aiState.interval = null;
+    clearLocalPhraseTimer();
+    clearAIMatchTimer();
+}
+
 function startTrainingMatch() {
-    isPlaying = true;
+    cleanupTrainingState();
     switchScreen('game');
 
-    // Setup Fake Game State
     currentRoom = 'local_ai_room';
 
     const diffNames = {
@@ -305,25 +421,39 @@ function startTrainingMatch() {
         elite: "Élite"
     };
 
-    // Update UI Elements
     gameElements.roomId.textContent = `SIMULACIÓN - IA: ${diffNames[aiState.difficulty]}`;
     gameElements.playerNameText.textContent = userProfile.username;
     gameElements.opponentNameText.textContent = `Oponente IA`;
+    gameElements.gameOverPanel.classList.add('hidden');
 
-    // Hide chat in training mode
-    document.querySelector('.chat-container').style.display = 'none';
+    chatContainer.classList.add('collapsed');
+    chatContainer.style.display = 'none';
 
-    // Reset Health
-    updateHealth(socket.id, MAX_HEALTH, { [socket.id]: { health: MAX_HEALTH } });
-    updateHealth('ai_bot', MAX_HEALTH, { 'ai_bot': { health: MAX_HEALTH } });
-
-    // Request first phrase
-    socket.emit('request_ai_phrase', currentDifficulty);
+    gameElements.playerHealthFill.style.width = '100%';
+    gameElements.playerHealthText.textContent = `${MAX_HEALTH} / ${MAX_HEALTH}`;
+    gameElements.opponentHealthFill.style.width = '100%';
+    gameElements.opponentHealthText.textContent = `${MAX_HEALTH} / ${MAX_HEALTH}`;
 
     gameElements.typeInput.value = '';
     gameElements.typeInput.disabled = false;
     gameElements.typeInput.focus();
+    gameElements.countdown.classList.add('hidden');
+    gameElements.targetPhrase.innerHTML = "PREPÁRATE";
+    updatePhraseTimerBar(1, 1);
 
+    const matchDuration = parseInt(navElements.trainingMatchDuration.value);
+    if (matchDuration > 0) {
+        gameElements.matchTimer.classList.remove('hidden');
+        gameElements.matchTimer.textContent = formatTime(matchDuration);
+        gameElements.matchTimer.style.color = 'var(--primary-cyan)';
+        gameElements.matchTimer.style.textShadow = '0 0 15px rgba(0, 240, 255, 0.5)';
+        startAIMatchTimer(matchDuration);
+    } else {
+        gameElements.matchTimer.classList.add('hidden');
+    }
+
+    isPlaying = true;
+    socket.emit('request_ai_phrase', currentDifficulty);
     startAILoop();
 }
 
@@ -367,6 +497,8 @@ function startAILoop() {
 function handleAIGameOver(isWin) {
     isPlaying = false;
     clearInterval(aiState.interval);
+    clearLocalPhraseTimer();
+    clearAIMatchTimer();
     gameElements.typeInput.disabled = true;
 
     setTimeout(() => {
@@ -384,6 +516,15 @@ navElements.btnCancelSearch.addEventListener('click', () => {
 
 navElements.btnProfile.addEventListener('click', () => switchScreen('profile'));
 navElements.btnSettings.addEventListener('click', () => switchScreen('settings'));
+
+document.querySelectorAll('.color-swatch').forEach(swatch => {
+    swatch.addEventListener('click', () => {
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+        swatch.classList.add('selected');
+        settingsElements.selectTheme.value = swatch.dataset.color;
+        settingsElements.selectTheme.dispatchEvent(new Event('change'));
+    });
+});
 navElements.btnRanking.addEventListener('click', () => {
     switchScreen('ranking');
     rankingElements.loadingText.classList.remove('hidden');
@@ -400,7 +541,11 @@ navElements.btnBackProfile.addEventListener('click', () => {
 
 navElements.btnBackSettings.addEventListener('click', () => {
     saveSettings();
-    switchScreen('mainMenu');
+    if (currentRoom) {
+        switchScreen('game');
+    } else {
+        switchScreen('mainMenu');
+    }
 });
 
 profileElements.nameInput.addEventListener('blur', saveProfile);
@@ -411,32 +556,27 @@ settingsElements.selectTheme.addEventListener('change', saveSettings);
 settingsElements.volumeSlider.addEventListener('input', saveSettings);
 
 gameElements.btnRematch.addEventListener('click', () => {
-    switchScreen('mainMenu');
+    cleanupTrainingState();
+    currentRoom = null;
+    currentPhraseStr = "";
     gameElements.gameOverPanel.classList.add('hidden');
     gameElements.matchTimer.classList.add('hidden');
+    gameElements.countdown.classList.add('hidden');
     gameElements.chatMessages.innerHTML = '<div class="chat-msg system">Conectado. Preparando chat...</div>';
+    gameElements.typeInput.value = '';
+    gameElements.typeInput.disabled = true;
 
-    // Reset Health UI
     gameElements.playerHealthFill.style.width = '100%';
     gameElements.playerHealthText.textContent = '100 / 100';
     gameElements.opponentHealthFill.style.width = '100%';
     gameElements.opponentHealthText.textContent = '100 / 100';
+
+    switchScreen('mainMenu');
 });
 
 // Arena utility buttons
 gameElements.btnArenaSettings.addEventListener('click', () => {
-    // Save current active screen logic if we want to return, or simply toggle settings
     switchScreen('settings');
-    // We override the back button in settings to go back to game ONLY if we are playing
-    const goBack = () => {
-        if (currentRoom && screens.settings.classList.contains('active')) {
-            switchScreen('game');
-        } else {
-            switchScreen('mainMenu');
-        }
-        navElements.btnBackSettings.removeEventListener('click', goBack);
-    };
-    navElements.btnBackSettings.addEventListener('click', goBack);
 });
 
 gameElements.btnArenaSurrender.addEventListener('click', () => {
@@ -444,17 +584,40 @@ gameElements.btnArenaSurrender.addEventListener('click', () => {
         if (gameMode === 'online') {
             socket.emit('surrender_match', { roomId: currentRoom });
         } else {
-            // Give up in AI mode
-            isPlaying = false;
-            clearInterval(aiState.interval);
-            gameElements.typeInput.disabled = true;
+            cleanupTrainingState();
         }
-        // Force the screen back to main menu
+        currentRoom = null;
+        currentPhraseStr = "";
+        isPlaying = false;
+        gameElements.typeInput.disabled = true;
+        gameElements.typeInput.value = '';
         switchScreen('mainMenu');
         gameElements.gameOverPanel.classList.add('hidden');
-        document.querySelector('.chat-container').style.display = 'flex';
+        gameElements.matchTimer.classList.add('hidden');
+        gameElements.countdown.classList.add('hidden');
+        chatContainer.style.display = 'flex';
+        chatContainer.classList.add('collapsed');
     }
 });
+
+// Chat toggle logic
+const chatContainer = document.getElementById('chat-container');
+const btnToggleChat = document.getElementById('btn-toggle-chat');
+const chatBadge = document.getElementById('chat-badge');
+
+btnToggleChat.addEventListener('click', () => {
+    chatContainer.classList.toggle('collapsed');
+    if (!chatContainer.classList.contains('collapsed')) {
+        chatBadge.classList.add('hidden');
+        gameElements.chatInput.focus();
+    }
+});
+
+function showChatNotification() {
+    if (chatContainer.classList.contains('collapsed')) {
+        chatBadge.classList.remove('hidden');
+    }
+}
 
 // Chat logic
 gameElements.chatInput.addEventListener('keydown', (e) => {
@@ -508,6 +671,7 @@ gameElements.typeInput.addEventListener('input', (e) => {
 function submitCurrentPhrase() {
     isPlaying = false;
     gameElements.typeInput.disabled = true;
+    clearLocalPhraseTimer();
 
     if (gameMode === 'online') {
         socket.emit('type_word', { roomId: currentRoom, input: gameElements.typeInput.value });
@@ -530,7 +694,6 @@ function submitCurrentPhrase() {
     }
 }
 
-// Default enter prevent form submit or odd behaviors, trigger submit if Autofire is off
 gameElements.typeInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         e.preventDefault();
@@ -603,7 +766,6 @@ socket.on('chat_msg_received', (data) => {
     const msgDiv = document.createElement('div');
     msgDiv.className = `chat-msg ${isMe ? 'me' : 'opponent'}`;
 
-    // Safety encode html
     const safeText = document.createTextNode(data.text);
 
     msgDiv.innerHTML = `<span class="name">${data.sender}:</span> `;
@@ -611,16 +773,65 @@ socket.on('chat_msg_received', (data) => {
 
     gameElements.chatMessages.appendChild(msgDiv);
     gameElements.chatMessages.scrollTop = gameElements.chatMessages.scrollHeight;
+
+    if (!isMe) showChatNotification();
 });
-gameElements.btnRematch.addEventListener('click', () => {
-    if (gameMode === 'online') {
-        gameElements.gameOverPanel.classList.add('hidden');
-        startMatchmaking();
-    } else {
-        gameElements.gameOverPanel.classList.add('hidden');
-        startTrainingMatch();
+
+function clearLocalPhraseTimer() {
+    if (localPhraseTimer) {
+        clearInterval(localPhraseTimer);
+        localPhraseTimer = null;
     }
-});
+}
+
+function startLocalPhraseTimer() {
+    clearLocalPhraseTimer();
+    let timeLeft = phraseTimeLimit;
+    updatePhraseTimerBar(timeLeft, phraseTimeLimit);
+
+    localPhraseTimer = setInterval(() => {
+        timeLeft -= 1;
+        updatePhraseTimerBar(timeLeft, phraseTimeLimit);
+
+        if (timeLeft <= 0) {
+            clearLocalPhraseTimer();
+            isPlaying = false;
+            gameElements.typeInput.disabled = true;
+            gameElements.typeInput.value = "";
+            gameElements.targetPhrase.innerHTML = '<span style="color:var(--primary-pink)">¡TIEMPO AGOTADO!</span>';
+
+            const playerHealthText = gameElements.playerHealthText.textContent.split(' ')[0];
+            let playerHealth = parseInt(playerHealthText) - 10;
+            const oppHealthText = gameElements.opponentHealthText.textContent.split(' ')[0];
+            let oppHealth = parseInt(oppHealthText) - 10;
+
+            updateHealth(socket.id, playerHealth, { [socket.id]: { health: playerHealth } });
+            updateHealth('ai_bot', oppHealth, { 'ai_bot': { health: oppHealth } });
+            triggerDamageFlash();
+            shakeElement(gameElements.playerAvatar);
+            shakeElement(gameElements.opponentAvatar);
+
+            if (playerHealth <= 0 && oppHealth <= 0) {
+                handleAIGameOver(false);
+                return;
+            }
+            if (playerHealth <= 0) {
+                handleAIGameOver(false);
+                return;
+            }
+            if (oppHealth <= 0) {
+                handleAIGameOver(true);
+                return;
+            }
+
+            setTimeout(() => {
+                if (gameMode === 'ai') {
+                    socket.emit('request_ai_phrase', currentDifficulty);
+                }
+            }, 1500);
+        }
+    }, 1000);
+}
 
 socket.on('ai_phrase_received', (data) => {
     currentPhraseStr = data.phrase;
@@ -629,6 +840,12 @@ socket.on('ai_phrase_received', (data) => {
     gameElements.typeInput.disabled = false;
     gameElements.typeInput.value = "";
     gameElements.typeInput.focus();
+    if (gameMode === 'ai') {
+        startLocalPhraseTimer();
+        if (!aiState.interval) {
+            startAILoop();
+        }
+    }
 });
 
 socket.on('leaderboard_data', (topPlayers) => {
@@ -653,13 +870,51 @@ socket.on('leaderboard_data', (topPlayers) => {
     });
 });
 
+function updatePhraseTimerBar(timeLeft, timeLimit) {
+    const pct = (timeLeft / timeLimit) * 100;
+    gameElements.phraseTimerFill.style.width = `${pct}%`;
+    gameElements.phraseTimerFill.classList.remove('warning', 'critical');
+    if (pct <= 20) {
+        gameElements.phraseTimerFill.classList.add('critical');
+    } else if (pct <= 50) {
+        gameElements.phraseTimerFill.classList.add('warning');
+    }
+}
+
 socket.on('new_phrase', (data) => {
     currentPhraseStr = data.phrase;
+    if (data.timeLimit) phraseTimeLimit = data.timeLimit;
     gameElements.targetPhrase.innerHTML = currentPhraseStr;
     isPlaying = true;
     gameElements.typeInput.disabled = false;
     gameElements.typeInput.value = "";
     gameElements.typeInput.focus();
+    updatePhraseTimerBar(phraseTimeLimit, phraseTimeLimit);
+});
+
+socket.on('phrase_timer_tick', (data) => {
+    updatePhraseTimerBar(data.timeLeft, phraseTimeLimit);
+});
+
+socket.on('phrase_expired', (data) => {
+    isPlaying = false;
+    gameElements.typeInput.disabled = true;
+    gameElements.typeInput.value = "";
+    gameElements.targetPhrase.innerHTML = '<span style="color:var(--primary-pink)">¡TIEMPO AGOTADO!</span>';
+    updatePhraseTimerBar(0, phraseTimeLimit);
+
+    triggerDamageFlash();
+    shakeElement(gameElements.playerAvatar);
+    shakeElement(gameElements.opponentAvatar);
+
+    const myHealth = data.players[socket.id]?.health || 0;
+    const oppId = Object.keys(data.players).find(id => id !== socket.id);
+    const oppHealth = data.players[oppId]?.health || 0;
+
+    gameElements.playerHealthFill.style.width = `${Math.max(0, (myHealth / MAX_HEALTH) * 100)}%`;
+    gameElements.playerHealthText.textContent = `${Math.max(0, myHealth)} / ${MAX_HEALTH}`;
+    gameElements.opponentHealthFill.style.width = `${Math.max(0, (oppHealth / MAX_HEALTH) * 100)}%`;
+    gameElements.opponentHealthText.textContent = `${Math.max(0, oppHealth)} / ${MAX_HEALTH}`;
 });
 
 socket.on('phrase_completed', (data) => {
@@ -712,6 +967,7 @@ socket.on('game_over', (data) => {
         saveProfile();
         profileElements.wins.textContent = userProfile.wins;
         profileElements.losses.textContent = userProfile.losses;
+        updateRatio();
 
     }, 1000);
 });

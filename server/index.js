@@ -13,8 +13,7 @@ const io = new Server(server, {
   }
 });
 
-// Serve frontend files
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../docs')));
 
 const PORT = process.env.PORT || 3000;
 
@@ -26,6 +25,8 @@ let globalLeaderboard = {}; // In-Memory Leaderboard: key -> lowercase username,
 // Constants
 const MAX_HEALTH = 100;
 const DAMAGE_PER_WORD = 20;
+const PHRASE_TIME_LIMIT = 15; // seconds per phrase
+const PHRASE_TIMEOUT_DAMAGE = 10; // damage to BOTH players if no one completes the phrase
 
 function recordWin(username) {
   if (!username) return;
@@ -58,9 +59,11 @@ io.on('connection', (socket) => {
         players: {},
         status: 'waiting',
         currentPhrase: '',
-        difficulty: 'normal', // Default universal difficulty
-        timeLeft: 180, // 3 minutes
-        timerInterval: null
+        difficulty: 'normal',
+        timeLeft: 180,
+        timerInterval: null,
+        phraseTimer: null,
+        phraseTimeLeft: 0
       };
     }
 
@@ -131,14 +134,14 @@ io.on('connection', (socket) => {
     if (!room || room.status !== 'playing') return;
 
     if (input === room.currentPhrase) {
-      // Player typed phrase correctly!
+      clearPhraseTimer(roomId);
+
       const playerIds = Object.keys(room.players);
       const opponentId = playerIds.find(id => id !== socket.id);
       const player = room.players[socket.id];
       const opponent = room.players[opponentId];
 
       if (opponentId && opponent) {
-        // Deal damage
         opponent.health -= DAMAGE_PER_WORD;
         player.points += 1;
 
@@ -148,14 +151,10 @@ io.on('connection', (socket) => {
           players: room.players
         });
 
-        // Check for Game Over
         if (opponent.health <= 0) {
           clearInterval(room.timerInterval);
           room.status = 'finished';
-
-          // Update Leaderboard
           recordWin(player.username);
-
           io.to(roomId).emit('game_over', {
             winnerId: socket.id,
             loserId: opponent.id,
@@ -163,12 +162,12 @@ io.on('connection', (socket) => {
           });
           return;
         }
-        // Send next phrase
+
         setTimeout(() => {
           if (room && room.status === 'playing') {
             sendNewPhrase(roomId);
           }
-        }, 1500); // 1.5s delay before next phrase
+        }, 1500);
       }
     }
   });
@@ -202,6 +201,7 @@ io.on('connection', (socket) => {
     const room = rooms[roomId];
     if (room && room.status === 'playing') {
       clearInterval(room.timerInterval);
+      clearPhraseTimer(roomId);
       room.status = 'finished';
 
       const playerIds = Object.keys(room.players);
@@ -236,6 +236,7 @@ io.on('connection', (socket) => {
     for (const [roomId, room] of Object.entries(rooms)) {
       if (room.players[socket.id]) {
         clearInterval(room.timerInterval);
+        clearPhraseTimer(roomId);
         delete room.players[socket.id];
 
         if (room.status === 'playing') {
@@ -265,11 +266,76 @@ io.on('connection', (socket) => {
     socket.emit('ai_phrase_received', { phrase });
   });
 
+  function clearPhraseTimer(roomId) {
+    if (rooms[roomId] && rooms[roomId].phraseTimer) {
+      clearInterval(rooms[roomId].phraseTimer);
+      rooms[roomId].phraseTimer = null;
+    }
+  }
+
+  function startPhraseTimer(roomId) {
+    const room = rooms[roomId];
+    if (!room) return;
+
+    clearPhraseTimer(roomId);
+    room.phraseTimeLeft = PHRASE_TIME_LIMIT;
+
+    room.phraseTimer = setInterval(() => {
+      room.phraseTimeLeft -= 1;
+      io.to(roomId).emit('phrase_timer_tick', { timeLeft: room.phraseTimeLeft });
+
+      if (room.phraseTimeLeft <= 0) {
+        clearPhraseTimer(roomId);
+
+        const playerIds = Object.keys(room.players);
+        playerIds.forEach(pid => {
+          room.players[pid].health -= PHRASE_TIMEOUT_DAMAGE;
+        });
+
+        io.to(roomId).emit('phrase_expired', {
+          players: room.players
+        });
+
+        const deadPlayers = playerIds.filter(pid => room.players[pid].health <= 0);
+
+        if (deadPlayers.length === 2 || deadPlayers.length === playerIds.length) {
+          clearInterval(room.timerInterval);
+          room.status = 'finished';
+          io.to(roomId).emit('game_over', { reason: 'timeout_tie' });
+          return;
+        }
+
+        if (deadPlayers.length === 1) {
+          clearInterval(room.timerInterval);
+          room.status = 'finished';
+          const loserId = deadPlayers[0];
+          const winnerId = playerIds.find(id => id !== loserId);
+          recordWin(room.players[winnerId].username);
+          io.to(roomId).emit('game_over', {
+            winnerId,
+            loserId,
+            reason: 'health_depleted'
+          });
+          return;
+        }
+
+        if (room.status === 'playing') {
+          setTimeout(() => {
+            if (rooms[roomId] && rooms[roomId].status === 'playing') {
+              sendNewPhrase(roomId);
+            }
+          }, 1500);
+        }
+      }
+    }, 1000);
+  }
+
   function sendNewPhrase(roomId) {
     if (rooms[roomId]) {
       const phrase = getRandomPhrase(rooms[roomId].difficulty);
       rooms[roomId].currentPhrase = phrase;
-      io.to(roomId).emit('new_phrase', { phrase });
+      io.to(roomId).emit('new_phrase', { phrase, timeLimit: PHRASE_TIME_LIMIT });
+      startPhraseTimer(roomId);
     }
   }
 });
