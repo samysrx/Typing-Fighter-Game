@@ -1,4 +1,4 @@
-const PRODUCTION_URL = 'https://typing-fighter-server-production.up.railway.app';
+const PRODUCTION_URL = 'https://typing-fighter-server-production-a899.up.railway.app';
 const serverUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? window.location.origin
     : PRODUCTION_URL;
