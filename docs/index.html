@@ -5,10 +5,277 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Typing Fighter</title>
-    <link rel="stylesheet" href="style.css?v=4.1">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+/* === INLINE CSS === */
+:root {
+    --bg-dark: #0a0a0a;
+    --primary-cyan: #00ff41;
+    --primary-pink: #ff0040;
+    --text-main: #b0ffb0;
+    --glass-bg: rgba(0, 0, 0, 0.9);
+    --glass-border: rgba(0, 255, 65, 0.5);
+    --health-player: #00ff41;
+    --health-opponent: #ff0040;
+    --retro-yellow: #ffff00;
+    --retro-amber: #ffaa00;
+    --font-pixel: 'Press Start 2P', monospace;
+    --font-mono: 'Share Tech Mono', monospace;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background-color:var(--bg-dark); color:var(--text-main); font-family:var(--font-mono); overflow:hidden; height:100vh; display:flex; justify-content:center; align-items:center; }
+#space-background { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:0; background:#0a0a0a; overflow:hidden; }
+.stars,.stars2,.stars3 { position:absolute; top:0; left:0; right:0; bottom:0; width:200vw; height:100vh; background:transparent; image-rendering:pixelated; }
+.stars { background-image:radial-gradient(1px 1px at 10% 20%,#00ff41,transparent),radial-gradient(1px 1px at 30% 40%,#00ff41,transparent),radial-gradient(1px 1px at 50% 10%,white,transparent),radial-gradient(1px 1px at 70% 60%,white,transparent),radial-gradient(1px 1px at 90% 80%,#00ff41,transparent); background-size:200px 200px; animation:drift 60s linear infinite; }
+.stars2 { background-image:radial-gradient(1px 1px at 15% 25%,#ff0040,transparent),radial-gradient(1px 1px at 55% 15%,white,transparent),radial-gradient(1px 1px at 75% 65%,#ffff00,transparent); background-size:300px 300px; animation:drift 40s linear infinite; }
+.stars3 { background-image:radial-gradient(2px 2px at 25% 15%,white,transparent),radial-gradient(1px 1px at 45% 55%,#00ff41,transparent); background-size:400px 400px; animation:drift 25s linear infinite; }
+@keyframes drift { from{transform:translateX(0)} to{transform:translateX(-50vw)} }
+.bg-planet { position:absolute; opacity:0.35; z-index:1; }
+.planet-1 { width:180px; height:180px; bottom:5%; right:8%; animation:planet-drift-1 120s linear infinite; }
+.planet-2 { width:100px; height:100px; top:15%; left:5%; animation:planet-drift-2 90s linear infinite; }
+.planet-3 { width:70px; height:70px; top:60%; right:25%; animation:planet-drift-3 150s linear infinite; }
+@keyframes planet-drift-1 { 0%{transform:translate(0,0)} 25%{transform:translate(-30px,-15px)} 50%{transform:translate(-10px,10px)} 75%{transform:translate(20px,-5px)} 100%{transform:translate(0,0)} }
+@keyframes planet-drift-2 { 0%{transform:translate(0,0)} 33%{transform:translate(20px,10px)} 66%{transform:translate(-15px,5px)} 100%{transform:translate(0,0)} }
+@keyframes planet-drift-3 { 0%{transform:translate(0,0)} 50%{transform:translate(25px,-20px)} 100%{transform:translate(0,0)} }
+.bg-ship { position:absolute; z-index:2; }
+.bg-ship svg { display:block; }
+.ship-green { width:45px; top:30%; animation:ship-fly-right 18s linear infinite; }
+.ship-red { width:45px; top:35%; animation:ship-fly-left 20s linear infinite; }
+.ship-green-2 { width:30px; top:70%; animation:ship-fly-right-2 25s linear infinite; }
+.ship-red-2 { width:30px; top:18%; animation:ship-fly-left-2 22s linear infinite; }
+@keyframes ship-fly-right { 0%{left:-60px;transform:translateY(0)} 10%{transform:translateY(-15px)} 30%{transform:translateY(20px)} 50%{transform:translateY(-10px)} 70%{transform:translateY(15px)} 90%{transform:translateY(-5px)} 100%{left:110vw;transform:translateY(0)} }
+@keyframes ship-fly-left { 0%{right:-60px;transform:translateY(0)} 15%{transform:translateY(20px)} 35%{transform:translateY(-15px)} 55%{transform:translateY(10px)} 75%{transform:translateY(-20px)} 100%{right:110vw;transform:translateY(0)} }
+@keyframes ship-fly-right-2 { 0%{left:-50px;transform:translateY(0)} 25%{transform:translateY(-25px)} 50%{transform:translateY(15px)} 75%{transform:translateY(-10px)} 100%{left:110vw;transform:translateY(0)} }
+@keyframes ship-fly-left-2 { 0%{right:-50px;transform:translateY(0)} 30%{transform:translateY(15px)} 60%{transform:translateY(-20px)} 100%{right:110vw;transform:translateY(0)} }
+.ship-laser { position:absolute; width:25px; height:2px; border-radius:0; opacity:0; }
+.laser-green { background:#00ff41; box-shadow:0 0 6px #00ff41; top:45%; right:-30px; animation:laser-fire-right 2.5s ease-out infinite; }
+.laser-green.laser-2 { animation-delay:1.2s; top:55%; }
+.laser-red { background:#ff0040; box-shadow:0 0 6px #ff0040; top:45%; left:-30px; animation:laser-fire-left 2.8s ease-out infinite; }
+.laser-red.laser-2 { animation-delay:1.5s; top:55%; }
+@keyframes laser-fire-right { 0%{opacity:0;transform:translateX(0) scaleX(0.5)} 5%{opacity:1;transform:translateX(0) scaleX(1)} 40%{opacity:1;transform:translateX(120px) scaleX(1)} 50%{opacity:0;transform:translateX(160px) scaleX(0.3)} 100%{opacity:0;transform:translateX(0) scaleX(0.5)} }
+@keyframes laser-fire-left { 0%{opacity:0;transform:translateX(0) scaleX(0.5)} 5%{opacity:1;transform:translateX(0) scaleX(1)} 40%{opacity:1;transform:translateX(-120px) scaleX(1)} 50%{opacity:0;transform:translateX(-160px) scaleX(0.3)} 100%{opacity:0;transform:translateX(0) scaleX(0.5)} }
+.bg-alien { position:absolute; z-index:2; opacity:0.45; }
+.alien-1 { width:50px; height:50px; top:12%; right:18%; animation:alien-float-1 8s ease-in-out infinite, alien-wander-1 30s linear infinite; }
+.alien-2 { width:38px; height:38px; bottom:20%; left:12%; animation:alien-float-2 6s ease-in-out infinite, alien-wander-2 35s linear infinite; }
+.alien-3 { width:32px; height:32px; top:50%; left:40%; animation:alien-float-3 7s ease-in-out infinite, alien-wander-3 40s linear infinite; }
+@keyframes alien-float-1 { 0%,100%{transform:translateY(0) rotate(0deg)} 25%{transform:translateY(-12px) rotate(3deg)} 50%{transform:translateY(5px) rotate(-2deg)} 75%{transform:translateY(-8px) rotate(1deg)} }
+@keyframes alien-float-2 { 0%,100%{transform:translateY(0) rotate(0deg)} 30%{transform:translateY(10px) rotate(-3deg)} 60%{transform:translateY(-15px) rotate(4deg)} }
+@keyframes alien-float-3 { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-10px) scale(1.05)} }
+@keyframes alien-wander-1 { 0%{right:18%;top:12%} 25%{right:25%;top:8%} 50%{right:15%;top:15%} 75%{right:22%;top:10%} 100%{right:18%;top:12%} }
+@keyframes alien-wander-2 { 0%{left:12%;bottom:20%} 33%{left:18%;bottom:25%} 66%{left:8%;bottom:18%} 100%{left:12%;bottom:20%} }
+@keyframes alien-wander-3 { 0%{left:40%;top:50%} 25%{left:45%;top:45%} 50%{left:38%;top:55%} 75%{left:43%;top:48%} 100%{left:40%;top:50%} }
+h1,h2,h3,.glitch { font-family:var(--font-pixel); text-transform:uppercase; }
+#app { width:100%; height:100%; position:relative; }
+#app::before { content:''; position:fixed; top:0; left:0; width:100vw; height:100vh; background:repeating-linear-gradient(0deg,rgba(0,0,0,0.12) 0px,rgba(0,0,0,0.12) 1px,transparent 1px,transparent 3px); z-index:999; pointer-events:none; }
+.screen { width:100%; height:100%; min-height:100vh; position:absolute; top:0; left:0; display:flex; flex-direction:column; justify-content:center; align-items:center; transition:opacity 0.3s ease; opacity:0; pointer-events:none; z-index:10; overflow-y:auto; }
+.screen.active { opacity:1; pointer-events:all; z-index:20; }
+.hidden { display:none !important; }
+.glass-panel { background:var(--glass-bg); border:2px solid var(--glass-border); border-radius:2px; padding:2.5rem; box-shadow:4px 4px 0 rgba(0,255,65,0.3),inset 0 0 30px rgba(0,255,65,0.03); text-align:center; }
+.title-container { display:flex; flex-direction:column; margin-bottom:0.5rem; }
+.glitch { font-size:2.2rem; font-weight:400; position:relative; color:var(--primary-cyan); text-shadow:0 0 10px var(--primary-cyan),0 0 30px rgba(0,255,65,0.3); margin:0; line-height:1.3; }
+.glitch::before,.glitch::after { content:attr(data-text); position:absolute; top:0; left:0; width:100%; height:100%; background:var(--bg-dark); }
+.glitch::before { left:2px; text-shadow:-2px 0 var(--primary-pink); clip:rect(44px,450px,56px,0); animation:glitch-anim 5s infinite linear alternate-reverse; }
+.glitch::after { left:-2px; text-shadow:-2px 0 var(--retro-yellow); clip:rect(44px,450px,56px,0); animation:glitch-anim2 5s infinite linear alternate-reverse; }
+.main-menu { width:90%; max-width:650px; }
+.subtitle { font-family:var(--font-mono); font-size:0.85rem; color:#5a8a5a; margin-bottom:1.5rem; margin-top:1rem; letter-spacing:1px; }
+.motd-container { background:rgba(0,255,65,0.05); border:1px dashed rgba(0,255,65,0.4); padding:0.5rem 1rem; border-radius:0; margin-bottom:2rem; display:inline-block; }
+.motd-text { font-family:var(--font-mono); font-size:0.85rem; color:var(--text-main); opacity:0.8; }
+.action-container { display:flex; flex-direction:column; align-items:center; min-height:80px; }
+.btn-primary { background:transparent; border:2px solid var(--primary-cyan); color:var(--primary-cyan); padding:0.9rem 2rem; font-size:0.75rem; font-family:var(--font-pixel); cursor:pointer; border-radius:0; position:relative; overflow:hidden; transition:all 0.15s ease; box-shadow:3px 3px 0 rgba(0,255,65,0.4); text-shadow:0 0 5px rgba(0,255,65,0.5); min-width:250px; display:flex; align-items:center; justify-content:center; gap:12px; text-transform:uppercase; }
+.btn-primary:hover { background:var(--primary-cyan); color:#000; text-shadow:none; box-shadow:0 0 15px rgba(0,255,65,0.5); }
+.btn-primary:active { transform:translate(2px,2px); box-shadow:1px 1px 0 rgba(0,255,65,0.4); }
+.btn-secondary { background:transparent; border:2px solid rgba(255,255,255,0.3); color:var(--text-main); padding:0.7rem 1.5rem; font-size:0.65rem; font-family:var(--font-pixel); cursor:pointer; border-radius:0; transition:all 0.15s ease; min-width:250px; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:2px 2px 0 rgba(255,255,255,0.15); }
+.btn-secondary:hover { background:rgba(255,255,255,0.1); border-color:var(--text-main); color:white; }
+.btn-secondary:active { transform:translate(2px,2px); box-shadow:none; }
+.btn-icon { width:20px; height:20px; }
+.btn-back { margin-top:2rem; margin-left:auto; margin-right:auto; }
+.menu-buttons { display:flex; flex-direction:column; gap:1.2rem; align-items:center; margin-top:1rem; width:100%; }
+.menu-play-btn { font-size:0.85rem !important; padding:1rem 2rem !important; }
+.menu-nav-row { display:flex; gap:0.6rem; width:100%; }
+.menu-nav-card { flex:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem; padding:1rem 0.5rem; background:rgba(0,0,0,0.6); border:1px solid rgba(0,255,65,0.2); border-radius:0; cursor:pointer; transition:all 0.15s ease; color:#5a8a5a; font-family:var(--font-pixel); font-size:0.45rem; font-weight:400; letter-spacing:1px; box-shadow:2px 2px 0 rgba(0,255,65,0.1); }
+.menu-nav-card svg { width:24px; height:24px; stroke:#3a6a3a; transition:stroke 0.15s; }
+.menu-nav-card span { transition:color 0.15s; }
+.menu-nav-card:hover { background:rgba(0,255,65,0.1); border-color:var(--primary-cyan); color:var(--primary-cyan); }
+.menu-nav-card:hover svg { stroke:var(--primary-cyan); }
+.menu-nav-card:active { transform:translate(2px,2px); box-shadow:none; }
+.ranking-container { max-height:400px; overflow-y:auto; margin-bottom:2rem; scrollbar-width:thin; scrollbar-color:var(--primary-cyan) transparent; }
+.ranking-table { width:100%; border-collapse:collapse; color:var(--text-main); font-family:var(--font-mono); }
+.ranking-table th { color:var(--primary-cyan); font-family:var(--font-pixel); font-size:0.55rem; text-transform:uppercase; padding:10px; border-bottom:2px solid rgba(0,255,65,0.4); }
+.ranking-table td { padding:10px; border-bottom:1px solid rgba(0,255,65,0.1); font-size:0.9rem; }
+.ranking-row-top1 { color:var(--retro-yellow); text-shadow:0 0 10px rgba(255,255,0,0.8); font-weight:bold; }
+.ranking-row-top2 { color:#c0c0c0; text-shadow:0 0 8px rgba(192,192,192,0.8); }
+.ranking-row-top3 { color:var(--retro-amber); text-shadow:0 0 8px rgba(255,170,0,0.8); }
+#ranking-loading { color:#5a8a5a; margin-top:2rem; animation:pulse 1.5s infinite; }
+.profile-panel,.settings-panel { width:90%; max-width:500px; }
+.settings-panel h2 { color:var(--primary-cyan); font-size:1rem; margin-bottom:1.5rem; text-shadow:0 0 10px rgba(0,255,65,0.5); }
+.profile-header { display:flex; flex-direction:column; align-items:center; gap:0.8rem; margin-bottom:1.5rem; }
+.profile-header h2 { color:var(--primary-cyan); font-size:0.85rem; text-shadow:0 0 10px rgba(0,255,65,0.5); margin:0; }
+.profile-avatar-ring { width:70px; height:70px; border-radius:0; background:rgba(0,255,65,0.05); border:2px solid rgba(0,255,65,0.4); display:flex; align-items:center; justify-content:center; color:var(--primary-cyan); box-shadow:3px 3px 0 rgba(0,255,65,0.2); }
+.profile-avatar-ring svg { width:36px; height:36px; }
+.profile-section { margin-bottom:1.2rem; }
+.profile-name-card { display:flex; flex-direction:column; gap:0.4rem; padding:1rem; background:rgba(0,0,0,0.6); border:1px solid rgba(0,255,65,0.2); border-radius:0; }
+.profile-name-label { font-family:var(--font-pixel); font-size:0.45rem; color:#5a8a5a; letter-spacing:2px; }
+.profile-name-input { width:100%; background:rgba(0,0,0,0.8); border:1px solid rgba(0,255,65,0.3); color:var(--primary-cyan); padding:0.7rem 1rem; font-size:1rem; font-family:var(--font-mono); border-radius:0; outline:none; transition:all 0.15s ease; caret-color:var(--primary-cyan); }
+.profile-name-input:focus { border-color:var(--primary-cyan); box-shadow:0 0 10px rgba(0,255,65,0.3); }
+.profile-stats-row { display:flex; gap:0.5rem; }
+.profile-stat-card { flex:1; display:flex; flex-direction:column; align-items:center; gap:0.3rem; padding:1rem 0.5rem; background:rgba(0,0,0,0.6); border:1px solid rgba(0,255,65,0.15); border-radius:0; transition:border-color 0.15s; box-shadow:2px 2px 0 rgba(0,255,65,0.08); }
+.profile-stat-icon { width:22px; height:22px; color:#5a8a5a; }
+.stat-wins-card .profile-stat-icon { color:var(--primary-cyan); }
+.stat-losses-card .profile-stat-icon { color:var(--primary-pink); }
+.stat-ratio-card .profile-stat-icon { color:var(--retro-yellow); }
+.profile-stat-number { font-family:var(--font-pixel); font-size:1.2rem; color:white; }
+.stat-wins-card .profile-stat-number { color:var(--primary-cyan); text-shadow:0 0 10px rgba(0,255,65,0.5); }
+.stat-losses-card .profile-stat-number { color:var(--primary-pink); text-shadow:0 0 10px rgba(255,0,64,0.5); }
+.stat-ratio-card .profile-stat-number { color:var(--retro-yellow); text-shadow:0 0 10px rgba(255,255,0,0.5); }
+.profile-stat-label { font-family:var(--font-pixel); font-size:0.4rem; color:#5a8a5a; letter-spacing:1px; }
+.input-group { display:flex; flex-direction:column; align-items:flex-start; margin-bottom:2rem; text-align:left; }
+.input-group label { font-family:var(--font-pixel); color:var(--primary-pink); margin-bottom:0.5rem; font-size:0.55rem; letter-spacing:1px; }
+.input-group input { width:100%; background:rgba(0,0,0,0.8); border:2px solid var(--primary-cyan); color:var(--primary-cyan); padding:0.8rem; font-size:1rem; font-family:var(--font-mono); border-radius:0; outline:none; transition:all 0.15s ease; caret-color:var(--primary-cyan); }
+.input-group input:focus { box-shadow:0 0 10px rgba(0,255,65,0.3); }
+#stat-wins { color:var(--primary-cyan); text-shadow:0 0 10px rgba(0,255,65,0.5); }
+#stat-losses { color:var(--primary-pink); text-shadow:0 0 10px rgba(255,0,64,0.5); }
+.settings-section { margin-bottom:1.2rem; }
+.settings-section-title { display:flex; align-items:center; gap:6px; font-family:var(--font-pixel); font-size:0.5rem; color:#5a8a5a; letter-spacing:2px; text-transform:uppercase; margin-bottom:0.6rem; }
+.settings-toggles { display:flex; flex-direction:column; gap:0.4rem; }
+.toggle-card { display:flex; justify-content:space-between; align-items:center; padding:0.8rem 1rem; background:rgba(0,0,0,0.6); border:1px solid rgba(0,255,65,0.15); border-radius:0; transition:border-color 0.15s; }
+.toggle-card:hover { border-color:rgba(0,255,65,0.4); }
+.toggle-info { display:flex; flex-direction:column; gap:2px; }
+.toggle-title { font-family:var(--font-mono); font-size:0.9rem; color:var(--text-main); }
+.toggle-desc { font-size:0.75rem; color:#5a8a5a; }
+.switch { position:relative; width:44px; height:24px; flex-shrink:0; }
+.switch input { opacity:0; width:0; height:0; }
+.switch-slider { position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.1); border-radius:0; border:1px solid rgba(255,255,255,0.2); transition:all 0.15s ease; }
+.switch-slider::before { content:''; position:absolute; width:18px; height:18px; left:2px; bottom:2px; background:#5a8a5a; border-radius:0; transition:all 0.15s ease; }
+.switch input:checked+.switch-slider { background:rgba(0,255,65,0.2); border-color:var(--primary-cyan); }
+.switch input:checked+.switch-slider::before { transform:translateX(20px); background:var(--primary-cyan); box-shadow:0 0 6px rgba(0,255,65,0.6); }
+.color-picker-row { display:flex; flex-wrap:wrap; gap:0.7rem; justify-content:center; padding:0.5rem 0; }
+.color-swatch { width:32px; height:32px; border-radius:0; border:2px solid rgba(255,255,255,0.15); background:var(--swatch-color); cursor:pointer; transition:all 0.15s ease; position:relative; }
+.color-swatch:hover { transform:scale(1.15); border-color:rgba(255,255,255,0.5); }
+.color-swatch.selected { border-color:white; box-shadow:0 0 8px var(--swatch-color),3px 3px 0 rgba(0,0,0,0.5); }
+.color-swatch.selected::after { content:'\25A0'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:12px; font-weight:bold; color:rgba(0,0,0,0.8); }
+.volume-row { display:flex; align-items:center; gap:0.8rem; padding:0.5rem 0; }
+.range-slider-v2 { flex:1; -webkit-appearance:none; appearance:none; height:4px; border-radius:0; background:rgba(0,255,65,0.15); outline:none; }
+.range-slider-v2::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:14px; height:14px; border-radius:0; background:var(--primary-cyan); cursor:pointer; box-shadow:0 0 6px rgba(0,255,65,0.5); }
+.range-slider-v2::-moz-range-thumb { width:14px; height:14px; border-radius:0; background:var(--primary-cyan); cursor:pointer; border:none; box-shadow:0 0 6px rgba(0,255,65,0.5); }
+.btn-fullscreen-v2 { width:100%; display:flex; align-items:center; justify-content:center; gap:8px; padding:0.7rem; font-family:var(--font-pixel); font-size:0.5rem; letter-spacing:1px; color:#5a8a5a; background:rgba(0,0,0,0.6); border:1px solid rgba(0,255,65,0.15); border-radius:0; cursor:pointer; transition:all 0.15s ease; box-shadow:2px 2px 0 rgba(0,255,65,0.08); }
+.btn-fullscreen-v2:hover { color:var(--primary-cyan); border-color:var(--primary-cyan); background:rgba(0,255,65,0.08); }
+.setting-item { display:flex; justify-content:space-between; align-items:center; padding:1rem; background:rgba(0,0,0,0.6); border:1px solid rgba(0,255,65,0.15); border-radius:0; margin-bottom:0.5rem; }
+.setting-item label { font-family:var(--font-pixel); font-size:0.6rem; }
+.setting-desc { font-size:0.85rem; color:#5a8a5a; text-align:left; margin-bottom:1.5rem; }
+.theme-select { background:rgba(0,0,0,0.8); border:2px solid var(--primary-cyan); color:var(--primary-cyan); padding:0.5rem; font-family:var(--font-mono); outline:none; border-radius:0; font-size:1rem; cursor:pointer; }
+.theme-select option { background:var(--bg-dark); color:var(--primary-cyan); }
+.selector-cards { display:flex; gap:0.5rem; }
+.selector-card { flex:1; display:flex; flex-direction:column; align-items:center; gap:0.3rem; padding:0.8rem 0.4rem; background:rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.1); border-radius:0; cursor:pointer; transition:all 0.15s ease; box-shadow:2px 2px 0 rgba(255,255,255,0.05); }
+.selector-card:hover { transform:translate(-1px,-1px); box-shadow:3px 3px 0 rgba(255,255,255,0.1); }
+.selector-icon { width:28px; height:28px; color:#5a8a5a; transition:color 0.15s; }
+.selector-icon svg { width:100%; height:100%; }
+.selector-name { font-family:var(--font-pixel); font-size:0.45rem; color:#5a8a5a; letter-spacing:1px; transition:color 0.15s; }
+.selector-desc { font-size:0.65rem; color:#3a6a3a; text-align:center; transition:color 0.15s; }
+.selector-card.selected .selector-desc { color:#5a8a5a; }
+.cyan-cards .selector-card:hover { background:rgba(0,255,65,0.08); border-color:rgba(0,255,65,0.5); }
+.cyan-cards .selector-card.selected { background:rgba(0,255,65,0.1); border-color:var(--primary-cyan); box-shadow:3px 3px 0 rgba(0,255,65,0.3); }
+.cyan-cards .selector-card.selected .selector-icon { color:var(--primary-cyan); }
+.cyan-cards .selector-card.selected .selector-name { color:var(--primary-cyan); text-shadow:0 0 8px rgba(0,255,65,0.5); }
+.amber-cards .selector-card:hover { background:rgba(255,255,0,0.06); border-color:rgba(255,255,0,0.4); }
+.amber-cards .selector-card.selected { background:rgba(255,255,0,0.08); border-color:var(--retro-yellow); box-shadow:3px 3px 0 rgba(255,255,0,0.25); }
+.amber-cards .selector-card.selected .selector-icon { color:var(--retro-yellow); }
+.amber-cards .selector-card.selected .selector-name { color:var(--retro-yellow); text-shadow:0 0 8px rgba(255,255,0,0.5); }
+.training-actions { display:flex; flex-direction:column; gap:0.8rem; margin-top:1.5rem; }
+.btn-launch { width:100%; display:flex; align-items:center; justify-content:center; gap:10px; padding:1rem 2rem; font-family:var(--font-pixel); font-size:0.7rem; color:#000; background:var(--primary-cyan); border:2px solid var(--primary-cyan); border-radius:0; cursor:pointer; position:relative; overflow:hidden; transition:all 0.15s ease; box-shadow:4px 4px 0 rgba(0,0,0,0.5); letter-spacing:1px; text-transform:uppercase; }
+.btn-launch:hover { background:#00cc33; border-color:#00cc33; box-shadow:6px 6px 0 rgba(0,0,0,0.5); transform:translate(-1px,-1px); }
+.btn-launch:active { transform:translate(3px,3px); box-shadow:1px 1px 0 rgba(0,0,0,0.5); }
+.btn-launch-icon { width:18px; height:18px; stroke:#000; }
+.btn-back-subtle { width:100%; display:flex; align-items:center; justify-content:center; gap:6px; padding:0.6rem 1.5rem; font-family:var(--font-pixel); font-size:0.5rem; color:#5a8a5a; background:transparent; border:1px solid rgba(0,255,65,0.15); border-radius:0; cursor:pointer; transition:all 0.15s ease; letter-spacing:1px; }
+.btn-back-subtle:hover { color:var(--primary-cyan); border-color:var(--primary-cyan); background:rgba(0,255,65,0.05); }
+.ai-difficulty-cards { display:flex; gap:0.6rem; }
+.ai-diff-card { flex:1; display:flex; flex-direction:column; align-items:center; gap:0.4rem; padding:1rem 0.5rem; background:rgba(0,0,0,0.6); border:1px solid rgba(255,0,64,0.15); border-radius:0; cursor:pointer; transition:all 0.15s ease; position:relative; box-shadow:2px 2px 0 rgba(255,0,64,0.08); }
+.ai-diff-card:hover { background:rgba(255,0,64,0.08); border-color:rgba(255,0,64,0.5); transform:translate(-1px,-1px); box-shadow:3px 3px 0 rgba(255,0,64,0.15); }
+.ai-diff-card.selected { background:rgba(255,0,64,0.1); border-color:var(--primary-pink); box-shadow:3px 3px 0 rgba(255,0,64,0.3); }
+.ai-diff-icon { width:32px; height:32px; color:#8a3a3a; transition:color 0.15s; }
+.ai-diff-card.selected .ai-diff-icon { color:var(--primary-pink); }
+.ai-diff-icon svg { width:100%; height:100%; }
+.ai-diff-name { font-family:var(--font-pixel); font-size:0.5rem; color:#8a3a3a; letter-spacing:1px; transition:color 0.15s; }
+.ai-diff-card.selected .ai-diff-name { color:var(--primary-pink); text-shadow:0 0 8px rgba(255,0,64,0.5); }
+.ai-diff-desc { font-size:0.7rem; color:#5a3a3a; text-align:center; font-family:var(--font-mono); }
+.ai-diff-card.selected .ai-diff-desc { color:#8a5a5a; }
+.ai-diff-bars { display:flex; gap:3px; margin-top:0.2rem; }
+.ai-diff-bars .bar { width:16px; height:4px; border-radius:0; background:rgba(255,0,64,0.1); transition:background 0.15s; }
+.ai-diff-bars .bar.active { background:#5a3a3a; }
+.ai-diff-card.selected .ai-diff-bars .bar.active { background:var(--primary-pink); box-shadow:0 0 4px rgba(255,0,64,0.5); }
+.status-text { margin-top:1.5rem; color:var(--primary-cyan); display:flex; align-items:center; gap:10px; font-size:0.7rem; font-family:var(--font-pixel); animation:pulse 2s infinite; }
+.spinner { width:20px; height:20px; border:3px solid rgba(0,255,65,0.3); border-top-color:var(--primary-cyan); border-radius:0; animation:spin 1s linear infinite; }
+.arena-header { position:absolute; top:2rem; width:100%; text-align:center; color:#5a8a5a; letter-spacing:2px; font-size:0.6rem; }
+.match-timer { font-size:1.8rem; font-weight:400; color:var(--retro-yellow); text-shadow:0 0 10px rgba(255,255,0,0.5); margin-top:0.5rem; font-family:var(--font-pixel); }
+.arena-controls { position:absolute; top:2rem; right:2rem; display:flex; gap:15px; z-index:50; }
+.btn-icon-only { background:rgba(0,0,0,0.8); border:2px solid var(--primary-cyan); color:var(--primary-cyan); width:40px; height:40px; border-radius:0; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.15s ease; padding:8px; box-shadow:2px 2px 0 rgba(0,255,65,0.2); }
+.btn-icon-only:hover { background:var(--primary-cyan); color:#000; box-shadow:3px 3px 0 rgba(0,255,65,0.3); }
+.btn-danger { border-color:var(--primary-pink); color:var(--primary-pink); box-shadow:2px 2px 0 rgba(255,0,64,0.2); }
+.btn-danger:hover { background:var(--primary-pink); color:#000; box-shadow:3px 3px 0 rgba(255,0,64,0.3); }
+.arena-container { display:flex; width:90%; max-width:1200px; height:70vh; justify-content:space-between; align-items:stretch; gap:1.5rem; }
+.fighter-card { flex:1; display:flex; flex-direction:column; justify-content:space-between; padding:1.5rem; background:rgba(0,0,0,0.85); border:1px solid rgba(0,255,65,0.15); border-radius:0; box-shadow:inset 0 0 20px rgba(0,0,0,0.8),3px 3px 0 rgba(0,255,65,0.1); transition:transform 0.1s; }
+.player-card { border-left:3px solid var(--primary-cyan); }
+.opponent-card { border-right:3px solid var(--primary-pink); align-items:flex-end; text-align:right; }
+.fighter-info { width:100%; }
+.fighter-info h3 { font-size:0.8rem; margin-bottom:0.8rem; color:var(--text-main); }
+.player-card h3 { text-shadow:0 0 10px var(--primary-cyan); color:var(--primary-cyan); }
+.opponent-card h3 { text-shadow:0 0 10px var(--primary-pink); color:var(--primary-pink); }
+.health-bar-container { width:100%; height:20px; background:rgba(0,0,0,0.8); border:2px solid #333; border-radius:0; overflow:hidden; position:relative; }
+.health-bar { height:100%; width:100%; background:var(--primary-cyan); transition:width 0.3s cubic-bezier(0.25,0.46,0.45,0.94); box-shadow:0 0 8px var(--primary-cyan); }
+.health-bar.opponent-fill { background:var(--primary-pink); box-shadow:0 0 8px var(--primary-pink); margin-left:auto; }
+.health-text { display:block; margin-top:0.4rem; font-size:0.75rem; font-family:var(--font-pixel); color:#5a8a5a; }
+.avatar { width:130px; height:130px; border-radius:0; background:transparent; position:relative; display:flex; justify-content:center; align-items:center; margin:0 auto; }
+.player-avatar { border:none; box-shadow:none; animation:float 3s ease-in-out infinite; }
+.player-avatar::after { content:''; width:120px; height:120px; background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBmaWxsPSIjMDFjYmY1IiBkPSJNMTAgNDAgTDM1IDE1IEw1NSAxNSBMNzAgMzAgTDk1IDUwIEw3MCA3MCBMNTUgODUgTDM1IDg1IEwxMCA2MCBMMTUgNjAgTDI4IDY1IEw0MCA3NSBMNjAgNTAgTDQwIDI1IEwyOCAzNSBMMTUgNDAgWiIgLz4gPHBhdGggZmlsbD0iIzAwZjBmZiIgZD0iTTM1IDE1IEw1NSAxNSBMNzAgMzAgTDk1IDUwIEw3MCA3MCBMNTUgODUgTDM1IDg1IEw1MCA3MCBMNjAgNTAgTDUwIDMwIFoiIC8+IDxwYXRoIGZpbGw9IiNmZmZmZmYiIG9wYWNpdHk9IjAuOCIgZD0iTTYwIDQ1IEw3MCA0NSBMNzUgNTAgTDcwIDU1IEw2MCA1NSBMNjUgNTAgWiIgLz4gPHBhdGggZmlsbD0iI2NjZmZmZiIgZD0iTTUgMzMgTDI1IDM4IEwyNSA0MyBMNSAzOCBaIiAvPiA8cGF0aCBmaWxsPSIjY2NmZmZmIiBkPSJNNSA2NyBMMjUgNjIgTDI1IDU3IEw1IDYyIFoiIC8+PC9zdmc+') center/contain no-repeat; filter:drop-shadow(0 0 8px rgba(0,255,65,0.6)); image-rendering:pixelated; }
+.opponent-avatar { border:none; box-shadow:none; animation:float 3s ease-in-out infinite 1.5s; }
+.opponent-avatar::after { content:''; width:120px; height:120px; background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBmaWxsPSIjZDQwMDQ3IiBkPSJNOTAgNDAgTDY1IDE1IEw0NSAxNSBMMzAgMzAgTDUgNTAgTDMwIDcwIEw0NSA4NSBMNjUgODUgTDkwIDYwIEw4NSA2MCBMNzIgNjUgTDYwIDc1IEw0MCA1MCBMNjAgMjUgTDcyIDM1IEw4NSA0MCBaIiAvPiA8cGF0aCBmaWxsPSIjZmYwMDU1IiBkPSJNNjUgMTUgTDQ1IDE1IEwzMCAzMCBMNSA1MCBMMzAgNzAgTDQ1IDg1IEw2NSA4NSBMNTAgNzAgTDQwIDUwIEw1MCAzMCBaIiAvPiA8cGF0aCBmaWxsPSIjZmZmZmZmIiBvcGFjaXR5PSIwLjgiIGQ9Ik00MCA0NSBMMzAgNDUgTDI1IDUwIEwzMCA1NSBMNDAgNTUgTDM1IDUwIFoiIC8+IDxwYXRoIGZpbGw9IiNmZmNjZGQiIGQ9Ik05NSAzMyBMNzUgMzggTDc1IDQzIEw5NSAzOCBaIiAvPiA8cGF0aCBmaWxsPSIjZmZjY2RkIiBkPSJNOTUgNjcgTDc1IDYyIEw3NSA1NyBMOTUgNjIgWiIgLz48L3N2Zz4=') center/contain no-repeat; filter:drop-shadow(0 0 8px rgba(255,0,64,0.6)); image-rendering:pixelated; }
+@keyframes float { 0%{transform:translateY(0)} 50%{transform:translateY(-10px)} 100%{transform:translateY(0)} }
+.combat-center { flex:2; display:flex; flex-direction:column; justify-content:center; align-items:center; position:relative; padding:0 1rem; gap:1.5rem; min-width:0; }
+.input-wrapper { position:relative; width:100%; margin-top:2rem; }
+.chat-container { position:absolute; bottom:2rem; left:2rem; width:280px; z-index:40; display:flex; flex-direction:column; transition:all 0.15s ease; }
+.chat-container .chat-body { height:200px; background:rgba(0,0,0,0.95); border:2px solid rgba(0,255,65,0.3); border-radius:0; display:flex; flex-direction:column; overflow:hidden; transition:height 0.2s ease,opacity 0.2s ease; transform-origin:bottom left; }
+.chat-container.collapsed .chat-body { height:0; opacity:0; transform:scaleY(0); pointer-events:none; border:none; }
+.btn-toggle-chat { width:40px; height:40px; border-radius:0; background:rgba(0,0,0,0.9); border:2px solid rgba(0,255,65,0.4); color:var(--primary-cyan); cursor:pointer; display:flex; align-items:center; justify-content:center; padding:8px; margin-bottom:6px; transition:all 0.15s ease; position:relative; }
+.btn-toggle-chat:hover { background:rgba(0,255,65,0.15); box-shadow:2px 2px 0 rgba(0,255,65,0.3); }
+.chat-container:not(.collapsed) .btn-toggle-chat { background:rgba(0,255,65,0.1); border-color:var(--primary-cyan); }
+.chat-badge { position:absolute; top:-4px; right:-4px; width:16px; height:16px; border-radius:0; background:var(--primary-pink); color:white; font-size:0.55rem; font-weight:bold; font-family:var(--font-pixel); display:flex; align-items:center; justify-content:center; box-shadow:0 0 6px rgba(255,0,64,0.6); animation:pulse 1.5s infinite; }
+.chat-messages { flex:1; padding:0.8rem; overflow-y:auto; display:flex; flex-direction:column; gap:6px; font-family:var(--font-mono); font-size:0.85rem; }
+.chat-input { background:rgba(0,0,0,0.8); border:none; border-top:2px solid rgba(0,255,65,0.3); color:var(--primary-cyan); padding:0.7rem; font-family:var(--font-mono); font-size:0.85rem; outline:none; caret-color:var(--primary-cyan); }
+.chat-input:focus { background:rgba(0,255,65,0.03); }
+.chat-msg { word-break:break-word; line-height:1.3; }
+.chat-msg.system { color:#5a8a5a; font-size:0.8rem; text-align:center; margin:4px 0; }
+.chat-msg.me { color:var(--primary-cyan); text-align:right; }
+.chat-msg.opponent { color:var(--primary-pink); text-align:left; }
+.chat-msg .name { font-weight:bold; margin-right:5px; font-size:0.8rem; opacity:0.8; }
+.countdown { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:6rem; font-family:var(--font-pixel); color:var(--retro-yellow); text-shadow:0 0 20px rgba(255,255,0,0.8),4px 4px 0 rgba(0,0,0,0.8); animation:popIn 0.3s ease-out; z-index:60; pointer-events:none; }
+.phrase-box { padding:1.5rem 2rem; border-radius:0; background:rgba(0,0,0,0.7); border:2px solid var(--primary-cyan); border-bottom:3px solid var(--primary-cyan); box-shadow:4px 4px 0 rgba(0,255,65,0.15); text-align:center; width:100%; display:flex; flex-direction:column; align-items:center; gap:1rem; }
+#target-phrase { font-size:clamp(1rem,2.5vw,1.8rem); font-family:var(--font-mono); font-weight:400; letter-spacing:2px; color:var(--primary-cyan); line-height:1.4; word-break:break-word; max-width:100%; }
+.phrase-timer-bar-container { width:100%; height:6px; background:rgba(0,255,65,0.1); border-radius:0; overflow:hidden; border:1px solid rgba(0,255,65,0.2); }
+.phrase-timer-bar { height:100%; width:100%; background:var(--primary-cyan); border-radius:0; transition:width 1s linear; box-shadow:0 0 6px var(--primary-cyan); }
+.phrase-timer-bar.warning { background:var(--retro-yellow); box-shadow:0 0 6px var(--retro-yellow); }
+.phrase-timer-bar.critical { background:var(--primary-pink); box-shadow:0 0 6px var(--primary-pink); animation:pulse 0.5s infinite; }
+.matched-text { color:var(--retro-yellow); text-shadow:0 0 8px var(--retro-yellow); }
+.error-text { color:var(--primary-pink); text-shadow:0 0 8px var(--primary-pink); }
+.input-container { width:100%; position:relative; flex-shrink:0; }
+#type-input { width:100%; background:rgba(0,0,0,0.9); border:2px solid rgba(0,255,65,0.3); color:var(--primary-cyan); padding:1.2rem 1rem; font-size:1.4rem; font-family:var(--font-mono); border-radius:0; outline:none; text-align:center; transition:all 0.15s ease; caret-color:var(--primary-cyan); }
+#type-input:focus { border-color:var(--primary-cyan); box-shadow:0 0 10px rgba(0,255,65,0.2); }
+#type-input.error { border-color:var(--primary-pink); box-shadow:0 0 10px rgba(255,0,64,0.3); animation:shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+.result-panel { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:40; width:80%; border-color:var(--primary-cyan); }
+#result-title { font-size:1.5rem; margin-bottom:1.5rem; color:var(--retro-yellow); text-shadow:0 0 15px rgba(255,255,0,0.6); }
+@keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+@keyframes pulse { 0%{opacity:0.7} 50%{opacity:1} 100%{opacity:0.7} }
+@keyframes glitch-anim { 0%{clip:rect(21px,9999px,86px,0)} 20%{clip:rect(69px,9999px,34px,0)} 40%{clip:rect(74px,9999px,1px,0)} 60%{clip:rect(93px,9999px,80px,0)} 80%{clip:rect(32px,9999px,95px,0)} 100%{clip:rect(96px,9999px,16px,0)} }
+@keyframes glitch-anim2 { 0%{clip:rect(65px,9999px,100px,0)} 20%{clip:rect(60px,9999px,3px,0)} 40%{clip:rect(22px,9999px,92px,0)} 60%{clip:rect(4px,9999px,7px,0)} 80%{clip:rect(100px,9999px,91px,0)} 100%{clip:rect(42px,9999px,37px,0)} }
+@keyframes popIn { 0%{transform:translate(-50%,-50%) scale(0.5);opacity:0} 100%{transform:translate(-50%,-50%) scale(1);opacity:1} }
+@keyframes shake { 10%,90%{transform:translate3d(-1px,0,0)} 20%,80%{transform:translate3d(2px,0,0)} 30%,50%,70%{transform:translate3d(-4px,0,0)} 40%,60%{transform:translate3d(4px,0,0)} }
+#damage-overlay { position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:100; opacity:0; transition:opacity 0.1s; }
+#damage-overlay.flash-red { background:radial-gradient(circle,transparent 30%,rgba(255,0,64,0.4) 100%); opacity:1; animation:flashOut 0.5s forwards; }
+@keyframes flashOut { 0%{opacity:1} 100%{opacity:0} }
+.attack-particle { position:absolute; width:50px; height:4px; background:var(--primary-cyan); border-radius:0; box-shadow:0 0 10px var(--primary-cyan); z-index:50; pointer-events:none; }
+@media(max-width:900px){.arena-container{flex-direction:column;height:auto;min-height:0;gap:0.8rem;padding:0 0.5rem}.fighter-card{flex-direction:row;align-items:center;padding:0.8rem 1rem;gap:1rem}.opponent-card{flex-direction:row-reverse;text-align:left;align-items:center}.fighter-info h3{font-size:0.65rem;margin-bottom:0.4rem}.avatar{width:70px;height:70px;flex-shrink:0}.player-avatar::after,.opponent-avatar::after{width:60px;height:60px}.combat-center{flex:none;width:100%;padding:0;gap:0.8rem}.phrase-box{padding:1rem}#type-input{padding:1rem;font-size:1.1rem}.arena-controls{top:0.8rem;right:0.8rem;gap:8px}.btn-icon-only{width:34px;height:34px;padding:7px}.arena-header{top:0.8rem;position:relative;margin-bottom:0.5rem}.match-timer{font-size:1.3rem}.chat-container{position:fixed;bottom:0.5rem;left:0.5rem;width:260px}}
+@media(max-width:600px){.bg-ship,.bg-alien,.bg-planet{display:none}body{overflow-y:auto;overflow-x:hidden;height:auto;min-height:100vh}#app{height:auto;min-height:100vh}.screen{position:relative;height:auto;min-height:100vh;padding:1rem 0.5rem}.screen.active{display:flex}.glass-panel{padding:1.5rem 1rem;width:95%}.main-menu{max-width:100%}.profile-panel,.settings-panel{max-width:100%;width:95%}.glitch{font-size:1.5rem}.subtitle{font-size:0.75rem;margin-bottom:1rem}.motd-container{margin-bottom:1.2rem;padding:0.4rem 0.6rem}.motd-text{font-size:0.7rem}.menu-play-btn{font-size:0.7rem !important;padding:0.9rem 1.5rem !important}.menu-nav-row{gap:0.3rem}.menu-nav-card{padding:0.7rem 0.3rem;font-size:0.35rem}.menu-nav-card svg{width:18px;height:18px}.mode-options-container{flex-direction:column !important;gap:0.8rem !important}.mode-card{padding:1rem !important}.mode-card svg{width:32px !important;height:32px !important;margin-bottom:0.5rem !important}.mode-card h3{font-size:0.6rem !important}.mode-card p{font-size:0.75rem !important}.ai-difficulty-cards{flex-wrap:wrap;gap:0.4rem}.ai-diff-card{min-width:calc(33% - 0.3rem);padding:0.6rem 0.3rem}.ai-diff-icon{width:24px;height:24px}.ai-diff-name{font-size:0.4rem}.ai-diff-desc{font-size:0.6rem}.ai-diff-bars .bar{width:12px;height:3px}.selector-cards{flex-wrap:wrap;gap:0.4rem}.selector-card{min-width:calc(33% - 0.3rem);padding:0.5rem 0.2rem}.selector-icon{width:20px;height:20px}.selector-name{font-size:0.35rem}.selector-desc{font-size:0.55rem}.training-actions{margin-top:1rem;gap:0.6rem}.btn-launch{padding:0.8rem 1.5rem;font-size:0.6rem}.btn-back-subtle{padding:0.5rem 1rem;font-size:0.4rem}.settings-section{margin-bottom:0.8rem}.toggle-card{padding:0.6rem 0.7rem}.toggle-title{font-size:0.8rem}.toggle-desc{font-size:0.65rem}.color-swatch{width:28px;height:28px}.color-picker-row{gap:0.4rem}.btn-fullscreen-v2{padding:0.6rem;font-size:0.4rem}.profile-avatar-ring{width:50px;height:50px}.profile-avatar-ring svg{width:26px;height:26px}.profile-stat-number{font-size:1rem}.profile-stat-label{font-size:0.35rem}.profile-stats-row{gap:0.3rem}.profile-stat-card{padding:0.6rem 0.3rem}.profile-name-input{font-size:0.9rem;padding:0.6rem 0.7rem}.ranking-container{max-height:280px}.ranking-table th,.ranking-table td{padding:6px;font-size:0.8rem}.ranking-table th{font-size:0.4rem}#game-screen{padding:0;overflow-y:auto}#game-screen.active{display:flex;flex-direction:column}.arena-header{position:relative;top:auto;padding:0.5rem;margin-top:2.5rem}.arena-header h2{font-size:0.45rem}.match-timer{font-size:1rem;margin-top:0.2rem}.arena-controls{position:fixed;top:0.5rem;right:0.5rem;gap:5px;z-index:60}.btn-icon-only{width:30px;height:30px;padding:6px}.arena-container{flex-direction:column;width:100%;height:auto;gap:0.5rem;padding:0 0.5rem;max-width:100%}.fighter-card{flex-direction:row;align-items:center;padding:0.5rem 0.7rem;gap:0.5rem}.opponent-card{flex-direction:row-reverse;text-align:left;align-items:center;border-right:none;border-left:3px solid var(--primary-pink)}.fighter-info{flex:1;min-width:0}.fighter-info h3{font-size:0.5rem;margin-bottom:0.3rem}.health-bar-container{height:14px}.health-text{font-size:0.5rem;margin-top:0.2rem}.avatar{width:45px;height:45px}.player-avatar::after,.opponent-avatar::after{width:40px;height:40px}.combat-center{flex:none;width:100%;padding:0 0.3rem;gap:0.5rem}.phrase-box{padding:0.7rem;gap:0.5rem}#target-phrase{font-size:clamp(0.8rem,4vw,1.2rem);letter-spacing:1px}#type-input{padding:0.7rem 0.5rem;font-size:1rem}.countdown{font-size:4rem}.result-panel{width:92%;padding:1.2rem 0.8rem}#result-title{font-size:1rem;margin-bottom:0.8rem}.btn-primary{padding:0.7rem 1.2rem;font-size:0.6rem;min-width:180px}.chat-container{position:fixed;bottom:0.5rem;left:0.5rem;width:calc(100vw - 1rem);max-width:300px;z-index:55}.chat-container .chat-body{height:160px}.btn-toggle-chat{width:34px;height:34px;padding:7px}.chat-messages{padding:0.5rem;font-size:0.8rem}.chat-input{padding:0.5rem 0.7rem;font-size:0.8rem}.status-text{font-size:0.5rem}}
+@media(max-width:380px){.glitch{font-size:1.2rem}.subtitle{font-size:0.65rem}.menu-nav-card{padding:0.5rem 0.2rem;font-size:0.3rem}.menu-nav-card svg{width:16px;height:16px}.ai-diff-card{padding:0.5rem 0.2rem}.selector-card{padding:0.4rem 0.15rem}.fighter-info h3{font-size:0.45rem}.avatar{width:35px;height:35px}.player-avatar::after,.opponent-avatar::after{width:30px;height:30px}#target-phrase{font-size:clamp(0.7rem,3.5vw,1rem)}#type-input{font-size:0.9rem;padding:0.6rem 0.4rem}.profile-stat-number{font-size:0.8rem}}
+@media(max-height:500px) and (orientation:landscape){.arena-container{flex-direction:row;height:auto;gap:0.5rem}.fighter-card{flex-direction:column;padding:0.5rem}.opponent-card{flex-direction:column;text-align:right;border-right:3px solid var(--primary-pink);border-left:none}.avatar{width:45px;height:45px}.player-avatar::after,.opponent-avatar::after{width:40px;height:40px}.fighter-info h3{font-size:0.5rem;margin-bottom:0.2rem}.health-bar-container{height:12px}.arena-header{position:relative;top:auto;padding:0.3rem}.match-timer{font-size:0.9rem;margin-top:0}.phrase-box{padding:0.5rem}#target-phrase{font-size:clamp(0.7rem,2vw,1rem)}#type-input{padding:0.5rem;font-size:0.9rem}.countdown{font-size:3rem}}
+    </style>
 </head>
 
 <body>
@@ -597,7 +864,684 @@
     <div id="damage-overlay"></div>
 
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-    <script src="script.js?v=4.0"></script>
+    <script>
+/* === INLINE JS — always local connection === */
+const socket = io(window.location.origin, { transports: ['websocket'] });
+
+const screens = {
+    mainMenu: document.getElementById('main-menu-screen'),
+    modeSelection: document.getElementById('mode-selection-screen'),
+    trainingSetup: document.getElementById('training-setup-screen'),
+    ranking: document.getElementById('ranking-screen'),
+    profile: document.getElementById('profile-screen'),
+    settings: document.getElementById('settings-screen'),
+    lobby: document.getElementById('lobby-screen'),
+    game: document.getElementById('game-screen')
+};
+
+const navElements = {
+    btnPlay: document.getElementById('nav-btn-play'),
+    btnProfile: document.getElementById('nav-btn-profile'),
+    btnSettings: document.getElementById('nav-btn-settings'),
+    btnRanking: document.getElementById('nav-btn-ranking'),
+    btnBackProfile: document.getElementById('btn-back-profile'),
+    btnBackSettings: document.getElementById('btn-back-settings'),
+    btnBackRanking: document.getElementById('btn-back-ranking'),
+    btnCancelSearch: document.getElementById('btn-cancel-search'),
+    btnModeOnline: document.getElementById('btn-mode-online'),
+    btnModeTraining: document.getElementById('btn-mode-training'),
+    btnBackMode: document.getElementById('btn-back-mode'),
+    btnBackTraining: document.getElementById('btn-back-training'),
+    btnStartTraining: document.getElementById('btn-start-training'),
+    trainingTextDiff: document.getElementById('training-text-difficulty'),
+    trainingAiDiff: document.getElementById('training-ai-difficulty'),
+    trainingMatchDuration: document.getElementById('training-match-duration')
+};
+
+const profileElements = {
+    nameInput: document.getElementById('player-name-input'),
+    wins: document.getElementById('stat-wins'),
+    losses: document.getElementById('stat-losses')
+};
+
+const settingsElements = {
+    toggleAnimations: document.getElementById('toggle-animations'),
+    toggleAudio: document.getElementById('toggle-audio'),
+    toggleAutofire: document.getElementById('toggle-autofire'),
+    selectTheme: document.getElementById('select-theme'),
+    volumeSlider: document.getElementById('volume-slider'),
+    btnFullscreen: document.getElementById('btn-fullscreen')
+};
+
+const rankingElements = {
+    tableBody: document.getElementById('ranking-body'),
+    loadingText: document.getElementById('ranking-loading')
+};
+
+const menuElements = {
+    btnFindMatch: document.getElementById('btn-find-match'),
+    status: document.getElementById('matchmaking-status'),
+    searchDifficultyText: document.getElementById('search-difficulty-text')
+};
+
+const gameElements = {
+    roomId: document.getElementById('display-room-id'),
+    matchTimer: document.getElementById('match-timer'),
+    btnArenaSettings: document.getElementById('btn-arena-settings'),
+    btnArenaSurrender: document.getElementById('btn-arena-surrender'),
+    chatMessages: document.getElementById('chat-messages'),
+    chatInput: document.getElementById('chat-input'),
+    playerNameText: document.getElementById('player-name-lbl'),
+    opponentNameText: document.getElementById('opponent-name-lbl'),
+    playerHealthFill: document.getElementById('player-health-fill'),
+    playerHealthText: document.getElementById('player-health-text'),
+    playerNameLabel: document.querySelector('.player-card h3'),
+    opponentHealthFill: document.getElementById('opponent-health-fill'),
+    opponentHealthText: document.getElementById('opponent-health-text'),
+    opponentNameLabel: document.querySelector('.opponent-card h3'),
+    countdown: document.getElementById('countdown-display'),
+    phraseContainer: document.getElementById('phrase-container'),
+    targetPhrase: document.getElementById('target-phrase'),
+    typeInput: document.getElementById('type-input'),
+    gameOverPanel: document.getElementById('game-over-panel'),
+    resultTitle: document.getElementById('result-title'),
+    btnRematch: document.getElementById('btn-rematch'),
+    playerAvatar: document.querySelector('.player-avatar'),
+    opponentAvatar: document.querySelector('.opponent-avatar'),
+    damageOverlay: document.getElementById('damage-overlay'),
+    phraseTimerContainer: document.getElementById('phrase-timer-container'),
+    phraseTimerFill: document.getElementById('phrase-timer-fill')
+};
+
+let currentRoom = null;
+let currentPhraseStr = "";
+let isPlaying = false;
+let gameMode = 'online';
+let aiState = { interval: null, difficulty: 'veteran' };
+let currentDifficulty = "normal";
+let phraseTimeLimit = 15;
+let localPhraseTimer = null;
+let aiMatchTimer = null;
+let aiMatchTimeLeft = 0;
+let waitingForStart = false;
+let userProfile = { username: "Piloto Espacial", wins: 0, losses: 0 };
+let userSettings = { animations: true, audio: true, autoFire: true, theme: '#00ff41', volume: 0.5 };
+const MAX_HEALTH = 100;
+
+function initStorage() {
+    const savedProfile = localStorage.getItem('tf_profile');
+    if (savedProfile) userProfile = { ...userProfile, ...JSON.parse(savedProfile) };
+    const savedSettings = localStorage.getItem('tf_settings');
+    if (savedSettings) userSettings = { ...userSettings, ...JSON.parse(savedSettings) };
+    profileElements.nameInput.value = userProfile.username;
+    profileElements.wins.textContent = userProfile.wins;
+    profileElements.losses.textContent = userProfile.losses;
+    updateRatio();
+    settingsElements.toggleAnimations.checked = userSettings.animations;
+    settingsElements.toggleAudio.checked = userSettings.audio;
+    settingsElements.toggleAutofire.checked = userSettings.autoFire;
+    settingsElements.selectTheme.value = userSettings.theme;
+    settingsElements.volumeSlider.value = userSettings.volume;
+    document.documentElement.style.setProperty('--primary-cyan', userSettings.theme);
+    document.querySelectorAll('.color-swatch').forEach(s => {
+        s.classList.toggle('selected', s.dataset.color === userSettings.theme);
+    });
+}
+
+function saveProfile() {
+    userProfile.username = profileElements.nameInput.value.trim() || "Piloto Espacial";
+    localStorage.setItem('tf_profile', JSON.stringify(userProfile));
+    updateRatio();
+}
+
+function updateRatio() {
+    const ratioEl = document.getElementById('stat-ratio');
+    if (!ratioEl) return;
+    const w = userProfile.wins || 0;
+    const l = userProfile.losses || 0;
+    if (w === 0 && l === 0) ratioEl.textContent = '-';
+    else if (l === 0) ratioEl.textContent = w.toFixed(1);
+    else ratioEl.textContent = (w / l).toFixed(1);
+}
+
+function saveSettings() {
+    userSettings.animations = settingsElements.toggleAnimations.checked;
+    userSettings.audio = settingsElements.toggleAudio.checked;
+    userSettings.autoFire = settingsElements.toggleAutofire.checked;
+    userSettings.theme = settingsElements.selectTheme.value;
+    userSettings.volume = parseFloat(settingsElements.volumeSlider.value);
+    localStorage.setItem('tf_settings', JSON.stringify(userSettings));
+    document.documentElement.style.setProperty('--primary-cyan', userSettings.theme);
+}
+
+initStorage();
+
+function switchScreen(screenId) {
+    Object.values(screens).forEach(s => { if (s) s.classList.remove('active', 'hidden'); });
+    Object.keys(screens).forEach(k => {
+        if (!screens[k]) return;
+        if (k === screenId) screens[k].classList.add('active');
+        else screens[k].classList.add('hidden');
+    });
+}
+
+function updateHealth(playerId, health, playersList) {
+    const isMe = playerId === socket.id;
+    const fill = isMe ? gameElements.playerHealthFill : gameElements.opponentHealthFill;
+    const text = isMe ? gameElements.playerHealthText : gameElements.opponentHealthText;
+    health = Math.max(0, health);
+    const percentage = (health / MAX_HEALTH) * 100;
+    fill.style.width = `${percentage}%`;
+    text.textContent = `${health} / ${MAX_HEALTH}`;
+    if (isMe && health < playersList[playerId]?.health) { triggerDamageFlash(); shakeElement(gameElements.playerAvatar); }
+    else if (!isMe && health < playersList[playerId]?.health) { shakeElement(gameElements.opponentAvatar); }
+}
+
+function triggerDamageFlash() {
+    if (!userSettings.animations) return;
+    gameElements.damageOverlay.classList.remove('flash-red');
+    void gameElements.damageOverlay.offsetWidth;
+    gameElements.damageOverlay.classList.add('flash-red');
+}
+
+function shakeElement(el) {
+    if (!userSettings.animations) return;
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = 'shake 0.4s cubic-bezier(.36,.07,.19,.97) both';
+}
+
+function createAttackAnimation(isPlayerAttacking) {
+    const startEl = isPlayerAttacking ? gameElements.playerAvatar : gameElements.opponentAvatar;
+    const endEl = isPlayerAttacking ? gameElements.opponentAvatar : gameElements.playerAvatar;
+    const startRect = startEl.getBoundingClientRect();
+    const endRect = endEl.getBoundingClientRect();
+    const particle = document.createElement('div');
+    particle.className = 'attack-particle';
+    particle.style.left = `${startRect.left + startRect.width / 2}px`;
+    particle.style.top = `${startRect.top + startRect.height / 2}px`;
+    particle.style.background = isPlayerAttacking ? 'var(--primary-cyan)' : 'var(--primary-pink)';
+    particle.style.boxShadow = `0 0 15px ${particle.style.background}`;
+    document.body.appendChild(particle);
+    const animation = particle.animate([
+        { transform: 'translate(0, 0) scale(1)' },
+        { transform: `translate(${endRect.left - startRect.left}px, ${endRect.top - startRect.top}px) scale(3)` }
+    ], { duration: 250, easing: 'ease-in' });
+    animation.onfinish = () => {
+        particle.remove();
+        createImpact(endRect.left + endRect.width / 2, endRect.top + endRect.height / 2, particle.style.background);
+    };
+}
+
+function createImpact(x, y, color) {
+    const impact = document.createElement('div');
+    impact.style.position = 'absolute';
+    impact.style.left = `${x - 20}px`;
+    impact.style.top = `${y - 20}px`;
+    impact.style.width = '40px';
+    impact.style.height = '40px';
+    impact.style.borderRadius = '50%';
+    impact.style.background = color;
+    impact.style.opacity = '0.8';
+    impact.style.zIndex = '50';
+    document.body.appendChild(impact);
+    const anim = impact.animate([
+        { transform: 'scale(0)', opacity: 0.8 },
+        { transform: 'scale(2.5)', opacity: 0 }
+    ], { duration: 300, easing: 'ease-out' });
+    anim.onfinish = () => impact.remove();
+}
+
+settingsElements.btnFullscreen.addEventListener('click', () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(err => console.log(err.message));
+    else document.exitFullscreen();
+});
+
+navElements.btnPlay.addEventListener('click', () => switchScreen('modeSelection'));
+navElements.btnModeOnline.addEventListener('click', () => { gameMode = 'online'; startMatchmaking(); });
+navElements.btnModeTraining.addEventListener('click', () => { gameMode = 'ai'; switchScreen('trainingSetup'); });
+navElements.btnBackMode.addEventListener('click', () => switchScreen('mainMenu'));
+navElements.btnBackTraining.addEventListener('click', () => switchScreen('modeSelection'));
+
+document.querySelectorAll('.ai-diff-card').forEach(card => {
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.ai-diff-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        document.getElementById('training-ai-difficulty').value = card.dataset.difficulty;
+    });
+});
+
+document.querySelectorAll('.selector-cards').forEach(group => {
+    const targetId = group.dataset.target;
+    group.querySelectorAll('.selector-card').forEach(card => {
+        card.addEventListener('click', () => {
+            group.querySelectorAll('.selector-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            document.getElementById(targetId).value = card.dataset.value;
+        });
+    });
+});
+
+navElements.btnStartTraining.addEventListener('click', () => {
+    currentDifficulty = navElements.trainingTextDiff.value;
+    aiState.difficulty = navElements.trainingAiDiff.value;
+    startTrainingMatch();
+});
+
+function startMatchmaking() {
+    menuElements.searchDifficultyText.textContent = 'Buscando un sector de combate disponible...';
+    switchScreen('lobby');
+    socket.emit('join_match', { username: userProfile.username });
+}
+
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function clearAIMatchTimer() { if (aiMatchTimer) { clearInterval(aiMatchTimer); aiMatchTimer = null; } }
+
+function startAIMatchTimer(duration) {
+    clearAIMatchTimer();
+    aiMatchTimeLeft = duration;
+    gameElements.matchTimer.classList.remove('hidden');
+    gameElements.matchTimer.textContent = formatTime(aiMatchTimeLeft);
+    gameElements.matchTimer.style.color = 'var(--primary-cyan)';
+    gameElements.matchTimer.style.textShadow = '0 0 15px rgba(0, 240, 255, 0.5)';
+    aiMatchTimer = setInterval(() => {
+        aiMatchTimeLeft -= 1;
+        gameElements.matchTimer.textContent = formatTime(aiMatchTimeLeft);
+        if (aiMatchTimeLeft <= 10) {
+            gameElements.matchTimer.style.color = 'var(--primary-pink)';
+            gameElements.matchTimer.style.textShadow = '0 0 15px var(--primary-pink)';
+        }
+        if (aiMatchTimeLeft <= 0) {
+            clearAIMatchTimer();
+            const playerHealth = parseInt(gameElements.playerHealthText.textContent.split(' ')[0]);
+            const oppHealth = parseInt(gameElements.opponentHealthText.textContent.split(' ')[0]);
+            if (playerHealth > oppHealth) handleAIGameOver(true);
+            else if (oppHealth > playerHealth) handleAIGameOver(false);
+            else {
+                isPlaying = false; clearInterval(aiState.interval); clearLocalPhraseTimer();
+                gameElements.typeInput.disabled = true;
+                setTimeout(() => {
+                    gameElements.gameOverPanel.classList.remove('hidden');
+                    gameElements.resultTitle.textContent = "\u00A1EMPATE!";
+                    gameElements.resultTitle.style.color = "var(--text-main)";
+                    gameElements.resultTitle.style.textShadow = "none";
+                }, 1000);
+            }
+        }
+    }, 1000);
+}
+
+function cleanupTrainingState() {
+    isPlaying = false; waitingForStart = false; currentPhraseStr = "";
+    if (aiState.interval) clearInterval(aiState.interval);
+    aiState.interval = null;
+    clearLocalPhraseTimer(); clearAIMatchTimer();
+}
+
+function startTrainingMatch() {
+    cleanupTrainingState();
+    switchScreen('game');
+    currentRoom = 'local_ai_room';
+    const diffNames = { rookie: "Cadete", veteran: "Veterano", elite: "\u00C9lite" };
+    gameElements.roomId.textContent = `SIMULACI\u00D3N - IA: ${diffNames[aiState.difficulty]}`;
+    gameElements.playerNameText.textContent = userProfile.username;
+    gameElements.opponentNameText.textContent = 'Oponente IA';
+    gameElements.gameOverPanel.classList.add('hidden');
+    chatContainer.classList.add('collapsed');
+    chatContainer.style.display = 'none';
+    gameElements.playerHealthFill.style.width = '100%';
+    gameElements.playerHealthText.textContent = `${MAX_HEALTH} / ${MAX_HEALTH}`;
+    gameElements.opponentHealthFill.style.width = '100%';
+    gameElements.opponentHealthText.textContent = `${MAX_HEALTH} / ${MAX_HEALTH}`;
+    gameElements.typeInput.value = '';
+    gameElements.typeInput.disabled = false;
+    gameElements.typeInput.focus();
+    gameElements.countdown.classList.add('hidden');
+    gameElements.targetPhrase.innerHTML = "PREP\u00C1RATE";
+    updatePhraseTimerBar(1, 1);
+    const matchDuration = parseInt(navElements.trainingMatchDuration.value);
+    if (matchDuration > 0) {
+        gameElements.matchTimer.classList.remove('hidden');
+        gameElements.matchTimer.textContent = formatTime(matchDuration);
+        gameElements.matchTimer.style.color = 'var(--primary-cyan)';
+        gameElements.matchTimer.style.textShadow = '0 0 15px rgba(0, 240, 255, 0.5)';
+        startAIMatchTimer(matchDuration);
+    } else {
+        gameElements.matchTimer.classList.add('hidden');
+    }
+    isPlaying = true;
+    socket.emit('request_ai_phrase', currentDifficulty);
+    startAILoop();
+}
+
+function startAILoop() {
+    if (aiState.interval) clearInterval(aiState.interval);
+    let baseTime = 4000;
+    if (aiState.difficulty === 'veteran') baseTime = 2500;
+    if (aiState.difficulty === 'elite') baseTime = 1200;
+    const attackTime = baseTime + (Math.random() * 1000 - 500);
+    aiState.interval = setInterval(() => {
+        if (!isPlaying || gameMode !== 'ai') { clearInterval(aiState.interval); return; }
+        let currentHealth = parseInt(gameElements.playerHealthText.textContent.split(' ')[0]) - 20;
+        updateHealth(socket.id, currentHealth, { [socket.id]: { health: currentHealth } });
+        createAttackAnimation(false); triggerDamageFlash(); shakeElement(gameElements.playerAvatar);
+        if (currentHealth <= 0) handleAIGameOver(false);
+        else { socket.emit('request_ai_phrase', currentDifficulty); gameElements.typeInput.value = ''; }
+    }, attackTime);
+}
+
+function handleAIGameOver(isWin) {
+    isPlaying = false; clearInterval(aiState.interval); clearLocalPhraseTimer(); clearAIMatchTimer();
+    gameElements.typeInput.disabled = true;
+    setTimeout(() => {
+        gameElements.gameOverPanel.classList.remove('hidden');
+        gameElements.resultTitle.textContent = isWin ? "\u00A1SIMULACI\u00D3N SUPERADA!" : "\u00A1SIMULACI\u00D3N FALLIDA!";
+        gameElements.resultTitle.style.color = isWin ? "var(--primary-cyan)" : "var(--primary-pink)";
+        gameElements.resultTitle.style.textShadow = `0 0 20px ${gameElements.resultTitle.style.color}`;
+    }, 1000);
+}
+
+navElements.btnCancelSearch.addEventListener('click', () => { socket.emit('cancel_match'); switchScreen('mainMenu'); });
+navElements.btnProfile.addEventListener('click', () => switchScreen('profile'));
+navElements.btnSettings.addEventListener('click', () => switchScreen('settings'));
+
+document.querySelectorAll('.color-swatch').forEach(swatch => {
+    swatch.addEventListener('click', () => {
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+        swatch.classList.add('selected');
+        settingsElements.selectTheme.value = swatch.dataset.color;
+        settingsElements.selectTheme.dispatchEvent(new Event('change'));
+    });
+});
+
+navElements.btnRanking.addEventListener('click', () => {
+    switchScreen('ranking');
+    rankingElements.loadingText.classList.remove('hidden');
+    rankingElements.tableBody.innerHTML = '';
+    socket.emit('get_leaderboard');
+});
+
+navElements.btnBackRanking.addEventListener('click', () => switchScreen('mainMenu'));
+navElements.btnBackProfile.addEventListener('click', () => { saveProfile(); switchScreen('mainMenu'); });
+
+navElements.btnBackSettings.addEventListener('click', () => {
+    saveSettings();
+    if (currentRoom) switchScreen('game');
+    else switchScreen('mainMenu');
+});
+
+profileElements.nameInput.addEventListener('blur', saveProfile);
+settingsElements.toggleAnimations.addEventListener('change', saveSettings);
+settingsElements.toggleAudio.addEventListener('change', saveSettings);
+settingsElements.toggleAutofire.addEventListener('change', saveSettings);
+settingsElements.selectTheme.addEventListener('change', saveSettings);
+settingsElements.volumeSlider.addEventListener('input', saveSettings);
+
+gameElements.btnRematch.addEventListener('click', () => {
+    cleanupTrainingState();
+    currentRoom = null; currentPhraseStr = "";
+    gameElements.gameOverPanel.classList.add('hidden');
+    gameElements.matchTimer.classList.add('hidden');
+    gameElements.countdown.classList.add('hidden');
+    gameElements.chatMessages.innerHTML = '<div class="chat-msg system">Conectado. Preparando chat...</div>';
+    gameElements.typeInput.value = ''; gameElements.typeInput.disabled = true;
+    gameElements.playerHealthFill.style.width = '100%';
+    gameElements.playerHealthText.textContent = '100 / 100';
+    gameElements.opponentHealthFill.style.width = '100%';
+    gameElements.opponentHealthText.textContent = '100 / 100';
+    switchScreen('mainMenu');
+});
+
+gameElements.btnArenaSettings.addEventListener('click', () => switchScreen('settings'));
+
+gameElements.btnArenaSurrender.addEventListener('click', () => {
+    if (confirm('\u00BFEst\u00E1s seguro de que quieres retirarte de la partida?')) {
+        if (gameMode === 'online') socket.emit('surrender_match', { roomId: currentRoom });
+        else cleanupTrainingState();
+        currentRoom = null; currentPhraseStr = ""; isPlaying = false;
+        gameElements.typeInput.disabled = true; gameElements.typeInput.value = '';
+        switchScreen('mainMenu');
+        gameElements.gameOverPanel.classList.add('hidden');
+        gameElements.matchTimer.classList.add('hidden');
+        gameElements.countdown.classList.add('hidden');
+        chatContainer.style.display = 'flex';
+        chatContainer.classList.add('collapsed');
+    }
+});
+
+const chatContainer = document.getElementById('chat-container');
+const btnToggleChat = document.getElementById('btn-toggle-chat');
+const chatBadge = document.getElementById('chat-badge');
+
+btnToggleChat.addEventListener('click', () => {
+    chatContainer.classList.toggle('collapsed');
+    if (!chatContainer.classList.contains('collapsed')) { chatBadge.classList.add('hidden'); gameElements.chatInput.focus(); }
+});
+
+function showChatNotification() { if (chatContainer.classList.contains('collapsed')) chatBadge.classList.remove('hidden'); }
+
+gameElements.chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const text = e.target.value.trim(); e.preventDefault();
+        if (text && currentRoom) { socket.emit('send_chat_msg', { roomId: currentRoom, sender: userProfile.username, text }); e.target.value = ''; }
+    }
+});
+
+gameElements.typeInput.addEventListener('input', (e) => {
+    if (!isPlaying) { e.target.value = ""; return; }
+    const typed = e.target.value;
+    if (currentPhraseStr.startsWith(typed)) {
+        gameElements.typeInput.classList.remove('error');
+        const matchedPart = currentPhraseStr.substring(0, typed.length);
+        const remPart = currentPhraseStr.substring(typed.length);
+        gameElements.targetPhrase.innerHTML = `<span class="matched-text">${matchedPart}</span>${remPart}`;
+        if (typed === currentPhraseStr && userSettings.autoFire) submitCurrentPhrase();
+    } else {
+        gameElements.typeInput.classList.add('error');
+        const commonLength = Array.from(typed).findIndex((char, i) => currentPhraseStr[i] !== char);
+        const safeCommon = commonLength === -1 ? 0 : commonLength;
+        const matchedPart = currentPhraseStr.substring(0, safeCommon);
+        const errorChar = currentPhraseStr.substring(safeCommon, safeCommon + 1) || " ";
+        const remPart = currentPhraseStr.substring(safeCommon + 1);
+        gameElements.targetPhrase.innerHTML = `<span class="matched-text">${matchedPart}</span><span class="error-text">${errorChar}</span>${remPart}`;
+    }
+});
+
+function submitCurrentPhrase() {
+    isPlaying = false; gameElements.typeInput.disabled = true; clearLocalPhraseTimer();
+    if (gameMode === 'online') {
+        socket.emit('type_word', { roomId: currentRoom, input: gameElements.typeInput.value });
+    } else if (gameMode === 'ai') {
+        let oppHealth = parseInt(gameElements.opponentHealthText.textContent.split(' ')[0]) - 20;
+        updateHealth('ai_bot', oppHealth, { 'ai_bot': { health: oppHealth } });
+        createAttackAnimation(true); shakeElement(gameElements.opponentAvatar);
+        if (oppHealth <= 0) handleAIGameOver(true);
+        else { socket.emit('request_ai_phrase', currentDifficulty); gameElements.typeInput.value = ''; }
+    }
+}
+
+gameElements.typeInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); if (!userSettings.autoFire && isPlaying && gameElements.typeInput.value === currentPhraseStr) submitCurrentPhrase(); }
+});
+
+socket.on('match_joined', (data) => { currentRoom = data.roomId; gameElements.roomId.textContent = `SALA: ${data.roomId}`; });
+
+socket.on('match_started', (data) => {
+    switchScreen('game');
+    gameElements.gameOverPanel.classList.add('hidden');
+    gameElements.typeInput.value = ""; gameElements.typeInput.disabled = true;
+    gameElements.playerHealthFill.style.width = '100%';
+    gameElements.opponentHealthFill.style.width = '100%';
+    const myData = data.players[socket.id];
+    const oppId = Object.keys(data.players).find(id => id !== socket.id);
+    const oppData = data.players[oppId];
+    if (myData) gameElements.playerNameLabel.textContent = myData.username.toUpperCase();
+    if (oppData) gameElements.opponentNameLabel.textContent = oppData.username.toUpperCase();
+    gameElements.targetPhrase.innerHTML = "PREP\u00C1RATE";
+});
+
+socket.on('countdown', (data) => {
+    gameElements.countdown.classList.remove('hidden');
+    let ioCode = setInterval(() => {
+        data.seconds--;
+        if (data.seconds > 0) {
+            gameElements.countdown.textContent = data.seconds;
+            gameElements.countdown.style.animation = 'none';
+            void gameElements.countdown.offsetWidth;
+            gameElements.countdown.style.animation = 'popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        } else { clearInterval(ioCode); gameElements.countdown.classList.add('hidden'); gameElements.matchTimer.classList.remove('hidden'); }
+    }, 1000);
+});
+
+socket.on('timer_tick', (data) => {
+    const mins = Math.floor(data.timeLeft / 60);
+    const secs = data.timeLeft % 60;
+    gameElements.matchTimer.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    if (data.timeLeft <= 10) { gameElements.matchTimer.style.color = 'var(--primary-pink)'; gameElements.matchTimer.style.textShadow = '0 0 15px var(--primary-pink)'; }
+    else { gameElements.matchTimer.style.color = 'var(--primary-cyan)'; gameElements.matchTimer.style.textShadow = '0 0 15px rgba(0, 240, 255, 0.5)'; }
+});
+
+socket.on('chat_msg_received', (data) => {
+    const isMe = data.senderId === socket.id;
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `chat-msg ${isMe ? 'me' : 'opponent'}`;
+    const safeText = document.createTextNode(data.text);
+    msgDiv.innerHTML = `<span class="name">${data.sender}:</span> `;
+    msgDiv.appendChild(safeText);
+    gameElements.chatMessages.appendChild(msgDiv);
+    gameElements.chatMessages.scrollTop = gameElements.chatMessages.scrollHeight;
+    if (!isMe) showChatNotification();
+});
+
+function clearLocalPhraseTimer() { if (localPhraseTimer) { clearInterval(localPhraseTimer); localPhraseTimer = null; } }
+
+function startLocalPhraseTimer() {
+    clearLocalPhraseTimer();
+    let timeLeft = phraseTimeLimit;
+    updatePhraseTimerBar(timeLeft, phraseTimeLimit);
+    localPhraseTimer = setInterval(() => {
+        timeLeft -= 1;
+        updatePhraseTimerBar(timeLeft, phraseTimeLimit);
+        if (timeLeft <= 0) {
+            clearLocalPhraseTimer();
+            isPlaying = false; gameElements.typeInput.disabled = true; gameElements.typeInput.value = "";
+            gameElements.targetPhrase.innerHTML = '<span style="color:var(--primary-pink)">\u00A1TIEMPO AGOTADO!</span>';
+            let playerHealth = parseInt(gameElements.playerHealthText.textContent.split(' ')[0]) - 10;
+            let oppHealth = parseInt(gameElements.opponentHealthText.textContent.split(' ')[0]) - 10;
+            updateHealth(socket.id, playerHealth, { [socket.id]: { health: playerHealth } });
+            updateHealth('ai_bot', oppHealth, { 'ai_bot': { health: oppHealth } });
+            triggerDamageFlash(); shakeElement(gameElements.playerAvatar); shakeElement(gameElements.opponentAvatar);
+            if (playerHealth <= 0 && oppHealth <= 0) { handleAIGameOver(false); return; }
+            if (playerHealth <= 0) { handleAIGameOver(false); return; }
+            if (oppHealth <= 0) { handleAIGameOver(true); return; }
+            setTimeout(() => { if (gameMode === 'ai') socket.emit('request_ai_phrase', currentDifficulty); }, 1500);
+        }
+    }, 1000);
+}
+
+socket.on('ai_phrase_received', (data) => {
+    currentPhraseStr = data.phrase;
+    gameElements.targetPhrase.innerHTML = currentPhraseStr;
+    isPlaying = true;
+    gameElements.typeInput.disabled = false; gameElements.typeInput.value = ""; gameElements.typeInput.focus();
+    if (gameMode === 'ai') { startLocalPhraseTimer(); if (!aiState.interval) startAILoop(); }
+});
+
+socket.on('leaderboard_data', (topPlayers) => {
+    rankingElements.loadingText.classList.add('hidden');
+    rankingElements.tableBody.innerHTML = '';
+    if (topPlayers.length === 0) {
+        rankingElements.tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#5a8a5a;">No hay datos aun. Se el primero en ganar!</td></tr>';
+        return;
+    }
+    topPlayers.forEach((player, index) => {
+        const row = document.createElement('tr');
+        const posClass = index === 0 ? 'ranking-row-top1' : index === 1 ? 'ranking-row-top2' : index === 2 ? 'ranking-row-top3' : '';
+        row.innerHTML = `<td class="${posClass}">${index + 1}</td><td class="${posClass}">${player.username}</td><td class="${posClass}">${player.wins}</td>`;
+        rankingElements.tableBody.appendChild(row);
+    });
+});
+
+function updatePhraseTimerBar(timeLeft, timeLimit) {
+    const pct = (timeLeft / timeLimit) * 100;
+    gameElements.phraseTimerFill.style.width = `${pct}%`;
+    gameElements.phraseTimerFill.classList.remove('warning', 'critical');
+    if (pct <= 20) gameElements.phraseTimerFill.classList.add('critical');
+    else if (pct <= 50) gameElements.phraseTimerFill.classList.add('warning');
+}
+
+socket.on('new_phrase', (data) => {
+    currentPhraseStr = data.phrase;
+    if (data.timeLimit) phraseTimeLimit = data.timeLimit;
+    gameElements.targetPhrase.innerHTML = currentPhraseStr;
+    isPlaying = true;
+    gameElements.typeInput.disabled = false; gameElements.typeInput.value = ""; gameElements.typeInput.focus();
+    updatePhraseTimerBar(phraseTimeLimit, phraseTimeLimit);
+});
+
+socket.on('phrase_timer_tick', (data) => updatePhraseTimerBar(data.timeLeft, phraseTimeLimit));
+
+socket.on('phrase_expired', (data) => {
+    isPlaying = false; gameElements.typeInput.disabled = true; gameElements.typeInput.value = "";
+    gameElements.targetPhrase.innerHTML = '<span style="color:var(--primary-pink)">\u00A1TIEMPO AGOTADO!</span>';
+    updatePhraseTimerBar(0, phraseTimeLimit);
+    triggerDamageFlash(); shakeElement(gameElements.playerAvatar); shakeElement(gameElements.opponentAvatar);
+    const myHealth = data.players[socket.id]?.health || 0;
+    const oppId = Object.keys(data.players).find(id => id !== socket.id);
+    const oppHealth = data.players[oppId]?.health || 0;
+    gameElements.playerHealthFill.style.width = `${Math.max(0, (myHealth / MAX_HEALTH) * 100)}%`;
+    gameElements.playerHealthText.textContent = `${Math.max(0, myHealth)} / ${MAX_HEALTH}`;
+    gameElements.opponentHealthFill.style.width = `${Math.max(0, (oppHealth / MAX_HEALTH) * 100)}%`;
+    gameElements.opponentHealthText.textContent = `${Math.max(0, oppHealth)} / ${MAX_HEALTH}`;
+});
+
+socket.on('phrase_completed', (data) => {
+    const isWinnerMe = data.winnerId === socket.id;
+    createAttackAnimation(isWinnerMe);
+    const myHealth = data.players[socket.id].health;
+    const oppId = Object.keys(data.players).find(id => id !== socket.id);
+    const oppHealth = data.players[oppId]?.health || 0;
+    setTimeout(() => {
+        gameElements.playerHealthFill.style.width = `${Math.max(0, (myHealth / MAX_HEALTH) * 100)}%`;
+        gameElements.playerHealthText.textContent = `${Math.max(0, myHealth)} / ${MAX_HEALTH}`;
+        gameElements.opponentHealthFill.style.width = `${Math.max(0, (oppHealth / MAX_HEALTH) * 100)}%`;
+        gameElements.opponentHealthText.textContent = `${Math.max(0, oppHealth)} / ${MAX_HEALTH}`;
+        if (!isWinnerMe) triggerDamageFlash();
+        shakeElement(isWinnerMe ? gameElements.opponentAvatar : gameElements.playerAvatar);
+    }, 250);
+});
+
+socket.on('game_over', (data) => {
+    isPlaying = false; gameElements.typeInput.disabled = true;
+    setTimeout(() => {
+        gameElements.gameOverPanel.classList.remove('hidden');
+        if (data.reason === 'timeout_tie') {
+            gameElements.resultTitle.textContent = "EMPATE";
+            gameElements.resultTitle.style.color = "var(--text-color)";
+            gameElements.resultTitle.style.textShadow = "none";
+        } else {
+            const isWinnerMe = data.winnerId === socket.id;
+            gameElements.resultTitle.textContent = isWinnerMe ? "\u00A1VICTORIA!" : "\u00A1DERROTA!";
+            gameElements.resultTitle.style.color = isWinnerMe ? "var(--primary-cyan)" : "var(--primary-pink)";
+            gameElements.resultTitle.style.textShadow = `0 0 20px ${gameElements.resultTitle.style.color}`;
+            if (isWinnerMe) userProfile.wins += 1; else userProfile.losses += 1;
+        }
+        saveProfile();
+        profileElements.wins.textContent = userProfile.wins;
+        profileElements.losses.textContent = userProfile.losses;
+        updateRatio();
+    }, 1000);
+});
+
+socket.on('opponent_disconnected', () => {
+    if (screens.game.classList.contains('active')) { alert("El oponente se ha desconectado."); gameElements.btnRematch.click(); }
+});
+    </script>
 </body>
 
 </html>
