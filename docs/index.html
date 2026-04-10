@@ -363,398 +363,8 @@ h1,h2,h3,.glitch { font-family:var(--font-pixel); text-transform:uppercase; }
         </svg>
     </div>
     <div id="app">
-        <!-- Main Menu Screen -->
-        <div id="main-menu-screen" class="screen active">
-            <div class="glass-panel main-menu">
-                <div class="title-container">
-                    <h1 class="glitch" data-text="TYPING">TYPING</h1>
-                    <h1 class="glitch" data-text="FIGHTER">FIGHTER</h1>
-                </div>
-                <p class="subtitle">El combate de velocidad de mecanografía definitivo</p>
-                <div class="motd-container">
-                    <span class="motd-text" id="motd-text">Bienvenido de nuevo, Piloto.</span>
-                </div>
-                <div class="menu-buttons">
-                    <button id="nav-btn-play" class="btn-launch menu-play-btn">
-                        <svg class="btn-launch-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                        JUGAR
-                    </button>
-                    <div class="menu-nav-row">
-                        <button id="nav-btn-profile" class="menu-nav-card">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                            <span>PERFIL</span>
-                        </button>
-                        <button id="nav-btn-settings" class="menu-nav-card">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="3"></circle>
-                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                            </svg>
-                            <span>AJUSTES</span>
-                        </button>
-                        <button id="nav-btn-ranking" class="menu-nav-card">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
-                            <span>RANKING</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mode Selection Screen -->
-        <div id="mode-selection-screen" class="screen hidden">
-            <div class="glass-panel profile-panel" style="max-width: 600px;">
-                <h2 class="panel-title" style="font-size:0.8rem; color:var(--primary-cyan); text-shadow:0 0 10px rgba(0,255,65,0.5);">SELECCIONA MODO DE COMBATE</h2>
-
-                <div class="mode-options-container" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem;">
-                    <div class="mode-card" id="btn-mode-online"
-                        style="flex:1; background:rgba(0,0,0,0.7); padding:1.5rem; border-radius:0; border:2px solid var(--primary-cyan); cursor:pointer; text-align:center; transition:0.15s; box-shadow:3px 3px 0 rgba(0,255,65,0.2);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary-cyan)" stroke-width="2"
-                            style="width:40px;height:40px;margin-bottom:0.8rem;">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        <h3 style="color:var(--primary-cyan); margin-bottom:0.5rem; font-size:0.7rem;">ONLINE</h3>
-                        <p style="font-size:0.8rem; color:#5a8a5a;">Lucha contra pilotos de todo el mundo y sube en el
-                            ranking.</p>
-                    </div>
-
-                    <div class="mode-card" id="btn-mode-training"
-                        style="flex:1; background:rgba(0,0,0,0.7); padding:1.5rem; border-radius:0; border:2px solid var(--primary-pink); cursor:pointer; text-align:center; transition:0.15s; box-shadow:3px 3px 0 rgba(255,0,64,0.2);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary-pink)" stroke-width="2"
-                            style="width:40px;height:40px;margin-bottom:0.8rem;">
-                            <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-                            <rect x="9" y="9" width="6" height="6"></rect>
-                            <line x1="9" y1="1" x2="9" y2="4"></line>
-                            <line x1="15" y1="1" x2="15" y2="4"></line>
-                            <line x1="9" y1="20" x2="9" y2="23"></line>
-                            <line x1="15" y1="20" x2="15" y2="23"></line>
-                            <line x1="20" y1="9" x2="23" y2="9"></line>
-                            <line x1="20" y1="14" x2="23" y2="14"></line>
-                            <line x1="1" y1="9" x2="4" y2="9"></line>
-                            <line x1="1" y1="14" x2="4" y2="14"></line>
-                        </svg>
-                        <h3 style="color:var(--primary-pink); margin-bottom:0.5rem; font-size:0.7rem;">ENTRENAMIENTO IA</h3>
-                        <p style="font-size:0.8rem; color:#8a5a5a;">Practica sin presion contra drones informaticos.</p>
-                    </div>
-                </div>
-
-                <div class="action-container" style="margin-top: 2.5rem;">
-                    <button class="btn-secondary" id="btn-back-mode" style="width: 100%;">VOLVER AL MENÚ</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Training Setup Screen -->
-        <div id="training-setup-screen" class="screen hidden">
-            <div class="glass-panel profile-panel" style="max-width: 500px;">
-                <h2 class="panel-title" style="font-size:0.85rem;">SIMULADOR DE VUELO</h2>
-
-                <div class="settings-group" style="margin-top: 1.5rem;">
-                    <label style="color:var(--primary-cyan); font-family:var(--font-pixel); font-size:0.5rem; display:block; margin-bottom:0.8rem; letter-spacing:1px;">COMPLEJIDAD DE TEXTOS</label>
-                    <div class="selector-cards cyan-cards" data-target="training-text-difficulty">
-                        <div class="selector-card" data-value="easy">
-                            <div class="selector-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
-                            </div>
-                            <span class="selector-name">FÁCIL</span>
-                            <span class="selector-desc">Palabras cortas</span>
-                        </div>
-                        <div class="selector-card selected" data-value="normal">
-                            <div class="selector-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/><path d="M7 4l5 16"/><path d="M17 4l-5 16"/></svg>
-                            </div>
-                            <span class="selector-name">NORMAL</span>
-                            <span class="selector-desc">Frases medias</span>
-                        </div>
-                        <div class="selector-card" data-value="hard">
-                            <div class="selector-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                            </div>
-                            <span class="selector-name">DIFÍCIL</span>
-                            <span class="selector-desc">Frases largas</span>
-                        </div>
-                    </div>
-                    <input type="hidden" id="training-text-difficulty" value="normal">
-                </div>
-                <div class="settings-group">
-                    <label style="color:var(--primary-pink); font-family:var(--font-pixel); font-size:0.5rem; display:block; margin-bottom:0.8rem; letter-spacing:1px;">NIVEL DEL DRON</label>
-                    <div class="ai-difficulty-cards">
-                        <div class="ai-diff-card" data-difficulty="rookie">
-                            <div class="ai-diff-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-                            </div>
-                            <span class="ai-diff-name">CADETE</span>
-                            <span class="ai-diff-desc">Ataca cada ~4s</span>
-                            <div class="ai-diff-bars"><span class="bar active"></span><span class="bar"></span><span class="bar"></span></div>
-                        </div>
-                        <div class="ai-diff-card selected" data-difficulty="veteran">
-                            <div class="ai-diff-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                            </div>
-                            <span class="ai-diff-name">VETERANO</span>
-                            <span class="ai-diff-desc">Ataca cada ~2.5s</span>
-                            <div class="ai-diff-bars"><span class="bar active"></span><span class="bar active"></span><span class="bar"></span></div>
-                        </div>
-                        <div class="ai-diff-card" data-difficulty="elite">
-                            <div class="ai-diff-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            </div>
-                            <span class="ai-diff-name">ÉLITE</span>
-                            <span class="ai-diff-desc">Ataca cada ~1.2s</span>
-                            <div class="ai-diff-bars"><span class="bar active"></span><span class="bar active"></span><span class="bar active"></span></div>
-                        </div>
-                    </div>
-                    <input type="hidden" id="training-ai-difficulty" value="veteran">
-                </div>
-                <div class="settings-group">
-                    <label style="color:var(--retro-yellow); font-family:var(--font-pixel); font-size:0.5rem; display:block; margin-bottom:0.8rem; letter-spacing:1px;">DURACION DE PARTIDA</label>
-                    <div class="selector-cards amber-cards" data-target="training-match-duration">
-                        <div class="selector-card" data-value="60">
-                            <div class="selector-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            </div>
-                            <span class="selector-name">1 MIN</span>
-                            <span class="selector-desc">Rápida</span>
-                        </div>
-                        <div class="selector-card" data-value="120">
-                            <div class="selector-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            </div>
-                            <span class="selector-name">2 MIN</span>
-                            <span class="selector-desc">Corta</span>
-                        </div>
-                        <div class="selector-card selected" data-value="180">
-                            <div class="selector-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            </div>
-                            <span class="selector-name">3 MIN</span>
-                            <span class="selector-desc">Estándar</span>
-                        </div>
-                        <div class="selector-card" data-value="300">
-                            <div class="selector-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            </div>
-                            <span class="selector-name">5 MIN</span>
-                            <span class="selector-desc">Larga</span>
-                        </div>
-                        <div class="selector-card" data-value="0">
-                            <div class="selector-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64A9 9 0 0 1 20.77 15"/><path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
-                            </div>
-                            <span class="selector-name">∞</span>
-                            <span class="selector-desc">Sin límite</span>
-                        </div>
-                    </div>
-                    <input type="hidden" id="training-match-duration" value="180">
-                </div>
-                <div class="training-actions">
-                    <button class="btn-launch" id="btn-start-training">
-                        <svg class="btn-launch-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                        INICIAR SIMULACIÓN
-                    </button>
-                    <button class="btn-back-subtle" id="btn-back-training">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
-                            <polyline points="15 18 9 12 15 6"></polyline>
-                        </svg>
-                        VOLVER A MODOS
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Ranking Screen -->
-        <div id="ranking-screen" class="screen hidden">
-            <div class="glass-panel profile-panel">
-                <h2>RANKING GLOBAL</h2>
-                <div class="ranking-container">
-                    <table class="ranking-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Piloto</th>
-                                <th>Victorias</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ranking-body">
-                            <!-- Injected dynamically via JS -->
-                        </tbody>
-                    </table>
-                    <div id="ranking-loading">Cargando datos del satélite...</div>
-                </div>
-                <button id="btn-back-ranking" class="btn-secondary btn-back">VOLVER</button>
-            </div>
-        </div>
-
-        <!-- Profile Screen -->
-        <div id="profile-screen" class="screen hidden">
-            <div class="glass-panel profile-panel">
-                <div class="profile-header">
-                    <div class="profile-avatar-ring">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </div>
-                    <h2>PERFIL DEL PILOTO</h2>
-                </div>
-
-                <div class="profile-section">
-                    <label class="settings-section-title">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                        Identidad
-                    </label>
-                    <div class="profile-name-card">
-                        <span class="profile-name-label">ALIAS DE PILOTO</span>
-                        <input type="text" id="player-name-input" class="profile-name-input" maxlength="15" placeholder="Piloto Espacial">
-                    </div>
-                </div>
-
-                <div class="profile-section">
-                    <label class="settings-section-title">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                        Estadísticas de Combate
-                    </label>
-                    <div class="profile-stats-row">
-                        <div class="profile-stat-card stat-wins-card">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="profile-stat-icon"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-                            <span class="profile-stat-number" id="stat-wins">0</span>
-                            <span class="profile-stat-label">VICTORIAS</span>
-                        </div>
-                        <div class="profile-stat-card stat-losses-card">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="profile-stat-icon"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>
-                            <span class="profile-stat-number" id="stat-losses">0</span>
-                            <span class="profile-stat-label">DERROTAS</span>
-                        </div>
-                        <div class="profile-stat-card stat-ratio-card">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="profile-stat-icon"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                            <span class="profile-stat-number" id="stat-ratio">-</span>
-                            <span class="profile-stat-label">RATIO</span>
-                        </div>
-                    </div>
-                </div>
-
-                <button class="btn-back-subtle" id="btn-back-profile" style="margin-top:1rem;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>
-                    VOLVER
-                </button>
-            </div>
-        </div>
-
-        <!-- Settings Screen -->
-        <div id="settings-screen" class="screen hidden">
-            <div class="glass-panel settings-panel">
-                <h2>AJUSTES DE NAVE</h2>
-
-                <div class="settings-section">
-                    <label class="settings-section-title">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                        Jugabilidad
-                    </label>
-                    <div class="settings-toggles">
-                        <div class="toggle-card">
-                            <div class="toggle-info">
-                                <span class="toggle-title">Animaciones de Daño</span>
-                                <span class="toggle-desc">Efectos visuales al recibir daño</span>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" id="toggle-animations" checked>
-                                <span class="switch-slider"></span>
-                            </label>
-                        </div>
-                        <div class="toggle-card">
-                            <div class="toggle-info">
-                                <span class="toggle-title">Efectos de Sonido</span>
-                                <span class="toggle-desc">Audio durante la partida</span>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" id="toggle-audio" checked>
-                                <span class="switch-slider"></span>
-                            </label>
-                        </div>
-                        <div class="toggle-card">
-                            <div class="toggle-info">
-                                <span class="toggle-title">Auto-Disparo</span>
-                                <span class="toggle-desc">Atacar sin pulsar Enter</span>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" id="toggle-autofire" checked>
-                                <span class="switch-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <label class="settings-section-title">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><circle cx="13.5" cy="6.5" r="0.5"/><circle cx="17.5" cy="10.5" r="0.5"/><circle cx="8.5" cy="7.5" r="0.5"/><circle cx="6.5" cy="12.5" r="0.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
-                        Color del HUD
-                    </label>
-                    <div class="color-picker-row">
-                        <button class="color-swatch selected" data-color="#00ff41" style="--swatch-color:#00ff41;" title="Verde Terminal"></button>
-                        <button class="color-swatch" data-color="#00f0ff" style="--swatch-color:#00f0ff;" title="Cian"></button>
-                        <button class="color-swatch" data-color="#ffff00" style="--swatch-color:#ffff00;" title="Amarillo Arcade"></button>
-                        <button class="color-swatch" data-color="#ffaa00" style="--swatch-color:#ffaa00;" title="Ambar"></button>
-                        <button class="color-swatch" data-color="#ff0040" style="--swatch-color:#ff0040;" title="Rojo Arcade"></button>
-                        <button class="color-swatch" data-color="#b000ff" style="--swatch-color:#b000ff;" title="Purpura"></button>
-                        <button class="color-swatch" data-color="#ff6600" style="--swatch-color:#ff6600;" title="Naranja"></button>
-                        <button class="color-swatch" data-color="#e0e0e0" style="--swatch-color:#e0e0e0;" title="Blanco"></button>
-                    </div>
-                    <select id="select-theme" class="theme-select" style="display:none;">
-                        <option value="#00ff41">Verde Terminal</option>
-                        <option value="#00f0ff">Cian</option>
-                        <option value="#ffff00">Amarillo Arcade</option>
-                        <option value="#ffaa00">Ambar</option>
-                        <option value="#ff0040">Rojo Arcade</option>
-                        <option value="#b000ff">Purpura</option>
-                        <option value="#ff6600">Naranja</option>
-                        <option value="#e0e0e0">Blanco</option>
-                    </select>
-                </div>
-
-                <div class="settings-section">
-                    <label class="settings-section-title">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                        Volumen Maestro
-                    </label>
-                    <div class="volume-row">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#5a6478" stroke-width="2" style="width:18px;height:18px;flex-shrink:0;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-                        <input type="range" id="volume-slider" class="range-slider-v2" min="0" max="1" step="0.1" value="0.5">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#5a6478" stroke-width="2" style="width:18px;height:18px;flex-shrink:0;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <button id="btn-fullscreen" class="btn-fullscreen-v2">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-                        PANTALLA COMPLETA
-                    </button>
-                </div>
-
-                <button class="btn-back-subtle" id="btn-back-settings" style="margin-top:0.5rem;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>
-                    VOLVER
-                </button>
-            </div>
-        </div>
-
         <!-- Matchmaking / Lobby Screen -->
-        <div id="lobby-screen" class="screen hidden">
+        <div id="lobby-screen" class="screen active">
             <div class="glass-panel main-menu">
                 <h2>CONECTANDO...</h2>
                 <div class="action-container">
@@ -771,14 +381,6 @@ h1,h2,h3,.glitch { font-family:var(--font-pixel); text-transform:uppercase; }
         <!-- Game Arena Screen -->
         <div id="game-screen" class="screen hidden">
             <div class="arena-controls">
-                <button id="btn-arena-settings" class="btn-icon-only" title="Ajustes de Juego">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path
-                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                        </path>
-                    </svg>
-                </button>
                 <button id="btn-arena-surrender" class="btn-icon-only btn-danger" title="Rendirse / Salir">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -824,7 +426,7 @@ h1,h2,h3,.glitch { font-family:var(--font-pixel); text-transform:uppercase; }
 
                     <div id="game-over-panel" class="glass-panel result-panel hidden">
                         <h2 id="result-title">¡VICTORIA!</h2>
-                        <button id="btn-rematch" class="btn-primary">VOLVER AL MENÚ</button>
+                        <button id="btn-rematch" class="btn-primary">BUSCAR OTRA PARTIDA</button>
                     </div>
                 </div>
 
@@ -865,69 +467,17 @@ h1,h2,h3,.glitch { font-family:var(--font-pixel); text-transform:uppercase; }
 
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
     <script>
-/* === INLINE JS — always local connection === */
+/* === INLINE JS — online only, no menu === */
 const socket = io(window.location.origin, { transports: ['websocket'] });
 
 const screens = {
-    mainMenu: document.getElementById('main-menu-screen'),
-    modeSelection: document.getElementById('mode-selection-screen'),
-    trainingSetup: document.getElementById('training-setup-screen'),
-    ranking: document.getElementById('ranking-screen'),
-    profile: document.getElementById('profile-screen'),
-    settings: document.getElementById('settings-screen'),
     lobby: document.getElementById('lobby-screen'),
     game: document.getElementById('game-screen')
-};
-
-const navElements = {
-    btnPlay: document.getElementById('nav-btn-play'),
-    btnProfile: document.getElementById('nav-btn-profile'),
-    btnSettings: document.getElementById('nav-btn-settings'),
-    btnRanking: document.getElementById('nav-btn-ranking'),
-    btnBackProfile: document.getElementById('btn-back-profile'),
-    btnBackSettings: document.getElementById('btn-back-settings'),
-    btnBackRanking: document.getElementById('btn-back-ranking'),
-    btnCancelSearch: document.getElementById('btn-cancel-search'),
-    btnModeOnline: document.getElementById('btn-mode-online'),
-    btnModeTraining: document.getElementById('btn-mode-training'),
-    btnBackMode: document.getElementById('btn-back-mode'),
-    btnBackTraining: document.getElementById('btn-back-training'),
-    btnStartTraining: document.getElementById('btn-start-training'),
-    trainingTextDiff: document.getElementById('training-text-difficulty'),
-    trainingAiDiff: document.getElementById('training-ai-difficulty'),
-    trainingMatchDuration: document.getElementById('training-match-duration')
-};
-
-const profileElements = {
-    nameInput: document.getElementById('player-name-input'),
-    wins: document.getElementById('stat-wins'),
-    losses: document.getElementById('stat-losses')
-};
-
-const settingsElements = {
-    toggleAnimations: document.getElementById('toggle-animations'),
-    toggleAudio: document.getElementById('toggle-audio'),
-    toggleAutofire: document.getElementById('toggle-autofire'),
-    selectTheme: document.getElementById('select-theme'),
-    volumeSlider: document.getElementById('volume-slider'),
-    btnFullscreen: document.getElementById('btn-fullscreen')
-};
-
-const rankingElements = {
-    tableBody: document.getElementById('ranking-body'),
-    loadingText: document.getElementById('ranking-loading')
-};
-
-const menuElements = {
-    btnFindMatch: document.getElementById('btn-find-match'),
-    status: document.getElementById('matchmaking-status'),
-    searchDifficultyText: document.getElementById('search-difficulty-text')
 };
 
 const gameElements = {
     roomId: document.getElementById('display-room-id'),
     matchTimer: document.getElementById('match-timer'),
-    btnArenaSettings: document.getElementById('btn-arena-settings'),
     btnArenaSurrender: document.getElementById('btn-arena-surrender'),
     chatMessages: document.getElementById('chat-messages'),
     chatInput: document.getElementById('chat-input'),
@@ -940,7 +490,6 @@ const gameElements = {
     opponentHealthText: document.getElementById('opponent-health-text'),
     opponentNameLabel: document.querySelector('.opponent-card h3'),
     countdown: document.getElementById('countdown-display'),
-    phraseContainer: document.getElementById('phrase-container'),
     targetPhrase: document.getElementById('target-phrase'),
     typeInput: document.getElementById('type-input'),
     gameOverPanel: document.getElementById('game-over-panel'),
@@ -949,80 +498,50 @@ const gameElements = {
     playerAvatar: document.querySelector('.player-avatar'),
     opponentAvatar: document.querySelector('.opponent-avatar'),
     damageOverlay: document.getElementById('damage-overlay'),
-    phraseTimerContainer: document.getElementById('phrase-timer-container'),
     phraseTimerFill: document.getElementById('phrase-timer-fill')
 };
 
 let currentRoom = null;
 let currentPhraseStr = "";
 let isPlaying = false;
-let gameMode = 'online';
-let aiState = { interval: null, difficulty: 'veteran' };
-let currentDifficulty = "normal";
 let phraseTimeLimit = 15;
-let localPhraseTimer = null;
-let aiMatchTimer = null;
-let aiMatchTimeLeft = 0;
-let waitingForStart = false;
-let userProfile = { username: "Piloto Espacial", wins: 0, losses: 0 };
-let userSettings = { animations: true, audio: true, autoFire: true, theme: '#00ff41', volume: 0.5 };
+let userProfile = { username: "Piloto", wins: 0, losses: 0 };
+let userSettings = { animations: true, autoFire: true };
 const MAX_HEALTH = 100;
 
-function initStorage() {
-    const savedProfile = localStorage.getItem('tf_profile');
-    if (savedProfile) userProfile = { ...userProfile, ...JSON.parse(savedProfile) };
-    const savedSettings = localStorage.getItem('tf_settings');
-    if (savedSettings) userSettings = { ...userSettings, ...JSON.parse(savedSettings) };
-    profileElements.nameInput.value = userProfile.username;
-    profileElements.wins.textContent = userProfile.wins;
-    profileElements.losses.textContent = userProfile.losses;
-    updateRatio();
-    settingsElements.toggleAnimations.checked = userSettings.animations;
-    settingsElements.toggleAudio.checked = userSettings.audio;
-    settingsElements.toggleAutofire.checked = userSettings.autoFire;
-    settingsElements.selectTheme.value = userSettings.theme;
-    settingsElements.volumeSlider.value = userSettings.volume;
-    document.documentElement.style.setProperty('--primary-cyan', userSettings.theme);
-    document.querySelectorAll('.color-swatch').forEach(s => {
-        s.classList.toggle('selected', s.dataset.color === userSettings.theme);
-    });
-}
+(function initStorage() {
+    const saved = localStorage.getItem('tf_profile');
+    if (saved) userProfile = { ...userProfile, ...JSON.parse(saved) };
+})();
 
 function saveProfile() {
-    userProfile.username = profileElements.nameInput.value.trim() || "Piloto Espacial";
     localStorage.setItem('tf_profile', JSON.stringify(userProfile));
-    updateRatio();
 }
 
-function updateRatio() {
-    const ratioEl = document.getElementById('stat-ratio');
-    if (!ratioEl) return;
-    const w = userProfile.wins || 0;
-    const l = userProfile.losses || 0;
-    if (w === 0 && l === 0) ratioEl.textContent = '-';
-    else if (l === 0) ratioEl.textContent = w.toFixed(1);
-    else ratioEl.textContent = (w / l).toFixed(1);
-}
-
-function saveSettings() {
-    userSettings.animations = settingsElements.toggleAnimations.checked;
-    userSettings.audio = settingsElements.toggleAudio.checked;
-    userSettings.autoFire = settingsElements.toggleAutofire.checked;
-    userSettings.theme = settingsElements.selectTheme.value;
-    userSettings.volume = parseFloat(settingsElements.volumeSlider.value);
-    localStorage.setItem('tf_settings', JSON.stringify(userSettings));
-    document.documentElement.style.setProperty('--primary-cyan', userSettings.theme);
-}
-
-initStorage();
-
-function switchScreen(screenId) {
-    Object.values(screens).forEach(s => { if (s) s.classList.remove('active', 'hidden'); });
+function switchScreen(id) {
     Object.keys(screens).forEach(k => {
         if (!screens[k]) return;
-        if (k === screenId) screens[k].classList.add('active');
-        else screens[k].classList.add('hidden');
+        if (k === id) { screens[k].classList.add('active'); screens[k].classList.remove('hidden'); }
+        else { screens[k].classList.remove('active'); screens[k].classList.add('hidden'); }
     });
+}
+
+function startMatchmaking() {
+    switchScreen('lobby');
+    socket.emit('join_match', { username: userProfile.username });
+}
+
+function resetGameUI() {
+    currentRoom = null; currentPhraseStr = ""; isPlaying = false;
+    gameElements.gameOverPanel.classList.add('hidden');
+    gameElements.matchTimer.classList.add('hidden');
+    gameElements.countdown.classList.add('hidden');
+    gameElements.chatMessages.innerHTML = '<div class="chat-msg system">Conectado. Preparando chat...</div>';
+    gameElements.typeInput.value = ''; gameElements.typeInput.disabled = true;
+    gameElements.playerHealthFill.style.width = '100%';
+    gameElements.playerHealthText.textContent = '100 / 100';
+    gameElements.opponentHealthFill.style.width = '100%';
+    gameElements.opponentHealthText.textContent = '100 / 100';
 }
 
 function updateHealth(playerId, health, playersList) {
@@ -1030,8 +549,7 @@ function updateHealth(playerId, health, playersList) {
     const fill = isMe ? gameElements.playerHealthFill : gameElements.opponentHealthFill;
     const text = isMe ? gameElements.playerHealthText : gameElements.opponentHealthText;
     health = Math.max(0, health);
-    const percentage = (health / MAX_HEALTH) * 100;
-    fill.style.width = `${percentage}%`;
+    fill.style.width = `${(health / MAX_HEALTH) * 100}%`;
     text.textContent = `${health} / ${MAX_HEALTH}`;
     if (isMe && health < playersList[playerId]?.health) { triggerDamageFlash(); shakeElement(gameElements.playerAvatar); }
     else if (!isMe && health < playersList[playerId]?.health) { shakeElement(gameElements.opponentAvatar); }
@@ -1046,500 +564,196 @@ function triggerDamageFlash() {
 
 function shakeElement(el) {
     if (!userSettings.animations) return;
-    el.style.animation = 'none';
-    void el.offsetWidth;
+    el.style.animation = 'none'; void el.offsetWidth;
     el.style.animation = 'shake 0.4s cubic-bezier(.36,.07,.19,.97) both';
 }
 
 function createAttackAnimation(isPlayerAttacking) {
     const startEl = isPlayerAttacking ? gameElements.playerAvatar : gameElements.opponentAvatar;
     const endEl = isPlayerAttacking ? gameElements.opponentAvatar : gameElements.playerAvatar;
-    const startRect = startEl.getBoundingClientRect();
-    const endRect = endEl.getBoundingClientRect();
-    const particle = document.createElement('div');
-    particle.className = 'attack-particle';
-    particle.style.left = `${startRect.left + startRect.width / 2}px`;
-    particle.style.top = `${startRect.top + startRect.height / 2}px`;
-    particle.style.background = isPlayerAttacking ? 'var(--primary-cyan)' : 'var(--primary-pink)';
-    particle.style.boxShadow = `0 0 15px ${particle.style.background}`;
-    document.body.appendChild(particle);
-    const animation = particle.animate([
-        { transform: 'translate(0, 0) scale(1)' },
-        { transform: `translate(${endRect.left - startRect.left}px, ${endRect.top - startRect.top}px) scale(3)` }
-    ], { duration: 250, easing: 'ease-in' });
-    animation.onfinish = () => {
-        particle.remove();
-        createImpact(endRect.left + endRect.width / 2, endRect.top + endRect.height / 2, particle.style.background);
-    };
+    const sr = startEl.getBoundingClientRect(), er = endEl.getBoundingClientRect();
+    const p = document.createElement('div');
+    p.className = 'attack-particle';
+    p.style.left = `${sr.left + sr.width/2}px`; p.style.top = `${sr.top + sr.height/2}px`;
+    p.style.background = isPlayerAttacking ? 'var(--primary-cyan)' : 'var(--primary-pink)';
+    p.style.boxShadow = `0 0 15px ${p.style.background}`;
+    document.body.appendChild(p);
+    const a = p.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${er.left-sr.left}px,${er.top-sr.top}px) scale(3)`}],{duration:250,easing:'ease-in'});
+    a.onfinish = () => { p.remove(); createImpact(er.left+er.width/2, er.top+er.height/2, p.style.background); };
 }
 
 function createImpact(x, y, color) {
-    const impact = document.createElement('div');
-    impact.style.position = 'absolute';
-    impact.style.left = `${x - 20}px`;
-    impact.style.top = `${y - 20}px`;
-    impact.style.width = '40px';
-    impact.style.height = '40px';
-    impact.style.borderRadius = '50%';
-    impact.style.background = color;
-    impact.style.opacity = '0.8';
-    impact.style.zIndex = '50';
-    document.body.appendChild(impact);
-    const anim = impact.animate([
-        { transform: 'scale(0)', opacity: 0.8 },
-        { transform: 'scale(2.5)', opacity: 0 }
-    ], { duration: 300, easing: 'ease-out' });
-    anim.onfinish = () => impact.remove();
+    const d = document.createElement('div');
+    Object.assign(d.style, {position:'absolute',left:`${x-20}px`,top:`${y-20}px`,width:'40px',height:'40px',borderRadius:'50%',background:color,opacity:'0.8',zIndex:'50'});
+    document.body.appendChild(d);
+    const a = d.animate([{transform:'scale(0)',opacity:0.8},{transform:'scale(2.5)',opacity:0}],{duration:300,easing:'ease-out'});
+    a.onfinish = () => d.remove();
 }
 
-settingsElements.btnFullscreen.addEventListener('click', () => {
-    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(err => console.log(err.message));
-    else document.exitFullscreen();
-});
+function formatTime(s) { return `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`; }
 
-navElements.btnPlay.addEventListener('click', () => switchScreen('modeSelection'));
-navElements.btnModeOnline.addEventListener('click', () => { gameMode = 'online'; startMatchmaking(); });
-navElements.btnModeTraining.addEventListener('click', () => { gameMode = 'ai'; switchScreen('trainingSetup'); });
-navElements.btnBackMode.addEventListener('click', () => switchScreen('mainMenu'));
-navElements.btnBackTraining.addEventListener('click', () => switchScreen('modeSelection'));
-
-document.querySelectorAll('.ai-diff-card').forEach(card => {
-    card.addEventListener('click', () => {
-        document.querySelectorAll('.ai-diff-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        document.getElementById('training-ai-difficulty').value = card.dataset.difficulty;
-    });
-});
-
-document.querySelectorAll('.selector-cards').forEach(group => {
-    const targetId = group.dataset.target;
-    group.querySelectorAll('.selector-card').forEach(card => {
-        card.addEventListener('click', () => {
-            group.querySelectorAll('.selector-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            document.getElementById(targetId).value = card.dataset.value;
-        });
-    });
-});
-
-navElements.btnStartTraining.addEventListener('click', () => {
-    currentDifficulty = navElements.trainingTextDiff.value;
-    aiState.difficulty = navElements.trainingAiDiff.value;
-    startTrainingMatch();
-});
-
-function startMatchmaking() {
-    menuElements.searchDifficultyText.textContent = 'Buscando un sector de combate disponible...';
-    switchScreen('lobby');
-    socket.emit('join_match', { username: userProfile.username });
+function updatePhraseTimerBar(timeLeft, timeLimit) {
+    const pct = (timeLeft / timeLimit) * 100;
+    gameElements.phraseTimerFill.style.width = `${pct}%`;
+    gameElements.phraseTimerFill.classList.remove('warning','critical');
+    if (pct <= 20) gameElements.phraseTimerFill.classList.add('critical');
+    else if (pct <= 50) gameElements.phraseTimerFill.classList.add('warning');
 }
 
-function formatTime(seconds) {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+function submitCurrentPhrase() {
+    isPlaying = false; gameElements.typeInput.disabled = true;
+    socket.emit('type_word', { roomId: currentRoom, input: gameElements.typeInput.value });
 }
 
-function clearAIMatchTimer() { if (aiMatchTimer) { clearInterval(aiMatchTimer); aiMatchTimer = null; } }
+// Auto-search on load
+startMatchmaking();
 
-function startAIMatchTimer(duration) {
-    clearAIMatchTimer();
-    aiMatchTimeLeft = duration;
-    gameElements.matchTimer.classList.remove('hidden');
-    gameElements.matchTimer.textContent = formatTime(aiMatchTimeLeft);
-    gameElements.matchTimer.style.color = 'var(--primary-cyan)';
-    gameElements.matchTimer.style.textShadow = '0 0 15px rgba(0, 240, 255, 0.5)';
-    aiMatchTimer = setInterval(() => {
-        aiMatchTimeLeft -= 1;
-        gameElements.matchTimer.textContent = formatTime(aiMatchTimeLeft);
-        if (aiMatchTimeLeft <= 10) {
-            gameElements.matchTimer.style.color = 'var(--primary-pink)';
-            gameElements.matchTimer.style.textShadow = '0 0 15px var(--primary-pink)';
-        }
-        if (aiMatchTimeLeft <= 0) {
-            clearAIMatchTimer();
-            const playerHealth = parseInt(gameElements.playerHealthText.textContent.split(' ')[0]);
-            const oppHealth = parseInt(gameElements.opponentHealthText.textContent.split(' ')[0]);
-            if (playerHealth > oppHealth) handleAIGameOver(true);
-            else if (oppHealth > playerHealth) handleAIGameOver(false);
-            else {
-                isPlaying = false; clearInterval(aiState.interval); clearLocalPhraseTimer();
-                gameElements.typeInput.disabled = true;
-                setTimeout(() => {
-                    gameElements.gameOverPanel.classList.remove('hidden');
-                    gameElements.resultTitle.textContent = "\u00A1EMPATE!";
-                    gameElements.resultTitle.style.color = "var(--text-main)";
-                    gameElements.resultTitle.style.textShadow = "none";
-                }, 1000);
-            }
-        }
-    }, 1000);
-}
+// Rematch = search again
+gameElements.btnRematch.addEventListener('click', () => { resetGameUI(); startMatchmaking(); });
 
-function cleanupTrainingState() {
-    isPlaying = false; waitingForStart = false; currentPhraseStr = "";
-    if (aiState.interval) clearInterval(aiState.interval);
-    aiState.interval = null;
-    clearLocalPhraseTimer(); clearAIMatchTimer();
-}
-
-function startTrainingMatch() {
-    cleanupTrainingState();
-    switchScreen('game');
-    currentRoom = 'local_ai_room';
-    const diffNames = { rookie: "Cadete", veteran: "Veterano", elite: "\u00C9lite" };
-    gameElements.roomId.textContent = `SIMULACI\u00D3N - IA: ${diffNames[aiState.difficulty]}`;
-    gameElements.playerNameText.textContent = userProfile.username;
-    gameElements.opponentNameText.textContent = 'Oponente IA';
-    gameElements.gameOverPanel.classList.add('hidden');
-    chatContainer.classList.add('collapsed');
-    chatContainer.style.display = 'none';
-    gameElements.playerHealthFill.style.width = '100%';
-    gameElements.playerHealthText.textContent = `${MAX_HEALTH} / ${MAX_HEALTH}`;
-    gameElements.opponentHealthFill.style.width = '100%';
-    gameElements.opponentHealthText.textContent = `${MAX_HEALTH} / ${MAX_HEALTH}`;
-    gameElements.typeInput.value = '';
-    gameElements.typeInput.disabled = false;
-    gameElements.typeInput.focus();
-    gameElements.countdown.classList.add('hidden');
-    gameElements.targetPhrase.innerHTML = "PREP\u00C1RATE";
-    updatePhraseTimerBar(1, 1);
-    const matchDuration = parseInt(navElements.trainingMatchDuration.value);
-    if (matchDuration > 0) {
-        gameElements.matchTimer.classList.remove('hidden');
-        gameElements.matchTimer.textContent = formatTime(matchDuration);
-        gameElements.matchTimer.style.color = 'var(--primary-cyan)';
-        gameElements.matchTimer.style.textShadow = '0 0 15px rgba(0, 240, 255, 0.5)';
-        startAIMatchTimer(matchDuration);
-    } else {
-        gameElements.matchTimer.classList.add('hidden');
-    }
-    isPlaying = true;
-    socket.emit('request_ai_phrase', currentDifficulty);
-    startAILoop();
-}
-
-function startAILoop() {
-    if (aiState.interval) clearInterval(aiState.interval);
-    let baseTime = 4000;
-    if (aiState.difficulty === 'veteran') baseTime = 2500;
-    if (aiState.difficulty === 'elite') baseTime = 1200;
-    const attackTime = baseTime + (Math.random() * 1000 - 500);
-    aiState.interval = setInterval(() => {
-        if (!isPlaying || gameMode !== 'ai') { clearInterval(aiState.interval); return; }
-        let currentHealth = parseInt(gameElements.playerHealthText.textContent.split(' ')[0]) - 20;
-        updateHealth(socket.id, currentHealth, { [socket.id]: { health: currentHealth } });
-        createAttackAnimation(false); triggerDamageFlash(); shakeElement(gameElements.playerAvatar);
-        if (currentHealth <= 0) handleAIGameOver(false);
-        else { socket.emit('request_ai_phrase', currentDifficulty); gameElements.typeInput.value = ''; }
-    }, attackTime);
-}
-
-function handleAIGameOver(isWin) {
-    isPlaying = false; clearInterval(aiState.interval); clearLocalPhraseTimer(); clearAIMatchTimer();
-    gameElements.typeInput.disabled = true;
-    setTimeout(() => {
-        gameElements.gameOverPanel.classList.remove('hidden');
-        gameElements.resultTitle.textContent = isWin ? "\u00A1SIMULACI\u00D3N SUPERADA!" : "\u00A1SIMULACI\u00D3N FALLIDA!";
-        gameElements.resultTitle.style.color = isWin ? "var(--primary-cyan)" : "var(--primary-pink)";
-        gameElements.resultTitle.style.textShadow = `0 0 20px ${gameElements.resultTitle.style.color}`;
-    }, 1000);
-}
-
-navElements.btnCancelSearch.addEventListener('click', () => { socket.emit('cancel_match'); switchScreen('mainMenu'); });
-navElements.btnProfile.addEventListener('click', () => switchScreen('profile'));
-navElements.btnSettings.addEventListener('click', () => switchScreen('settings'));
-
-document.querySelectorAll('.color-swatch').forEach(swatch => {
-    swatch.addEventListener('click', () => {
-        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-        swatch.classList.add('selected');
-        settingsElements.selectTheme.value = swatch.dataset.color;
-        settingsElements.selectTheme.dispatchEvent(new Event('change'));
-    });
-});
-
-navElements.btnRanking.addEventListener('click', () => {
-    switchScreen('ranking');
-    rankingElements.loadingText.classList.remove('hidden');
-    rankingElements.tableBody.innerHTML = '';
-    socket.emit('get_leaderboard');
-});
-
-navElements.btnBackRanking.addEventListener('click', () => switchScreen('mainMenu'));
-navElements.btnBackProfile.addEventListener('click', () => { saveProfile(); switchScreen('mainMenu'); });
-
-navElements.btnBackSettings.addEventListener('click', () => {
-    saveSettings();
-    if (currentRoom) switchScreen('game');
-    else switchScreen('mainMenu');
-});
-
-profileElements.nameInput.addEventListener('blur', saveProfile);
-settingsElements.toggleAnimations.addEventListener('change', saveSettings);
-settingsElements.toggleAudio.addEventListener('change', saveSettings);
-settingsElements.toggleAutofire.addEventListener('change', saveSettings);
-settingsElements.selectTheme.addEventListener('change', saveSettings);
-settingsElements.volumeSlider.addEventListener('input', saveSettings);
-
-gameElements.btnRematch.addEventListener('click', () => {
-    cleanupTrainingState();
-    currentRoom = null; currentPhraseStr = "";
-    gameElements.gameOverPanel.classList.add('hidden');
-    gameElements.matchTimer.classList.add('hidden');
-    gameElements.countdown.classList.add('hidden');
-    gameElements.chatMessages.innerHTML = '<div class="chat-msg system">Conectado. Preparando chat...</div>';
-    gameElements.typeInput.value = ''; gameElements.typeInput.disabled = true;
-    gameElements.playerHealthFill.style.width = '100%';
-    gameElements.playerHealthText.textContent = '100 / 100';
-    gameElements.opponentHealthFill.style.width = '100%';
-    gameElements.opponentHealthText.textContent = '100 / 100';
-    switchScreen('mainMenu');
-});
-
-gameElements.btnArenaSettings.addEventListener('click', () => switchScreen('settings'));
-
+// Surrender = search again
 gameElements.btnArenaSurrender.addEventListener('click', () => {
-    if (confirm('\u00BFEst\u00E1s seguro de que quieres retirarte de la partida?')) {
-        if (gameMode === 'online') socket.emit('surrender_match', { roomId: currentRoom });
-        else cleanupTrainingState();
-        currentRoom = null; currentPhraseStr = ""; isPlaying = false;
-        gameElements.typeInput.disabled = true; gameElements.typeInput.value = '';
-        switchScreen('mainMenu');
-        gameElements.gameOverPanel.classList.add('hidden');
-        gameElements.matchTimer.classList.add('hidden');
-        gameElements.countdown.classList.add('hidden');
-        chatContainer.style.display = 'flex';
-        chatContainer.classList.add('collapsed');
+    if (confirm('\u00BFRetirarte de la partida?')) {
+        socket.emit('surrender_match', { roomId: currentRoom });
+        resetGameUI(); startMatchmaking();
     }
 });
 
+// Chat
 const chatContainer = document.getElementById('chat-container');
 const btnToggleChat = document.getElementById('btn-toggle-chat');
 const chatBadge = document.getElementById('chat-badge');
-
 btnToggleChat.addEventListener('click', () => {
     chatContainer.classList.toggle('collapsed');
     if (!chatContainer.classList.contains('collapsed')) { chatBadge.classList.add('hidden'); gameElements.chatInput.focus(); }
 });
-
 function showChatNotification() { if (chatContainer.classList.contains('collapsed')) chatBadge.classList.remove('hidden'); }
 
 gameElements.chatInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        const text = e.target.value.trim(); e.preventDefault();
-        if (text && currentRoom) { socket.emit('send_chat_msg', { roomId: currentRoom, sender: userProfile.username, text }); e.target.value = ''; }
-    }
+    if (e.key === 'Enter') { const t = e.target.value.trim(); e.preventDefault(); if (t && currentRoom) { socket.emit('send_chat_msg',{roomId:currentRoom,sender:userProfile.username,text:t}); e.target.value=''; } }
 });
 
+// Typing
 gameElements.typeInput.addEventListener('input', (e) => {
     if (!isPlaying) { e.target.value = ""; return; }
     const typed = e.target.value;
     if (currentPhraseStr.startsWith(typed)) {
         gameElements.typeInput.classList.remove('error');
-        const matchedPart = currentPhraseStr.substring(0, typed.length);
-        const remPart = currentPhraseStr.substring(typed.length);
-        gameElements.targetPhrase.innerHTML = `<span class="matched-text">${matchedPart}</span>${remPart}`;
+        gameElements.targetPhrase.innerHTML = `<span class="matched-text">${currentPhraseStr.substring(0,typed.length)}</span>${currentPhraseStr.substring(typed.length)}`;
         if (typed === currentPhraseStr && userSettings.autoFire) submitCurrentPhrase();
     } else {
         gameElements.typeInput.classList.add('error');
-        const commonLength = Array.from(typed).findIndex((char, i) => currentPhraseStr[i] !== char);
-        const safeCommon = commonLength === -1 ? 0 : commonLength;
-        const matchedPart = currentPhraseStr.substring(0, safeCommon);
-        const errorChar = currentPhraseStr.substring(safeCommon, safeCommon + 1) || " ";
-        const remPart = currentPhraseStr.substring(safeCommon + 1);
-        gameElements.targetPhrase.innerHTML = `<span class="matched-text">${matchedPart}</span><span class="error-text">${errorChar}</span>${remPart}`;
+        const cl = Array.from(typed).findIndex((c,i) => currentPhraseStr[i] !== c);
+        const sc = cl === -1 ? 0 : cl;
+        gameElements.targetPhrase.innerHTML = `<span class="matched-text">${currentPhraseStr.substring(0,sc)}</span><span class="error-text">${currentPhraseStr.substring(sc,sc+1)||" "}</span>${currentPhraseStr.substring(sc+1)}`;
     }
 });
-
-function submitCurrentPhrase() {
-    isPlaying = false; gameElements.typeInput.disabled = true; clearLocalPhraseTimer();
-    if (gameMode === 'online') {
-        socket.emit('type_word', { roomId: currentRoom, input: gameElements.typeInput.value });
-    } else if (gameMode === 'ai') {
-        let oppHealth = parseInt(gameElements.opponentHealthText.textContent.split(' ')[0]) - 20;
-        updateHealth('ai_bot', oppHealth, { 'ai_bot': { health: oppHealth } });
-        createAttackAnimation(true); shakeElement(gameElements.opponentAvatar);
-        if (oppHealth <= 0) handleAIGameOver(true);
-        else { socket.emit('request_ai_phrase', currentDifficulty); gameElements.typeInput.value = ''; }
-    }
-}
 
 gameElements.typeInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); if (!userSettings.autoFire && isPlaying && gameElements.typeInput.value === currentPhraseStr) submitCurrentPhrase(); }
 });
 
-socket.on('match_joined', (data) => { currentRoom = data.roomId; gameElements.roomId.textContent = `SALA: ${data.roomId}`; });
+// Socket events
+socket.on('match_joined', (d) => { currentRoom = d.roomId; gameElements.roomId.textContent = `SALA: ${d.roomId}`; });
 
-socket.on('match_started', (data) => {
+socket.on('match_started', (d) => {
     switchScreen('game');
     gameElements.gameOverPanel.classList.add('hidden');
     gameElements.typeInput.value = ""; gameElements.typeInput.disabled = true;
     gameElements.playerHealthFill.style.width = '100%';
     gameElements.opponentHealthFill.style.width = '100%';
-    const myData = data.players[socket.id];
-    const oppId = Object.keys(data.players).find(id => id !== socket.id);
-    const oppData = data.players[oppId];
-    if (myData) gameElements.playerNameLabel.textContent = myData.username.toUpperCase();
-    if (oppData) gameElements.opponentNameLabel.textContent = oppData.username.toUpperCase();
+    gameElements.playerHealthText.textContent = '100 / 100';
+    gameElements.opponentHealthText.textContent = '100 / 100';
+    const my = d.players[socket.id], oppId = Object.keys(d.players).find(id => id !== socket.id), opp = d.players[oppId];
+    if (my) gameElements.playerNameLabel.textContent = my.username.toUpperCase();
+    if (opp) gameElements.opponentNameLabel.textContent = opp.username.toUpperCase();
     gameElements.targetPhrase.innerHTML = "PREP\u00C1RATE";
+    chatContainer.style.display = 'flex'; chatContainer.classList.add('collapsed');
 });
 
-socket.on('countdown', (data) => {
+socket.on('countdown', (d) => {
     gameElements.countdown.classList.remove('hidden');
-    let ioCode = setInterval(() => {
-        data.seconds--;
-        if (data.seconds > 0) {
-            gameElements.countdown.textContent = data.seconds;
-            gameElements.countdown.style.animation = 'none';
-            void gameElements.countdown.offsetWidth;
-            gameElements.countdown.style.animation = 'popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-        } else { clearInterval(ioCode); gameElements.countdown.classList.add('hidden'); gameElements.matchTimer.classList.remove('hidden'); }
+    let iv = setInterval(() => {
+        d.seconds--;
+        if (d.seconds > 0) {
+            gameElements.countdown.textContent = d.seconds;
+            gameElements.countdown.style.animation = 'none'; void gameElements.countdown.offsetWidth;
+            gameElements.countdown.style.animation = 'popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275)';
+        } else { clearInterval(iv); gameElements.countdown.classList.add('hidden'); gameElements.matchTimer.classList.remove('hidden'); }
     }, 1000);
 });
 
-socket.on('timer_tick', (data) => {
-    const mins = Math.floor(data.timeLeft / 60);
-    const secs = data.timeLeft % 60;
-    gameElements.matchTimer.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    if (data.timeLeft <= 10) { gameElements.matchTimer.style.color = 'var(--primary-pink)'; gameElements.matchTimer.style.textShadow = '0 0 15px var(--primary-pink)'; }
-    else { gameElements.matchTimer.style.color = 'var(--primary-cyan)'; gameElements.matchTimer.style.textShadow = '0 0 15px rgba(0, 240, 255, 0.5)'; }
+socket.on('timer_tick', (d) => {
+    gameElements.matchTimer.textContent = formatTime(d.timeLeft);
+    if (d.timeLeft <= 10) { gameElements.matchTimer.style.color = 'var(--primary-pink)'; gameElements.matchTimer.style.textShadow = '0 0 15px var(--primary-pink)'; }
+    else { gameElements.matchTimer.style.color = 'var(--primary-cyan)'; gameElements.matchTimer.style.textShadow = '0 0 15px rgba(0,240,255,0.5)'; }
 });
 
-socket.on('chat_msg_received', (data) => {
-    const isMe = data.senderId === socket.id;
-    const msgDiv = document.createElement('div');
-    msgDiv.className = `chat-msg ${isMe ? 'me' : 'opponent'}`;
-    const safeText = document.createTextNode(data.text);
-    msgDiv.innerHTML = `<span class="name">${data.sender}:</span> `;
-    msgDiv.appendChild(safeText);
-    gameElements.chatMessages.appendChild(msgDiv);
-    gameElements.chatMessages.scrollTop = gameElements.chatMessages.scrollHeight;
+socket.on('chat_msg_received', (d) => {
+    const isMe = d.senderId === socket.id;
+    const m = document.createElement('div'); m.className = `chat-msg ${isMe?'me':'opponent'}`;
+    m.innerHTML = `<span class="name">${d.sender}:</span> `; m.appendChild(document.createTextNode(d.text));
+    gameElements.chatMessages.appendChild(m); gameElements.chatMessages.scrollTop = gameElements.chatMessages.scrollHeight;
     if (!isMe) showChatNotification();
 });
 
-function clearLocalPhraseTimer() { if (localPhraseTimer) { clearInterval(localPhraseTimer); localPhraseTimer = null; } }
-
-function startLocalPhraseTimer() {
-    clearLocalPhraseTimer();
-    let timeLeft = phraseTimeLimit;
-    updatePhraseTimerBar(timeLeft, phraseTimeLimit);
-    localPhraseTimer = setInterval(() => {
-        timeLeft -= 1;
-        updatePhraseTimerBar(timeLeft, phraseTimeLimit);
-        if (timeLeft <= 0) {
-            clearLocalPhraseTimer();
-            isPlaying = false; gameElements.typeInput.disabled = true; gameElements.typeInput.value = "";
-            gameElements.targetPhrase.innerHTML = '<span style="color:var(--primary-pink)">\u00A1TIEMPO AGOTADO!</span>';
-            let playerHealth = parseInt(gameElements.playerHealthText.textContent.split(' ')[0]) - 10;
-            let oppHealth = parseInt(gameElements.opponentHealthText.textContent.split(' ')[0]) - 10;
-            updateHealth(socket.id, playerHealth, { [socket.id]: { health: playerHealth } });
-            updateHealth('ai_bot', oppHealth, { 'ai_bot': { health: oppHealth } });
-            triggerDamageFlash(); shakeElement(gameElements.playerAvatar); shakeElement(gameElements.opponentAvatar);
-            if (playerHealth <= 0 && oppHealth <= 0) { handleAIGameOver(false); return; }
-            if (playerHealth <= 0) { handleAIGameOver(false); return; }
-            if (oppHealth <= 0) { handleAIGameOver(true); return; }
-            setTimeout(() => { if (gameMode === 'ai') socket.emit('request_ai_phrase', currentDifficulty); }, 1500);
-        }
-    }, 1000);
-}
-
-socket.on('ai_phrase_received', (data) => {
-    currentPhraseStr = data.phrase;
-    gameElements.targetPhrase.innerHTML = currentPhraseStr;
-    isPlaying = true;
-    gameElements.typeInput.disabled = false; gameElements.typeInput.value = ""; gameElements.typeInput.focus();
-    if (gameMode === 'ai') { startLocalPhraseTimer(); if (!aiState.interval) startAILoop(); }
-});
-
-socket.on('leaderboard_data', (topPlayers) => {
-    rankingElements.loadingText.classList.add('hidden');
-    rankingElements.tableBody.innerHTML = '';
-    if (topPlayers.length === 0) {
-        rankingElements.tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#5a8a5a;">No hay datos aun. Se el primero en ganar!</td></tr>';
-        return;
-    }
-    topPlayers.forEach((player, index) => {
-        const row = document.createElement('tr');
-        const posClass = index === 0 ? 'ranking-row-top1' : index === 1 ? 'ranking-row-top2' : index === 2 ? 'ranking-row-top3' : '';
-        row.innerHTML = `<td class="${posClass}">${index + 1}</td><td class="${posClass}">${player.username}</td><td class="${posClass}">${player.wins}</td>`;
-        rankingElements.tableBody.appendChild(row);
-    });
-});
-
-function updatePhraseTimerBar(timeLeft, timeLimit) {
-    const pct = (timeLeft / timeLimit) * 100;
-    gameElements.phraseTimerFill.style.width = `${pct}%`;
-    gameElements.phraseTimerFill.classList.remove('warning', 'critical');
-    if (pct <= 20) gameElements.phraseTimerFill.classList.add('critical');
-    else if (pct <= 50) gameElements.phraseTimerFill.classList.add('warning');
-}
-
-socket.on('new_phrase', (data) => {
-    currentPhraseStr = data.phrase;
-    if (data.timeLimit) phraseTimeLimit = data.timeLimit;
+socket.on('new_phrase', (d) => {
+    currentPhraseStr = d.phrase;
+    if (d.timeLimit) phraseTimeLimit = d.timeLimit;
     gameElements.targetPhrase.innerHTML = currentPhraseStr;
     isPlaying = true;
     gameElements.typeInput.disabled = false; gameElements.typeInput.value = ""; gameElements.typeInput.focus();
     updatePhraseTimerBar(phraseTimeLimit, phraseTimeLimit);
 });
 
-socket.on('phrase_timer_tick', (data) => updatePhraseTimerBar(data.timeLeft, phraseTimeLimit));
+socket.on('phrase_timer_tick', (d) => updatePhraseTimerBar(d.timeLeft, phraseTimeLimit));
 
-socket.on('phrase_expired', (data) => {
+socket.on('phrase_expired', (d) => {
     isPlaying = false; gameElements.typeInput.disabled = true; gameElements.typeInput.value = "";
     gameElements.targetPhrase.innerHTML = '<span style="color:var(--primary-pink)">\u00A1TIEMPO AGOTADO!</span>';
     updatePhraseTimerBar(0, phraseTimeLimit);
     triggerDamageFlash(); shakeElement(gameElements.playerAvatar); shakeElement(gameElements.opponentAvatar);
-    const myHealth = data.players[socket.id]?.health || 0;
-    const oppId = Object.keys(data.players).find(id => id !== socket.id);
-    const oppHealth = data.players[oppId]?.health || 0;
-    gameElements.playerHealthFill.style.width = `${Math.max(0, (myHealth / MAX_HEALTH) * 100)}%`;
-    gameElements.playerHealthText.textContent = `${Math.max(0, myHealth)} / ${MAX_HEALTH}`;
-    gameElements.opponentHealthFill.style.width = `${Math.max(0, (oppHealth / MAX_HEALTH) * 100)}%`;
-    gameElements.opponentHealthText.textContent = `${Math.max(0, oppHealth)} / ${MAX_HEALTH}`;
+    const myH = d.players[socket.id]?.health||0, oppId = Object.keys(d.players).find(id=>id!==socket.id), oppH = d.players[oppId]?.health||0;
+    gameElements.playerHealthFill.style.width = `${Math.max(0,(myH/MAX_HEALTH)*100)}%`;
+    gameElements.playerHealthText.textContent = `${Math.max(0,myH)} / ${MAX_HEALTH}`;
+    gameElements.opponentHealthFill.style.width = `${Math.max(0,(oppH/MAX_HEALTH)*100)}%`;
+    gameElements.opponentHealthText.textContent = `${Math.max(0,oppH)} / ${MAX_HEALTH}`;
 });
 
-socket.on('phrase_completed', (data) => {
-    const isWinnerMe = data.winnerId === socket.id;
-    createAttackAnimation(isWinnerMe);
-    const myHealth = data.players[socket.id].health;
-    const oppId = Object.keys(data.players).find(id => id !== socket.id);
-    const oppHealth = data.players[oppId]?.health || 0;
+socket.on('phrase_completed', (d) => {
+    const isWin = d.winnerId === socket.id;
+    createAttackAnimation(isWin);
+    const myH = d.players[socket.id].health, oppId = Object.keys(d.players).find(id=>id!==socket.id), oppH = d.players[oppId]?.health||0;
     setTimeout(() => {
-        gameElements.playerHealthFill.style.width = `${Math.max(0, (myHealth / MAX_HEALTH) * 100)}%`;
-        gameElements.playerHealthText.textContent = `${Math.max(0, myHealth)} / ${MAX_HEALTH}`;
-        gameElements.opponentHealthFill.style.width = `${Math.max(0, (oppHealth / MAX_HEALTH) * 100)}%`;
-        gameElements.opponentHealthText.textContent = `${Math.max(0, oppHealth)} / ${MAX_HEALTH}`;
-        if (!isWinnerMe) triggerDamageFlash();
-        shakeElement(isWinnerMe ? gameElements.opponentAvatar : gameElements.playerAvatar);
+        gameElements.playerHealthFill.style.width = `${Math.max(0,(myH/MAX_HEALTH)*100)}%`;
+        gameElements.playerHealthText.textContent = `${Math.max(0,myH)} / ${MAX_HEALTH}`;
+        gameElements.opponentHealthFill.style.width = `${Math.max(0,(oppH/MAX_HEALTH)*100)}%`;
+        gameElements.opponentHealthText.textContent = `${Math.max(0,oppH)} / ${MAX_HEALTH}`;
+        if (!isWin) triggerDamageFlash();
+        shakeElement(isWin ? gameElements.opponentAvatar : gameElements.playerAvatar);
     }, 250);
 });
 
-socket.on('game_over', (data) => {
+socket.on('game_over', (d) => {
     isPlaying = false; gameElements.typeInput.disabled = true;
     setTimeout(() => {
         gameElements.gameOverPanel.classList.remove('hidden');
-        if (data.reason === 'timeout_tie') {
+        if (d.reason === 'timeout_tie') {
             gameElements.resultTitle.textContent = "EMPATE";
-            gameElements.resultTitle.style.color = "var(--text-color)";
-            gameElements.resultTitle.style.textShadow = "none";
+            gameElements.resultTitle.style.color = "var(--text-main)"; gameElements.resultTitle.style.textShadow = "none";
         } else {
-            const isWinnerMe = data.winnerId === socket.id;
-            gameElements.resultTitle.textContent = isWinnerMe ? "\u00A1VICTORIA!" : "\u00A1DERROTA!";
-            gameElements.resultTitle.style.color = isWinnerMe ? "var(--primary-cyan)" : "var(--primary-pink)";
+            const w = d.winnerId === socket.id;
+            gameElements.resultTitle.textContent = w ? "\u00A1VICTORIA!" : "\u00A1DERROTA!";
+            gameElements.resultTitle.style.color = w ? "var(--primary-cyan)" : "var(--primary-pink)";
             gameElements.resultTitle.style.textShadow = `0 0 20px ${gameElements.resultTitle.style.color}`;
-            if (isWinnerMe) userProfile.wins += 1; else userProfile.losses += 1;
+            if (w) userProfile.wins += 1; else userProfile.losses += 1;
         }
         saveProfile();
-        profileElements.wins.textContent = userProfile.wins;
-        profileElements.losses.textContent = userProfile.losses;
-        updateRatio();
     }, 1000);
 });
 
 socket.on('opponent_disconnected', () => {
-    if (screens.game.classList.contains('active')) { alert("El oponente se ha desconectado."); gameElements.btnRematch.click(); }
+    if (screens.game.classList.contains('active')) { alert("El oponente se ha desconectado."); resetGameUI(); startMatchmaking(); }
 });
     </script>
 </body>
